@@ -1,0 +1,91 @@
+from nicegui import ui
+import math
+from typing import Optional, Callable, Union
+
+def AppSlider(
+    min: float = 0,
+    max: float = 100,
+    step: float = 1,
+    value: float = 0,
+    label: str = "",
+    unit: str = "",
+    log: bool = False,
+    log_dir: str = 'low', # 'low' (precision at bottom) or 'high' (precision at top)
+    on_change: Optional[Callable] = None,
+    show_markers: bool = False
+):
+    """
+    A premium themed slider with logarithmic support and value display.
+    
+    Log logic: 
+    - 'low': Small movements at the start increase value slowly.
+    - 'high': Small movements at the end increase value slowly (zoom in on high values).
+    """
+    
+    def to_log(linear_val: float) -> float:
+        """Convert 0-100 linear value to min-max log value."""
+        p = linear_val / 100.0
+        if log_dir == 'high':
+            # Flip: 0 at start, but more 'room' at the high end
+            # We invert the progress, calculate log, then invert back
+            p = 1.0 - p
+            val = max - (max - min) * (p**2) # Simple quadratic for 'zooming'
+        else:
+            # Standard 'low' log: more room at the small end
+            val = min + (max - min) * (p**2)
+        return val
+
+    def from_log(log_val: float) -> float:
+        """Convert min-max log value back to 0-100 linear for slider state."""
+        if log_dir == 'high':
+            # val = max - (max-min)*p^2  => p = sqrt((max-val)/(max-min))
+            p = math.sqrt(abs(max - log_val) / abs(max - min))
+            return (1.0 - p) * 100
+        else:
+            # val = min + (max-min)*p^2 => p = sqrt((val-min)/(max-min))
+            p = math.sqrt(abs(log_val - min) / abs(max - min))
+            return p * 100
+
+    with ui.column().classes('w-full gap-1'):
+        if label:
+            ui.label(label).classes('text-xs font-semibold opacity-70 uppercase tracking-tighter')
+            
+        with ui.row().classes('w-full items-center gap-4'):
+            # Internal slider state
+            initial_slider_val = from_log(value) if log else value
+            
+            slider = ui.slider(
+                min=0 if log else min, 
+                max=100 if log else max, 
+                step=0.1 if log else step, 
+                value=initial_slider_val
+            ).classes('grow')
+            
+            # Value Label on the right
+            value_display = ui.label('').classes('text-sm font-bold min-w-[3em] text-right')
+            
+            def update_ui(e):
+                raw = e.value
+                current_val = to_log(raw) if log else raw
+                
+                # Format text
+                if current_val >= 1000:
+                    text = f"{current_val:,.0f}{unit}"
+                else:
+                    text = f"{current_val:.1f}{unit}"
+                value_display.set_text(text)
+                
+                if on_change:
+                    on_change(current_val)
+
+            slider.on_value_change(update_ui)
+            
+            # Initialization
+            update_ui(type('obj', (object,), {'value': initial_slider_val}))
+
+    if show_markers and not log:
+        slider.props('markers')
+        
+    slider.props('label-always color=primary')
+    
+    return slider

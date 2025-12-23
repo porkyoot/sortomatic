@@ -8,7 +8,9 @@ def AppButton(
     color: str = 'var(--q-primary)',
     variant: str = 'primary', # 'primary', 'secondary', 'simple', 'ghost'
     shape: str = 'rectangle', # 'rectangle', 'pill', 'circle', 'chevron-left', 'chevron-mid', 'chevron-right'
-    rounded: bool = True
+    size: str = 'md',        # 'xs', 'sm', 'md', 'lg', 'xl'
+    rounded: bool = True,
+    tooltip: Optional[str] = None
 ):
     """
     A unified button component for the application.
@@ -21,7 +23,7 @@ def AppButton(
     - chevron-mid: Process step (Middle).
     - chevron-right: Process step (End).
     """
-    btn = ui.button(text, icon=icon, on_click=on_click).props('unelevated no-caps')
+    btn = ui.button(text, icon=icon, on_click=on_click).props(f'unelevated no-caps size={size}')
     
     # Base classes
     classes = "transition-transform hover:scale-105 active:scale-95 "
@@ -61,5 +63,8 @@ def AppButton(
     elif variant == 'ghost':
         btn.props('outline')
         styles.append(f'color: {color} !important; border-color: {color} !important;')
+        
+    if tooltip:
+        btn.tooltip(tooltip)
         
     return btn.classes(classes).style(';'.join(styles))
