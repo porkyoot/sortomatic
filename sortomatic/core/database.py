@@ -22,7 +22,7 @@ class FileIndex(BaseModel):
     entry_type = CharField(default='file', index=True) 
     
     # Analysis
-    category = CharField(default=None, index=True)
+    category = CharField(null=True, index=True)
     mime_type = CharField(null=True)  # Result of 'file' command check
     
     # Hashing
