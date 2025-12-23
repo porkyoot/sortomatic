@@ -1,5 +1,4 @@
 import typer
-import os
 import sys
 import atexit
 from pathlib import Path
@@ -38,13 +37,16 @@ def ensure_environment():
 def main(
     ctx: typer.Context,
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show DEBUG logs"),
-    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
+    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use"),
+    reset: bool = typer.Option(False, "--reset", help="Reset database before operation")
 ):
     """
     Global entry point callback.
     """
     if threads:
         settings.max_workers = threads
+    if reset:
+        settings.reset_db = True
         
     log_level = "DEBUG" if verbose else "INFO"
     setup_logger(log_level)
@@ -58,12 +60,10 @@ def main(
 scan_app = typer.Typer(help=Strings.SCAN_DOC, invoke_without_command=True)
 app.add_typer(scan_app, name="scan")
 
-@scan_app.callback()
+@scan_app.callback(invoke_without_command=True)
 def scan_callback(
     ctx: typer.Context,
     path: Optional[str] = typer.Argument(None, help=Strings.SCAN_PATH_HELP),
-    reset: bool = typer.Option(False, "--reset", help=Strings.SCAN_RESET_HELP),
-    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
 ):
     """Run full scan if path provided, otherwise show help."""
     if ctx.invoked_subcommand is not None:
@@ -73,46 +73,37 @@ def scan_callback(
         typer.echo(ctx.get_help())
         raise typer.Exit()
     
-    _run_pipeline(path, reset, threads, mode="all")
+    _run_pipeline(path, mode="all")
 
 @scan_app.command("all", help=Strings.SCAN_ALL_DOC)
 def scan_all(
     path: str = typer.Argument(..., help=Strings.SCAN_PATH_HELP),
-    reset: bool = typer.Option(False, "--reset", help=Strings.SCAN_RESET_HELP),
-    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
 ):
-    _run_pipeline(path, reset, threads, mode="all")
+    _run_pipeline(path, mode="all")
 
 @scan_app.command("index", help=Strings.SCAN_INDEX_DOC)
 def scan_index(
     path: str = typer.Argument(..., help=Strings.SCAN_PATH_HELP),
-    reset: bool = typer.Option(False, "--reset", help=Strings.SCAN_RESET_HELP),
-    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
 ):
-    _run_pipeline(path, reset, threads, mode="index")
+    _run_pipeline(path, mode="index")
 
 @scan_app.command("category", help=Strings.SCAN_CAT_DOC)
-def scan_categorize(
-    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
-):
-    _run_pipeline(None, False, threads, mode="category")
+def scan_categorize():
+    _run_pipeline(None, mode="category")
 
 @scan_app.command("hash", help=Strings.SCAN_HASH_DOC)
-def scan_hash(
-    threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
-):
-    _run_pipeline(None, False, threads, mode="hash")
+def scan_hash():
+    _run_pipeline(None, mode="hash")
 
-def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode: str):
+def _run_pipeline(path: Optional[str], mode: str):
     """Execute scan pipeline for specified mode."""
     import time
     import humanize
     
+    reset = settings.reset_db
+    
     start_time = time.time()
     
-    if threads:
-        settings.max_workers = threads
-        
     ensure_environment()
     database.init_db(str(DB_PATH))
     
@@ -133,7 +124,7 @@ def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode
             if uncategorized > 0 or unhashed > 0:
                 logger.info(f"Resuming scan ({existing_count} files already indexed)")
 
-    manager = PipelineManager(max_workers=settings.max_workers)
+    manager = PipelineManager()
     from .utils.progress import create_scan_progress
     
     # Determine task description based on mode
@@ -218,8 +209,8 @@ def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode
     
     # For 'all' mode, continue with categorize and hash passes
     if mode == 'all':
-        _run_pipeline(None, False, threads, mode='category')
-        _run_pipeline(None, False, threads, mode='hash')
+        _run_pipeline(None, mode='category')
+        _run_pipeline(None, mode='hash')
 
 @app.command(help=Strings.STATS_DOC)
 def stats():
@@ -249,6 +240,19 @@ def stats():
         table.add_row(row.category, str(row.count))
         
     console.print(table)
+
+@app.command(help="Wipe the local database.")
+def reset():
+    """
+    Wipe the database.
+    """
+    ensure_environment()
+    database.init_db(str(DB_PATH))
+    
+    typer.confirm(Strings.WIPE_CONFIRM, abort=True)
+    database.db.drop_tables([database.FileIndex])
+    database.db.create_tables([database.FileIndex])
+    logger.warning(Strings.WIPE_SUCCESS)
 
 if __name__ == "__main__":
     try:

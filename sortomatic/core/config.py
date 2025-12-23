@@ -19,6 +19,8 @@ class Settings:
         self.categories: Dict[str, List[str]] = DEFAULT_CATEGORIES
         self.ignore_patterns: List[str] = [".git", "__pycache__", ".DS_Store", "node_modules"]
         self.atomic_markers: List[str] = [".git", ".hg", "Makefile", "package.json", "requirements.txt", "venv"]
+        self.batch_size: int = 1000
+        self.reset_db: bool = False
         
         # Performance: Use half the cores by default to keep the system responsive
         cpu_count = os.cpu_count() or 4
@@ -31,6 +33,8 @@ class Settings:
                 data = yaml.safe_load(f)
                 self.categories = data.get("categories", self.categories)
                 self.ignore_patterns = data.get("ignore", self.ignore_patterns)
+                self.atomic_markers = data.get("atomic_markers", self.atomic_markers)
+                self.batch_size = data.get("batch_size", self.batch_size)
 
     def get_category(self, extension: str) -> str:
         """Determine category based on file extension."""

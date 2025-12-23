@@ -1,20 +1,43 @@
 import os
+import concurrent.futures
+import atexit
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict
 from ..database import FileIndex, db
+from ..config import settings
 from ..scanner import smart_walk
-from ..types import ScanContext, UpdateContext
+from ..types import ScanContext
 from .passes import categorization, hashing
-from .executor import get_executor
+
+# Global executor instance for the pipeline
+_executor = None
+
+def get_executor():
+    """Returns the global thread pool executor, initializing it if needed."""
+    global _executor
+    if _executor is None:
+        _executor = concurrent.futures.ThreadPoolExecutor(
+            max_workers=settings.max_workers,
+            thread_name_prefix="sortomatic_worker"
+        )
+    return _executor
+
+def _shutdown_executor():
+    global _executor
+    if _executor is not None:
+        _executor.shutdown(wait=True)
+        _executor = None
+
+atexit.register(_shutdown_executor)
 
 class PipelineManager:
     """Pipeline manager that processes files through indexing, categorization, and hashing passes.
     
     Note: Uses global database state initialized via database.init_db().
     """
-    def __init__(self, max_workers: int = 4):
-        self.max_workers = max_workers
+    def __init__(self):
+        pass
 
     def _index_pass(self, item: tuple) -> Optional[ScanContext]:
         """Extract filesystem metadata."""
@@ -122,10 +145,9 @@ class PipelineManager:
         total_bytes = 0
         executor = get_executor()
         walker = smart_walk(Path(root_path))
-        chunk_size = 10000
         
         while True:
-            chunk = list(islice(walker, chunk_size))
+            chunk = list(islice(walker, settings.batch_size))
             if not chunk:
                 break
             
@@ -141,7 +163,7 @@ class PipelineManager:
                         if progress_callback:
                             progress_callback()
                     
-                    if len(buffer) >= 1000:
+                    if len(buffer) >= (settings.batch_size // 10):
                         self._flush_insert(buffer)
                         buffer = []
                 except Exception as e:
@@ -166,7 +188,7 @@ class PipelineManager:
                 if progress_callback:
                     progress_callback()
                 
-            if len(buffer) >= 1000:
+            if len(buffer) >= (settings.batch_size // 10):
                 self._flush_update(buffer)
                 buffer = []
                 
