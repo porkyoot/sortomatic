@@ -12,8 +12,9 @@ from .utils.logger import setup_logger, logger, console
 app = typer.Typer(help=Strings.APP_HELP, invoke_without_command=True)
 
 
-DATA_DIR = Path(".sortomatic")
-DB_PATH = DATA_DIR / "sortomatic.db"
+# Default folder for local scan data
+DATA_FOLDER_NAME = ".sortomatic"
+DB_NAME = "sortomatic.db"
 
 def handle_exception(exc_type, exc_value, exc_traceback):
     """Catch uncaught exceptions and exit gracefully."""
@@ -29,9 +30,11 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 sys.excepthook = handle_exception
 atexit.register(database.close_db)
 
-def ensure_environment():
-    """Ensure data directories exist."""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+def ensure_environment(base_path: Path):
+    """Ensure data directories exist in the target path."""
+    data_dir = base_path / DATA_FOLDER_NAME
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir / DB_NAME
 
 @app.callback()
 def main(
@@ -104,8 +107,11 @@ def _run_pipeline(path: Optional[str], mode: str):
     
     start_time = time.time()
     
-    ensure_environment()
-    database.init_db(str(DB_PATH))
+    # If no path provided (e.g. for subcommands like 'hash'), use CWD
+    base_path = Path(path) if path else Path.cwd()
+    db_path = ensure_environment(base_path)
+    
+    database.init_db(str(db_path))
     
     if reset and path:
         typer.confirm(Strings.WIPE_CONFIRM, abort=True)
@@ -218,12 +224,18 @@ def _run_pipeline(path: Optional[str], mode: str):
         _run_pipeline(None, mode='hash')
 
 @app.command(help=Strings.STATS_DOC)
-def stats():
+def stats(path: Optional[str] = typer.Argument(None)):
     """
     Show insights about your files.
     """
-    ensure_environment()
-    database.init_db(str(DB_PATH))
+    base_path = Path(path) if path else Path.cwd()
+    db_path = base_path / DATA_FOLDER_NAME / DB_NAME
+    
+    if not db_path.exists():
+        logger.error(f"No database found at {db_path}")
+        raise typer.Exit(1)
+        
+    database.init_db(str(db_path))
     
     from peewee import fn
     
@@ -247,12 +259,14 @@ def stats():
     console.print(table)
 
 @app.command(help="Wipe the local database.")
-def reset():
+def reset(path: Optional[str] = typer.Argument(None)):
     """
     Wipe the database.
     """
-    ensure_environment()
-    database.init_db(str(DB_PATH))
+    base_path = Path(path) if path else Path.cwd()
+    db_path = ensure_environment(base_path)
+    
+    database.init_db(str(db_path))
     
     typer.confirm(Strings.WIPE_CONFIRM, abort=True)
     database.db.drop_tables([database.FileIndex])

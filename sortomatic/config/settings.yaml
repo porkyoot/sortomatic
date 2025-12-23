@@ -1,0 +1,4 @@
+# Main settings for Sortomatic
+max_workers: null  # null means half of CPU cores
+batch_size: 1000
+reset_db: false

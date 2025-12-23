@@ -25,8 +25,11 @@ def smart_walk(root: Path) -> Generator[Tuple[str, str], None, None]:
             continue
 
         # 2. Respect Ignore Patterns for normal recursion
-        dirnames[:] = [d for d in dirnames if d not in settings.ignore_patterns]
+        import fnmatch
+        dirnames[:] = [d for d in dirnames if not any(fnmatch.fnmatch(d, p) for p in settings.ignore_patterns)]
             
         # 3. Normal File Processing
         for f in filenames:
+            if any(fnmatch.fnmatch(f, p) for p in settings.ignore_patterns):
+                continue
             yield (os.path.join(dirpath, f), 'file')

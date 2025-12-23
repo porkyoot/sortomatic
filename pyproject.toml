@@ -26,3 +26,6 @@ sortomatic = "sortomatic.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+sortomatic = ["config/*.yaml"]
