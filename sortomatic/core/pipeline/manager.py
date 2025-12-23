@@ -114,24 +114,42 @@ class PipelineManager:
 
     def _run_fs_pipeline(self, root_path, worker_func, progress_callback):
         """Engine for FileSystem -> DB"""
+        import concurrent.futures
+        from itertools import islice
+        
         buffer = []
         total = 0
         total_bytes = 0
         executor = get_executor()
         
-        # Submit jobs
-        future_results = executor.map(worker_func, smart_walk(Path(root_path)))
+        # Process in chunks to balance memory usage and responsiveness
+        walker = smart_walk(Path(root_path))
+        chunk_size = 10000  # Submit this many at a time
         
-        for result in future_results:
-            if result:
-                buffer.append(result)
-                total += 1
-                total_bytes += result.get('size_bytes', 0)
-                if progress_callback: progress_callback()
+        while True:
+            # Get a chunk of items to process
+            chunk = list(islice(walker, chunk_size))
+            if not chunk:
+                break
             
-            if len(buffer) >= 1000:
-                self._flush_insert(buffer)
-                buffer = []
+            # Submit chunk and process as completed
+            futures = [executor.submit(worker_func, item) for item in chunk]
+            
+            for future in concurrent.futures.as_completed(futures):
+                try:
+                    result = future.result()
+                    if result:
+                        buffer.append(result)
+                        total += 1
+                        total_bytes += result.get('size_bytes', 0)
+                        if progress_callback: progress_callback()
+                    
+                    if len(buffer) >= 1000:
+                        self._flush_insert(buffer)
+                        buffer = []
+                except Exception as e:
+                    # Log but continue on individual file errors
+                    pass
         
         if buffer: self._flush_insert(buffer)
         return {'count': total, 'bytes': total_bytes}

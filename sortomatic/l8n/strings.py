@@ -22,6 +22,8 @@ class Strings:
     CATEGORIZING_MSG = "Categorizing ..."
     HASHING_MSG = "Hashing ..."
     SCAN_COMPLETE = "✨ Scan Complete! Indexed {total_files} files."
+    SCAN_INTERRUPTED = "⚠️  Scan interrupted! Progress saved. Run the same command again to resume."
+    SCAN_ERROR = "❌ Scan failed with error. Check logs for details."
 
     # Categories
     CAT_IMAGES = "Images"

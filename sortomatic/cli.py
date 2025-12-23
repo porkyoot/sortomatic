@@ -135,11 +135,17 @@ def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode
     ensure_environment()
     database.init_db(str(DB_PATH))
     
+    # Check if we're resuming
+    existing_count = database.FileIndex.select().count()
+    is_resume = existing_count > 0 and not reset
+    
     if reset and path:
         typer.confirm(Strings.WIPE_CONFIRM, abort=True)
         database.db.drop_tables([database.FileIndex])
         database.db.create_tables([database.FileIndex])
         logger.warning(Strings.WIPE_SUCCESS)
+    elif is_resume:
+        logger.info(f"Resuming scan ({existing_count} files already indexed)")
 
     manager = PipelineManager(str(DB_PATH), max_workers=settings.max_workers)
     
@@ -179,14 +185,14 @@ def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode
             (database.FileIndex.entry_type == 'file')
         ).count()
     
-    # Build progress columns
+    # Build progress columns - use different display based on whether we know the total
     progress_columns = [
         SpinnerColumn(),
         TextColumn("[bold blue]{task.description:<20}"),  # Fixed width for alignment
         BarColumn(),
     ]
     
-    # Add percentage or count based on whether we have a total
+    # For determinate progress, show percentage. For indeterminate, show count
     if total is not None:
         progress_columns.append(TaskProgressColumn())
     else:
@@ -201,19 +207,42 @@ def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode
         
         def update_progress():
             progress.advance(task)
-            
+        
         result = None
-        if mode == 'all':
-            # For 'all' mode, just run index pass here
-            result = manager.run_index(path, update_progress)
-        elif mode == 'index':
-             result = manager.run_index(path, update_progress)
-        elif mode == 'category':
-             result = manager.run_categorize(update_progress)
-        elif mode == 'hash':
-             result = manager.run_hash(update_progress)
-        else:
-            result = 0
+        try:
+            if mode == 'all':
+                # For 'all' mode, just run index pass here
+                result = manager.run_index(path, update_progress)
+            elif mode == 'index':
+                 result = manager.run_index(path, update_progress)
+            elif mode == 'category':
+                 result = manager.run_categorize(update_progress)
+            elif mode == 'hash':
+                 result = manager.run_hash(update_progress)
+            else:
+                result = 0
+            
+            # For indeterminate progress, update total at end to fill the bar
+            if total is None and result:
+                count = result['count'] if isinstance(result, dict) else result
+                # This makes the bar fill to 100% and shows "X/X"
+                progress.update(task, total=count, completed=count)
+                # Force a refresh to show the completion
+                progress.refresh()
+                
+        except KeyboardInterrupt:
+            # Graceful interruption (Ctrl+C)
+            logger.warning(Strings.SCAN_INTERRUPTED)
+            raise typer.Exit(130)  # Standard exit code for SIGINT
+        except Exception as e:
+            # Ungraceful error
+            logger.critical(Strings.SCAN_ERROR)
+            logger.critical(f"Error details: {str(e)}")
+            raise typer.Exit(1)
+    
+    # Only show success if we didn't exit early
+    if result is None:
+        return
     
     # Handle result - could be int (old) or dict (new)
     if isinstance(result, dict):
