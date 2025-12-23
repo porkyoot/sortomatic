@@ -76,11 +76,21 @@ def compute_hashes(ctx: dict):
 
     t = threading.Thread(target=_worker, daemon=True)
     t.start()
-    t.join(timeout=settings.hashing_timeout)
+    warning_timeout = settings.hashing_timeout * 0.8
+    t.join(timeout=warning_timeout)
     
     if t.is_alive():
-        # Log timeout if it takes too long
+        # Reached 80% warning
+        import humanize
         from ....utils.logger import logger
-        logger.warning(f"Hashing timed out for: {ctx['path']} (>{settings.hashing_timeout}s)")
+        size_str = humanize.naturalsize(ctx.get('size_bytes', 0), binary=True)
+        logger.warning(f"⚠️ Hashing is slow for: {ctx['path']} ({size_str}). Reached 80% of timeout...")
+        
+        # Complete the remaining 20%
+        t.join(timeout=settings.hashing_timeout - warning_timeout)
+        
+        if t.is_alive():
+            # Final timeout
+            logger.warning(f"Hashing timed out for: {ctx['path']} (>{settings.hashing_timeout}s)")
             
     return ctx

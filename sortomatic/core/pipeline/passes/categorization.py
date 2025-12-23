@@ -31,7 +31,14 @@ def detect_type(ctx: dict):
 
         detect_thread = threading.Thread(target=target, daemon=True)
         detect_thread.start()
-        detect_thread.join(timeout=settings.categorization_timeout)
+        
+        warning_timeout = settings.categorization_timeout * 0.8
+        detect_thread.join(timeout=warning_timeout)
+        
+        if detect_thread.is_alive():
+            from ....utils.logger import logger
+            logger.warning(f"⚠️ Categorization is slow for: {path}. Reached 80% of timeout...")
+            detect_thread.join(timeout=settings.categorization_timeout - warning_timeout)
         
         kind = result_container["kind"]
         if kind:
