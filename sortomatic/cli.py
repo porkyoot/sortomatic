@@ -13,38 +13,26 @@ from .utils.logger import setup_logger, logger, console
 app = typer.Typer(help=Strings.APP_HELP, invoke_without_command=True)
 
 
-# Configuration
 DATA_DIR = Path(".sortomatic")
 DB_PATH = DATA_DIR / "sortomatic.db"
 
-# --- THE GLOBAL SAFETY NET ---
 def handle_exception(exc_type, exc_value, exc_traceback):
-    """
-    Catch all uncaught exceptions, log them as FATAL, and exit gracefully.
-    """
-    # Handle KeyboardInterrupt (Ctrl+C) gracefully
+    """Catch uncaught exceptions and exit gracefully."""
     if issubclass(exc_type, KeyboardInterrupt):
         database.close_db()
         logger.info(f"\n{Strings.USER_ABORT}")
         sys.exit(0)
 
-    # Log as FATAL with the full traceback saved in the logger
-    # Rich will render this traceback beautifully because we set rich_tracebacks=True
     logger.fatal(f"Uncaught exception: {exc_value}", exc_info=(exc_type, exc_value, exc_traceback))
-    
     database.close_db()
-    # Optional: Exit with a non-zero code to indicate failure to scripts
     sys.exit(1)
 
-# Register the hook
 sys.excepthook = handle_exception
 atexit.register(database.close_db)
-# -----------------------------
 
 def ensure_environment():
-    """Make sure data directories exist."""
-    if not DATA_DIR.exists():
-        DATA_DIR.mkdir(parents=True)
+    """Ensure data directories exist."""
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 @app.callback()
 def main(
@@ -77,19 +65,14 @@ def scan_callback(
     reset: bool = typer.Option(False, "--reset", help=Strings.SCAN_RESET_HELP),
     threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use")
 ):
-    """
-    Scanning pipeline commands. If no subcommand is provided and a path is given, runs full scan.
-    """
-    # If a subcommand was invoked, don't do anything here
+    """Run full scan if path provided, otherwise show help."""
     if ctx.invoked_subcommand is not None:
         return
     
-    # If no path provided, show help
     if path is None:
         typer.echo(ctx.get_help())
         raise typer.Exit()
     
-    # Run full scan pipeline
     _run_pipeline(path, reset, threads, mode="all")
 
 @scan_app.command("all", help=Strings.SCAN_ALL_DOC)
@@ -121,9 +104,7 @@ def scan_hash(
     _run_pipeline(None, False, threads, mode="hash")
 
 def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode: str):
-    """
-    Common runner for all scan modes.
-    """
+    """Execute scan pipeline for specified mode."""
     import time
     import humanize
     
@@ -135,17 +116,22 @@ def _run_pipeline(path: Optional[str], reset: bool, threads: Optional[int], mode
     ensure_environment()
     database.init_db(str(DB_PATH))
     
-    # Check if we're resuming
-    existing_count = database.FileIndex.select().count()
-    is_resume = existing_count > 0 and not reset
-    
     if reset and path:
         typer.confirm(Strings.WIPE_CONFIRM, abort=True)
         database.db.drop_tables([database.FileIndex])
         database.db.create_tables([database.FileIndex])
         logger.warning(Strings.WIPE_SUCCESS)
-    elif is_resume:
-        logger.info(f"Resuming scan ({existing_count} files already indexed)")
+    elif mode in ['all', 'index'] and not reset:
+        existing_count = database.FileIndex.select().count()
+        if existing_count > 0:
+            uncategorized = database.FileIndex.select().where(database.FileIndex.category.is_null()).count()
+            unhashed = database.FileIndex.select().where(
+                (database.FileIndex.full_hash.is_null()) & 
+                (database.FileIndex.entry_type == 'file')
+            ).count()
+            
+            if uncategorized > 0 or unhashed > 0:
+                logger.info(f"Resuming scan ({existing_count} files already indexed)")
 
     manager = PipelineManager(str(DB_PATH), max_workers=settings.max_workers)
     

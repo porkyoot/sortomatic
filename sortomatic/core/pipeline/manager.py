@@ -11,33 +11,29 @@ class PipelineManager:
         self.db_path = db_path
         self.workers = max_workers
 
-    # --- Granular Passes ---
-
     def _index_pass(self, item: tuple):
-        """Pass 1: Just FS Metadata"""
+        """Extract filesystem metadata."""
         path_str, entry_type = item
         try:
             stat = os.stat(path_str)
         except OSError:
             return None
             
-        ctx = {
+        return {
             'path': path_str,
             'filename': os.path.basename(path_str),
             'entry_type': entry_type,
             'size_bytes': stat.st_size,
             'modified_at': datetime.fromtimestamp(stat.st_mtime),
-            # Explicitly nullify others for clarity, though default is null/None
             'category': 'Project/Bundle' if entry_type == 'bundle' else None,
             'mime_type': None,
             'fast_hash': None,
             'full_hash': None,
             'perceptual_hash': None
         }
-        return ctx
 
     def _categorize_pass(self, item: FileIndex):
-        """Pass 2: Categorize from DB Model"""
+        """Categorize file from database model."""
         ctx = {
             'path': item.path,
             'filename': item.filename,
@@ -46,23 +42,21 @@ class PipelineManager:
             'mime_type': None
         }
         
-        # Run detection
         ctx = categorization.detect_type(ctx)
         
-        # Return dict of ONLY updated fields for bulk_update
         return {
             'id': item.id,
             'category': ctx.get('category'),
             'mime_type': ctx.get('mime_type'),
-            'extension': ctx.get('extension') # detect_type may refine this
+            'extension': ctx.get('extension')
         }
 
     def _hash_pass(self, item: FileIndex):
-        """Pass 3: Hash from DB Model"""
+        """Compute file hashes."""
         ctx = {
             'path': item.path,
             'size_bytes': item.size_bytes,
-            'category': item.category, # Needed for perceptual hash check
+            'category': item.category,
             'fast_hash': None,
             'full_hash': None,
             'perceptual_hash': None
@@ -78,9 +72,10 @@ class PipelineManager:
         }
 
     def _full_pass(self, item: tuple):
-        """All-in-one pass for fresh scans"""
+        """Run all passes in sequence for single item."""
         ctx = self._index_pass(item)
-        if not ctx: return None
+        if not ctx:
+            return None
         
         if ctx['entry_type'] == 'bundle':
             return ctx
@@ -89,7 +84,7 @@ class PipelineManager:
         ctx = hashing.compute_hashes(ctx)
         return ctx
 
-    # --- Runners ---
+
 
     def run_index(self, root_path: str, progress_callback=None):
         return self._run_fs_pipeline(root_path, self._index_pass, progress_callback)
@@ -113,7 +108,7 @@ class PipelineManager:
     # --- Pipeline Engines ---
 
     def _run_fs_pipeline(self, root_path, worker_func, progress_callback):
-        """Engine for FileSystem -> DB"""
+        """Process files from filesystem to database."""
         import concurrent.futures
         from itertools import islice
         
@@ -121,18 +116,14 @@ class PipelineManager:
         total = 0
         total_bytes = 0
         executor = get_executor()
-        
-        # Process in chunks to balance memory usage and responsiveness
         walker = smart_walk(Path(root_path))
-        chunk_size = 10000  # Submit this many at a time
+        chunk_size = 10000
         
         while True:
-            # Get a chunk of items to process
             chunk = list(islice(walker, chunk_size))
             if not chunk:
                 break
             
-            # Submit chunk and process as completed
             futures = [executor.submit(worker_func, item) for item in chunk]
             
             for future in concurrent.futures.as_completed(futures):
@@ -142,42 +133,39 @@ class PipelineManager:
                         buffer.append(result)
                         total += 1
                         total_bytes += result.get('size_bytes', 0)
-                        if progress_callback: progress_callback()
+                        if progress_callback:
+                            progress_callback()
                     
                     if len(buffer) >= 1000:
                         self._flush_insert(buffer)
                         buffer = []
-                except Exception as e:
-                    # Log but continue on individual file errors
+                except Exception:
                     pass
         
-        if buffer: self._flush_insert(buffer)
+        if buffer:
+            self._flush_insert(buffer)
         return {'count': total, 'bytes': total_bytes}
 
     def _run_db_pipeline(self, query, worker_func, progress_callback):
-        """Engine for DB -> CPU -> DB Update"""
+        """Process items from database with updates."""
         buffer = []
         total = 0
         executor = get_executor()
-        
-        # We must iterator over the query. 
-        # CAUTION: Fetching all IDs first or using server-side cursor is safer for large DBs
-        # For simplicity, we assume iterator() is sufficient (Peewee uses cursor)
-        
-        # Map requires an iterator
         future_results = executor.map(worker_func, query.iterator())
         
         for result in future_results:
             if result:
                 buffer.append(result)
                 total += 1
-                if progress_callback: progress_callback()
+                if progress_callback:
+                    progress_callback()
                 
             if len(buffer) >= 1000:
                 self._flush_update(buffer)
                 buffer = []
                 
-        if buffer: self._flush_update(buffer)
+        if buffer:
+            self._flush_update(buffer)
         return total
 
     def _flush_insert(self, data):
