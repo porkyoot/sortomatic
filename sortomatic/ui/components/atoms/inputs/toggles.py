@@ -6,12 +6,23 @@ def AppToggle(
     label: str = "",
     icon: Optional[str] = None,
     tooltip: Optional[str] = None,
-    on_change: Optional[Callable] = None
+    on_change: Optional[Callable] = None,
+    classes: str = ""
 ):
     """
     A premium toggle component that looks like (-*) or (*-).
+    
+    Args:
+        value: Initial toggle state
+        label: Label text to display
+        icon: Optional icon to display
+        tooltip: Optional tooltip text
+        on_change: Callback when toggle state changes
+        classes: Additional CSS classes to apply to container
     """
-    with ui.row().classes('items-center gap-2 cursor-pointer group px-2 py-1 rounded-app hover:bg-white/5 transition-all') as container:
+    with ui.row().classes(
+        f'items-center gap-2 cursor-pointer group px-2 py-1 rounded-app hover:bg-white/5 transition-all {classes}'
+    ) as container:
         if tooltip:
             ui.tooltip(tooltip).classes('text-[10px] font-bold')
             
@@ -56,3 +67,4 @@ def AppToggle(
             container.on('click', toggle)
 
     return container
+

@@ -12,14 +12,26 @@ def AppSlider(
     log: bool = False,
     log_dir: str = 'low', # 'low' (precision at bottom) or 'high' (precision at top)
     on_change: Optional[Callable] = None,
-    show_markers: bool = False
+    show_markers: bool = False,
+    classes: str = "",
+    props: str = ""
 ):
     """
     A premium themed slider with logarithmic support and value display.
     
-    Log logic: 
-    - 'low': Small movements at the start increase value slowly.
-    - 'high': Small movements at the end increase value slowly (zoom in on high values).
+    Args:
+        min: Minimum value
+        max: Maximum value
+        step: Step increment
+        value: Initial value
+        label: Label to display above slider
+        unit: Unit suffix for value display
+        log: Enable logarithmic scaling
+        log_dir: 'low' (precision at bottom) or 'high' (precision at top)
+        on_change: Callback when value changes
+        show_markers: Show tick markers
+        classes: Additional CSS classes to apply to container
+        props: Additional props to apply to slider
     """
     
     def to_log(linear_val: float) -> float:
@@ -46,7 +58,7 @@ def AppSlider(
             p = math.sqrt(abs(log_val - min) / abs(max - min))
             return p * 100
 
-    with ui.column().classes('w-full gap-1'):
+    with ui.column().classes(f'w-full gap-1 {classes}'):
         if label:
             ui.label(label).classes('text-xs font-semibold opacity-70 uppercase tracking-tighter')
             
@@ -86,7 +98,7 @@ def AppSlider(
     if show_markers and not log:
         slider.props('markers')
         
-    slider.props('label-always color=primary')
+    slider.props(f'label-always color=primary {props}')
     
     return slider
 
@@ -98,9 +110,22 @@ def AppRangeSlider(
     unit: str = "",
     log: bool = False,
     on_change: Optional[Callable] = None,
+    classes: str = "",
+    props: str = ""
 ):
     """
     A premium themed range slider with logarithmic support.
+    
+    Args:
+        min: Minimum value
+        max: Maximum value
+        value: Initial value dict with 'min' and 'max' keys
+        label: Label to display above slider
+        unit: Unit suffix for value display
+        log: Enable logarithmic scaling
+        on_change: Callback when value changes
+        classes: Additional CSS classes to apply to container
+        props: Additional props to apply to slider
     """
     def to_log(linear_val: float) -> float:
         p = linear_val / 100.0
@@ -110,7 +135,7 @@ def AppRangeSlider(
         p = math.sqrt(abs(log_val - min) / abs(max - min))
         return p * 100
 
-    with ui.column().classes('w-full gap-1'):
+    with ui.column().classes(f'w-full gap-1 {classes}'):
         if label:
             ui.label(label).classes('text-xs font-semibold opacity-70 uppercase tracking-tighter')
             
@@ -148,5 +173,5 @@ def AppRangeSlider(
             slider.on_value_change(update_ui)
             update_ui(type('obj', (object,), {'value': {'min': linear_min, 'max': linear_max}}))
 
-    slider.props('label-always color=primary')
+    slider.props(f'label-always color=primary {props}')
     return slider

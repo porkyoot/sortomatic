@@ -6,18 +6,25 @@ def AppDatePicker(
     value: Optional[Union[str, dict]] = None,
     mode: str = 'single', # 'single' or 'range'
     on_change: Optional[Callable] = None,
-    icon: str = 'event'
+    icon: str = 'event',
+    classes: str = "",
+    props: str = ""
 ):
     """
     A premium themed date picker input.
     
     Args:
-        label: Input label.
-        value: Initial value (ISO string for 'single', dict {'from': '...', 'to': '...'} for 'range').
-        mode: 'single' for a specific day, 'range' for a period.
-        on_change: Callback when date is selected.
+        label: Input label
+        value: Initial value (ISO string for 'single', dict {'from': '...', 'to': '...'} for 'range')
+        mode: 'single' for a specific day, 'range' for a period
+        on_change: Callback when date is selected
+        icon: Icon to show in the input
+        classes: Additional CSS classes to apply
+        props: Additional Quasar props to apply
     """
-    with ui.input(label, value=value).props('outlined dense hide-bottom-space rounded-app').classes('w-full') as date_input:
+    with ui.input(label, value=value).props(
+        f'outlined dense hide-bottom-space rounded-app {props}'
+    ).classes(f'w-full {classes}') as date_input:
         with date_input.add_slot('append'):
             ui.icon(icon).classes('cursor-pointer').on('click', lambda: menu.open())
         
@@ -47,3 +54,4 @@ def AppDatePicker(
     date_input.classes('rounded-app')
     
     return date_input
+

@@ -6,7 +6,7 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
     """Entry point for the NiceGUI application."""
     print(f"DEBUG: Starting app on port {port} with path {path}")
     
-    # Select Palette
+    # Select Palette BEFORE page definition
     if theme == "solarized":
         palette = SOLARIZED_DARK if dark else SOLARIZED_LIGHT
     else:
@@ -20,8 +20,12 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
 
     @ui.page('/')
     def main_page():
-        client = ui.context.client
+        # CRITICAL: Apply theme FIRST, before ANY other code
+        # This prevents Flash of Unstyled Content (FOUC)
         apply_theme(palette)
+        
+        # Now get client for event handlers
+        client = ui.context.client
         
         # 1. Global Page State & Handlers
         def handle_theme_change(theme_info):

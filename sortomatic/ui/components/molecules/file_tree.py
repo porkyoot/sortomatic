@@ -63,6 +63,7 @@ class FileTreeRow(ui.row):
 class FileTree(ui.column):
     """
     Powerful, lazy-loading file tree with sorting and configurable columns.
+    Uses incremental rendering - only fetches and renders children when folders expand.
     """
     def __init__(self, 
                  root_path: str, 
@@ -85,6 +86,13 @@ class FileTree(ui.column):
         # State management for expansion
         self.expanded_paths = set()
         
+        # Track DOM containers for each folder path
+        # This allows us to insert/remove children without re-rendering everything
+        self.folder_containers: Dict[str, ui.column] = {}
+        
+        # Track folder rows for updating chevron icons
+        self.folder_rows: Dict[str, tuple] = {}  # path -> (row, button)
+        
         self.render()
 
     def set_filter(self, text: str):
@@ -101,7 +109,14 @@ class FileTree(ui.column):
         self.render()
 
     def render(self):
+        """
+        Rebuilds the ENTIRE tree from scratch.
+        Only renders the root level initially + any expanded folders.
+        """
         self.clear()
+        self.folder_containers.clear()
+        self.folder_rows.clear()
+        
         with self:
             # 1. Header
             with ui.row().classes('w-full items-center bg-white/10 py-2 px-4 no-wrap shrink-0 border-b border-white/5'):
@@ -113,7 +128,8 @@ class FileTree(ui.column):
             # 2. Tree Container (Scroll Area)
             with ui.scroll_area().classes('w-full h-[600px]'):
                 self.content_col = ui.column().classes('w-full gap-0')
-                ui.timer(0.1, lambda: self._render_level(self.root_path, 0), once=True)
+                # Kick off rendering asynchronously
+                ui.timer(0.01, lambda: self._render_tree(), once=True)
 
     def _header_cell(self, label: str, field: str, width: str):
         with ui.element('div').style(f'width: {width};').classes('cursor-pointer hover:text-white transition-colors group'):
@@ -124,7 +140,17 @@ class FileTree(ui.column):
                     ui.icon(icon, size='12px').classes('color-[var(--q-primary)]')
             ui.on('click', lambda: self.sort_tree(field))
 
-    async def _render_level(self, path: str, level: int):
+    async def _render_tree(self):
+        """
+        Renders the entire tree structure based on expanded_paths.
+        """
+        await self._render_level_recursive(self.root_path, 0, self.content_col)
+
+    async def _render_level_recursive(self, path: str, level: int, parent_container: ui.column):
+        """
+        Fetches and renders a single level, then recursively renders expanded children.
+        This is called during full re-renders (e.g., after sorting changes).
+        """
         response = await bridge.request("get_file_tree", {"path": path, "search": self.filter_text})
         if not response:
             return
@@ -134,6 +160,34 @@ class FileTree(ui.column):
         files = [ScanContext(**f) for f in response["files"]]
         
         # Apply sorting
+        folders, files = self._sort_items(folders, files)
+
+        with parent_container:
+            # Render Folders
+            for folder in folders:
+                folder_path = os.path.join(path, folder)
+                is_expanded = folder_path in self.expanded_paths
+                
+                # Create folder row with chevron button
+                row, button = self._create_folder_row(
+                    folder, level, is_expanded, folder_path
+                )
+                self.folder_rows[folder_path] = (row, button)
+                
+                # Create a container for this folder's children
+                children_container = ui.column().classes('w-full gap-0')
+                self.folder_containers[folder_path] = children_container
+                
+                # Only render children if this folder is expanded
+                if is_expanded:
+                    await self._render_level_recursive(folder_path, level + 1, children_container)
+            
+            # Render Files
+            for fileinfo in files:
+                self._create_file_row(fileinfo, level)
+
+    def _sort_items(self, folders: List[str], files: List[ScanContext]):
+        """Apply current sorting to folders and files."""
         if self.sort_by == "name":
             folders.sort(reverse=self.sort_desc)
             files.sort(key=lambda f: f.filename, reverse=self.sort_desc)
@@ -143,41 +197,90 @@ class FileTree(ui.column):
             files.sort(key=lambda f: f.modified_at, reverse=self.sort_desc)
         elif self.sort_by == "category":
             files.sort(key=lambda f: f.category or "", reverse=self.sort_desc)
+        return folders, files
 
-        with self.content_col:
-            # Render Folders
-            for folder in folders:
-                folder_path = os.path.join(path, folder)
-                is_expanded = folder_path in self.expanded_paths
-                
-                FileTreeRow(
-                    name=folder, 
-                    level=level, 
-                    is_dir=True, 
-                    palette=self.palette,
-                    expanded=is_expanded,
-                    toggle_func=lambda p=folder_path: self._toggle_expansion(p)
-                )
-                
-                if is_expanded:
-                    await self._render_level(folder_path, level + 1)
+    def _create_folder_row(self, name: str, level: int, expanded: bool, path: str):
+        """Creates a folder row and returns (row, button) for later updates."""
+        row = FileTreeRow(
+            name=name, 
+            level=level, 
+            is_dir=True, 
+            palette=self.palette,
+            expanded=expanded,
+            toggle_func=lambda p=path: self._toggle_expansion_incremental(p)
+        )
+        # Find the button within the row (it's the first button)
+        button = None
+        for child in row:
+            if isinstance(child, ui.button):
+                button = child
+                break
+        return row, button
+
+    def _create_file_row(self, fileinfo: ScanContext, level: int):
+        """Creates a file row."""
+        return FileTreeRow(
+            name=fileinfo.filename,
+            level=level,
+            is_dir=False,
+            palette=self.palette,
+            file_data=fileinfo,
+            show_category=self.show_category,
+            show_size=self.show_size,
+            show_date=self.show_date
+        )
+
+    async def _toggle_expansion_incremental(self, path: str):
+        """
+        Toggles folder expansion incrementally.
+        Only fetches and renders the children of this specific folder.
+        NO full tree re-render!
+        """
+        is_expanding = path not in self.expanded_paths
+        
+        if is_expanding:
+            # ADD children
+            self.expanded_paths.add(path)
             
-            # Render Files
-            for fileinfo in files:
-                FileTreeRow(
-                    name=fileinfo.filename,
-                    level=level,
-                    is_dir=False,
-                    palette=self.palette,
-                    file_data=fileinfo,
-                    show_category=self.show_category,
-                    show_size=self.show_size,
-                    show_date=self.show_date
-                )
+            # Update chevron icon
+            if path in self.folder_rows:
+                _, button = self.folder_rows[path]
+                if button:
+                    button.props('icon=expand_more')
+                    button.update()
+            
+            # Fetch and render children
+            container = self.folder_containers.get(path)
+            if container:
+                # Get the level from the path depth
+                level = path.count(os.sep) - self.root_path.count(os.sep) + 1
+                await self._render_level_recursive(path, level, container)
+        else:
+            # REMOVE children
+            self.expanded_paths.remove(path)
+            
+            # Update chevron icon
+            if path in self.folder_rows:
+                _, button = self.folder_rows[path]
+                if button:
+                    button.props('icon=chevron_right')
+                    button.update()
+            
+            # Clear children container
+            container = self.folder_containers.get(path)
+            if container:
+                container.clear()
 
     def _toggle_expansion(self, path: str):
+        """
+        Legacy method - kept for compatibility but not recommended.
+        Use _toggle_expansion_incremental instead.
+        """
         if path in self.expanded_paths:
             self.expanded_paths.remove(path)
         else:
             self.expanded_paths.add(path)
+        
+        # Full re-render (SLOW for large trees)
         self.render()
+

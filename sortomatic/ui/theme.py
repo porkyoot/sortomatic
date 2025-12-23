@@ -31,13 +31,33 @@ class ColorPalette:
     font_import: str = ""
 
 def apply_theme(palette: ColorPalette):
-    """Injects CSS variables and global styles to override Quasar/NiceGUI defaults."""
+    """
+    Injects CSS variables and global styles to override Quasar/NiceGUI defaults.
+    Must be called BEFORE any UI elements are created to prevent Flash of Unstyled Content (FOUC).
+    """
+    
+    # Force dark mode IMMEDIATELY before any rendering
+    # This prevents the white flash on page load
+    is_dark = palette.bg == "#002b36"  # Solarized dark check
+    ui.dark_mode(is_dark)
     
     import_html = f'<link href="{palette.font_import}" rel="stylesheet">' if palette.font_import else ""
     
+    # Inject critical CSS FIRST to prevent FOUC
     ui.add_head_html(f'''
     {import_html}
     <style>
+        /* CRITICAL: Prevent Flash of Unstyled Content */
+        /* Apply background immediately, before full CSS loads */
+        html, body {{
+            background-color: {palette.bg} !important;
+            color: {palette.fg} !important;
+            font-family: {palette.font_family} !important;
+            margin: 0;
+            padding: 0;
+        }}
+        
+        /* CSS Variables - available globally */
         :root {{
             --q-primary: {palette.primary};
             --q-secondary: {palette.secondary};
@@ -48,11 +68,15 @@ def apply_theme(palette: ColorPalette):
             --app-rounded: {palette.rounded};
             --app-font: {palette.font_family};
         }}
+        
+        /* Body styles using CSS variables */
         body {{
             background-color: var(--app-bg);
             color: var(--app-text);
             font-family: var(--app-font);
         }}
+        
+        /* Utility classes */
         .rounded-app {{
             border-radius: var(--app-rounded) !important;
         }}
@@ -64,6 +88,8 @@ def apply_theme(palette: ColorPalette):
         .vibrant-shadow {{
             box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }}
+        
+        /* Animations */
         @keyframes subtle-pulse {{
             0% {{ transform: scale(1); opacity: 1; }}
             50% {{ transform: scale(1.05); opacity: 0.8; }}
@@ -72,6 +98,7 @@ def apply_theme(palette: ColorPalette):
         .pulse-animation {{
             animation: subtle-pulse 2s ease-in-out infinite;
         }}
+        
         @keyframes spin {{
             from {{ transform: rotate(0deg); }}
             to {{ transform: rotate(360deg); }}
@@ -79,6 +106,7 @@ def apply_theme(palette: ColorPalette):
         .spin-animation {{
             animation: spin 3s linear infinite;
         }}
+        
         @keyframes rotate {{
             from {{ transform: rotate(0deg); }}
             to {{ transform: rotate(360deg); }}
@@ -88,8 +116,7 @@ def apply_theme(palette: ColorPalette):
         }}
     </style>
     ''')
-    # Force Quasar into dark mode if background is dark
-    ui.dark_mode(True if palette.bg == "#002b36" else False)
+
 
 class CategoryStyles:
     """Centralized management for category colors and ordering."""
