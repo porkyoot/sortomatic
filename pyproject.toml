@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sortomatic"
+version = "0.1.0"
+description = "The elegant file organizer."
+dependencies = [
+    "typer[all]",
+    "peewee",
+    "rich",
+    "pyyaml"
+]
+requires-python = ">=3.8"
+
+[project.scripts]
+# This magic line creates the 'sortomatic' command in your shell
+sortomatic = "sortomatic.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
