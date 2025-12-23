@@ -1,4 +1,4 @@
-from .theme import ColorPalette
+from ..theme import ColorPalette
 
 # Solarized Colors
 BASE03 = "#002b36"
@@ -18,12 +18,18 @@ BLUE   = "#268bd2"
 CYAN   = "#2aa198"
 GREEN  = "#859900"
 
+# UI Defaults for Solarized
+RECURSIVE_IMPORT = "https://fonts.googleapis.com/css2?family=Recursive:wght@300..1000&display=swap"
+RECURSIVE_SANS = "'Recursive', sans-serif"
+
 SOLARIZED_DARK = ColorPalette(
     bg=BASE03,
     fg=BASE0,
     fg_secondary=BASE01,
     primary=BLUE,
     secondary=ORANGE,
+    accent_1=BLUE,
+    accent_2=ORANGE,
     info=BLUE,
     warning=YELLOW,
     error=RED,
@@ -36,7 +42,11 @@ SOLARIZED_DARK = ColorPalette(
     orange=ORANGE,
     red=RED,
     magenta=MAGENTA,
-    purple=VIOLET
+    purple=VIOLET,
+    # Decoration
+    rounded="8px",
+    font_family=RECURSIVE_SANS,
+    font_import=RECURSIVE_IMPORT
 )
 
 SOLARIZED_LIGHT = ColorPalette(
@@ -44,7 +54,9 @@ SOLARIZED_LIGHT = ColorPalette(
     fg=BASE00,
     fg_secondary=BASE1,
     primary=BLUE,
-    secondary=ORANGE
+    secondary=ORANGE,
+    accent_1=BLUE,
+    accent_2=ORANGE,
     info=BLUE,
     warning=YELLOW,
     error=RED,
@@ -57,5 +69,9 @@ SOLARIZED_LIGHT = ColorPalette(
     orange=ORANGE,
     red=RED,
     magenta=MAGENTA,
-    purple=VIOLET
+    purple=VIOLET,
+    # Decoration
+    rounded="8px",
+    font_family=RECURSIVE_SANS,
+    font_import=RECURSIVE_IMPORT
 )

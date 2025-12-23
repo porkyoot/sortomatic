@@ -23,10 +23,19 @@ class ColorPalette:
     red: str
     magenta: str
     purple: str
+    
+    # UI Decoration
+    rounded: str = "4px"
+    font_family: str = "'Inter', sans-serif"
+    font_import: str = ""
 
 def apply_theme(palette: ColorPalette):
-    """Injects CSS variables to override Quasar/NiceGUI defaults."""
+    """Injects CSS variables and global styles to override Quasar/NiceGUI defaults."""
+    
+    import_html = f'<link href="{palette.font_import}" rel="stylesheet">' if palette.font_import else ""
+    
     ui.add_head_html(f'''
+    {import_html}
     <style>
         :root {{
             --q-primary: {palette.primary};
@@ -35,10 +44,16 @@ def apply_theme(palette: ColorPalette):
             --app-bg: {palette.bg};
             --app-text: {palette.fg};
             --app-text-sec: {palette.fg_secondary};
+            --app-rounded: {palette.rounded};
+            --app-font: {palette.font_family};
         }}
         body {{
             background-color: var(--app-bg);
             color: var(--app-text);
+            font-family: var(--app-font);
+        }}
+        .rounded-app {{
+            border-radius: var(--app-rounded) !important;
         }}
     </style>
     ''')

@@ -24,7 +24,7 @@ cleanup() {
 trap cleanup INT
 
 # 3. Start logs
-docker compose logs -f --since 30s web &
+docker compose logs -f --since 30s sortomatic &
 LOG_PID=$!
 
 echo "🔎 Watching $WATCH_DIR for changes… (Ctrl‑C to stop)"
@@ -35,7 +35,7 @@ while true; do
   # If this command fails (e.g. command not found, or user hits Ctrl-C), we don't proceed.
   if inotifywait -r -e modify,create,delete,move --include '\.py$' "$WATCH_DIR" >/dev/null 2>&1; then
     echo "⚡ Change detected – restarting container"
-    docker compose restart web
+    docker compose restart sortomatic
   else
     # inotifywait exited with non-zero
     exit_code=$?
