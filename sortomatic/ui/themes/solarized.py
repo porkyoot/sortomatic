@@ -43,6 +43,7 @@ SOLARIZED_DARK = ColorPalette(
     red=RED,
     magenta=MAGENTA,
     purple=VIOLET,
+    grey=BASE01,
     # Decoration
     rounded="8px",
     font_family=RECURSIVE_SANS,
@@ -70,6 +71,7 @@ SOLARIZED_LIGHT = ColorPalette(
     red=RED,
     magenta=MAGENTA,
     purple=VIOLET,
+    grey=BASE1,
     # Decoration
     rounded="8px",
     font_family=RECURSIVE_SANS,

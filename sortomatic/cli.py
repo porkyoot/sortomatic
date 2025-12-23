@@ -3,11 +3,11 @@ import sys
 import atexit
 from pathlib import Path
 from typing import Optional
-from .core import database
-from .core.config import settings
-from .core.pipeline.manager import PipelineManager
-from .l8n import Strings
-from .utils.logger import setup_logger, logger, console
+from sortomatic.core import database
+from sortomatic.core.config import settings
+from sortomatic.core.pipeline.manager import PipelineManager
+from sortomatic.l8n import Strings
+from sortomatic.utils.logger import setup_logger, logger, console
 
 app = typer.Typer(help=Strings.APP_HELP, invoke_without_command=True)
 
@@ -292,6 +292,11 @@ def gui(
     final_port = port if port is not None else settings.gui_port
     final_theme = theme if theme is not None else settings.gui_theme
     final_dark = dark if dark is not None else settings.gui_dark_mode
+    
+    # Initialize database
+    base_path = Path(path) if path else Path.cwd()
+    db_path = ensure_environment(base_path)
+    database.init_db(str(db_path))
     
     start_app(final_port, final_theme, final_dark, path)
 

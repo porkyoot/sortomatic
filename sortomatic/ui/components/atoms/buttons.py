@@ -2,7 +2,7 @@ from nicegui import ui
 from typing import Optional, Callable
 
 def AppButton(
-    text: str = "",
+    label: str = "",
     icon: Optional[str] = None,
     on_click: Optional[Callable] = None,
     color: str = 'var(--q-primary)',
@@ -23,7 +23,7 @@ def AppButton(
     - chevron-mid: Process step (Middle).
     - chevron-right: Process step (End).
     """
-    btn = ui.button(text, icon=icon, on_click=on_click).props(f'unelevated no-caps size={size}')
+    btn = ui.button(label, icon=icon, on_click=on_click).props(f'unelevated no-caps size={size}')
     
     # Base classes
     classes = "transition-transform hover:scale-105 active:scale-95 "

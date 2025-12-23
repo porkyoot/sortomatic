@@ -26,13 +26,15 @@ class Strings:
     SCAN_ERROR = "❌ Scan failed with error. Check logs for details."
 
     # Categories
-    CAT_IMAGES = "Images"
-    CAT_VIDEOS = "Videos"
-    CAT_DOCUMENTS = "Documents"
-    CAT_AUDIO = "Audio"
-    CAT_ARCHIVES = "Archives"
+    CAT_IMAGE = "Image"
+    CAT_VIDEO = "Video"
+    CAT_DOCUMENT = "Document"
+    CAT_MUSIC = "Music"
+    CAT_ARCHIVE = "Archive"
     CAT_CODE = "Code"
-    CAT_OTHERS = "Others"
+    CAT_3D = "3D"
+    CAT_SOFTWARE = "Software"
+    CAT_OTHER = "Other"
     CAT_UNSORTED = "Unsorted"
     
     DEFAULT_MIME = "application/octet-stream"
@@ -40,12 +42,15 @@ class Strings:
     @classmethod
     def get_category_name(cls, key: str) -> str:
         mapping = {
-            "Images": cls.CAT_IMAGES,
-            "Videos": cls.CAT_VIDEOS,
-            "Documents": cls.CAT_DOCUMENTS,
-            "Audio": cls.CAT_AUDIO,
-            "Archives": cls.CAT_ARCHIVES,
+            "Image": cls.CAT_IMAGE,
+            "Video": cls.CAT_VIDEO,
+            "Document": cls.CAT_DOCUMENT,
+            "Music": cls.CAT_MUSIC,
+            "Archive": cls.CAT_ARCHIVE,
             "Code": cls.CAT_CODE,
-            "Others": cls.CAT_OTHERS
+            "3D": cls.CAT_3D,
+            "Software": cls.CAT_SOFTWARE,
+            "Other": cls.CAT_OTHER
         }
         return mapping.get(key, key)
+

@@ -89,3 +89,64 @@ def AppSlider(
     slider.props('label-always color=primary')
     
     return slider
+
+def AppRangeSlider(
+    min: float = 0,
+    max: float = 100,
+    value: Optional[dict] = None, # {'min': 0, 'max': 100}
+    label: str = "",
+    unit: str = "",
+    log: bool = False,
+    on_change: Optional[Callable] = None,
+):
+    """
+    A premium themed range slider with logarithmic support.
+    """
+    def to_log(linear_val: float) -> float:
+        p = linear_val / 100.0
+        return min + (max - min) * (p**2)
+
+    def from_log(log_val: float) -> float:
+        p = math.sqrt(abs(log_val - min) / abs(max - min))
+        return p * 100
+
+    with ui.column().classes('w-full gap-1'):
+        if label:
+            ui.label(label).classes('text-xs font-semibold opacity-70 uppercase tracking-tighter')
+            
+        initial_min = value['min'] if value else min
+        initial_max = value['max'] if value else max
+        
+        linear_min = from_log(initial_min) if log else initial_min
+        linear_max = from_log(initial_max) if log else initial_max
+        
+        with ui.row().classes('w-full items-center gap-4'):
+            slider = ui.range(
+                min=0 if log else min, 
+                max=100 if log else max, 
+                value={'min': linear_min, 'max': linear_max}
+            ).classes('grow')
+            
+            value_display = ui.label('').classes('text-[10px] font-bold opacity-80 min-w-[8em] text-right')
+            
+            def update_ui(e):
+                raw_min, raw_max = e.value['min'], e.value['max']
+                curr_min = to_log(raw_min) if log else raw_min
+                curr_max = to_log(raw_max) if log else raw_max
+                
+                def fmt(v):
+                    if v >= 1000 * 1000 * 1024: return f"{v/(1024**3):.1f}GB"
+                    if v >= 1000 * 1024: return f"{v/(1024**2):.1f}MB"
+                    if v >= 1024: return f"{v/1024:.0f}kB"
+                    return f"{v:.0f}B"
+
+                value_display.set_text(f"{fmt(curr_min)} - {fmt(curr_max)}")
+                
+                if on_change:
+                    on_change({'min': curr_min, 'max': curr_max})
+
+            slider.on_value_change(update_ui)
+            update_ui(type('obj', (object,), {'value': {'min': linear_min, 'max': linear_max}}))
+
+    slider.props('label-always color=primary')
+    return slider

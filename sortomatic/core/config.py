@@ -15,12 +15,14 @@ class Settings:
         
         # Internal defaults (used if files are missing or corrupted)
         self.categories: Dict[str, List[str]] = {
-            Strings.CAT_IMAGES: ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "heic", "svg"],
-            Strings.CAT_VIDEOS: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
-            Strings.CAT_DOCUMENTS: ["pdf", "doc", "docx", "txt", "md", "xls", "xlsx", "ppt", "pptx"],
-            Strings.CAT_AUDIO: ["mp3", "wav", "flac", "aac", "ogg", "m4a"],
-            Strings.CAT_ARCHIVES: ["zip", "rar", "7z", "tar", "gz"],
-            Strings.CAT_CODE: ["py", "js", "html", "css", "json", "xml", "c", "cpp", "h", "java", "go", "rs"]
+            Strings.CAT_IMAGE: ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "heic", "svg"],
+            Strings.CAT_VIDEO: ["mp4", "mkv", "avi", "mov", "wmv", "flv", "webm"],
+            Strings.CAT_DOCUMENT: ["pdf", "doc", "docx", "txt", "md", "xls", "xlsx", "ppt", "pptx"],
+            Strings.CAT_MUSIC: ["mp3", "wav", "flac", "aac", "ogg", "m4a"],
+            Strings.CAT_ARCHIVE: ["zip", "rar", "7z", "tar", "gz"],
+            Strings.CAT_CODE: ["py", "js", "html", "css", "json", "xml", "c", "cpp", "h", "java", "go", "rs", "sh", "bat", "ps1"],
+            Strings.CAT_3D: ["obj", "stl", "fbx", "blend", "dae", "3ds", "step", "stp"],
+            Strings.CAT_SOFTWARE: ["exe", "msi", "app", "deb", "rpm", "dmg", "iso", "bin"]
         }
         self.ignore_patterns: List[str] = [".git", "__pycache__", ".DS_Store", "node_modules", ".venv", ".sortomatic"]
         self.atomic_markers: List[str] = [".git", ".hg", "Makefile", "package.json", "requirements.txt", "venv"]
@@ -106,7 +108,7 @@ class Settings:
         for category, extensions in self.categories.items():
             if ext in extensions:
                 return category
-        return Strings.CAT_OTHERS
+        return Strings.CAT_OTHER
 
 # Global singleton
 settings = Settings()

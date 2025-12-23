@@ -26,9 +26,15 @@ class HashData(TypedDict, total=False):
     perceptual_hash: Optional[str]
 
 
-class ScanContext(FileMetadata, CategoryData, HashData):
-    """Complete scan context combining all pipeline data."""
-    pass
+class ScanContext(dict):
+    """Complete scan context combining all pipeline data.
+    Inherits from dict and provides dot access for UI convenience.
+    """
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            return None
 
 
 class UpdateContext(TypedDict):

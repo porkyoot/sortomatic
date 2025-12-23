@@ -23,6 +23,7 @@ class ColorPalette:
     red: str
     magenta: str
     purple: str
+    grey: str = "#586e75" # Default grey if not provided
     
     # UI Decoration
     rounded: str = "4px"
@@ -55,7 +56,138 @@ def apply_theme(palette: ColorPalette):
         .rounded-app {{
             border-radius: var(--app-rounded) !important;
         }}
+        .glass {{
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }}
+        .vibrant-shadow {{
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }}
+        @keyframes subtle-pulse {{
+            0% {{ transform: scale(1); opacity: 1; }}
+            50% {{ transform: scale(1.05); opacity: 0.8; }}
+            100% {{ transform: scale(1); opacity: 1; }}
+        }}
+        .pulse-animation {{
+            animation: subtle-pulse 2s ease-in-out infinite;
+        }}
+        @keyframes spin {{
+            from {{ transform: rotate(0deg); }}
+            to {{ transform: rotate(360deg); }}
+        }}
+        .spin-animation {{
+            animation: spin 3s linear infinite;
+        }}
+        @keyframes rotate {{
+            from {{ transform: rotate(0deg); }}
+            to {{ transform: rotate(360deg); }}
+        }}
+        .rotate-animation {{
+            animation: rotate 2s linear infinite;
+        }}
     </style>
     ''')
     # Force Quasar into dark mode if background is dark
     ui.dark_mode(True if palette.bg == "#002b36" else False)
+
+class CategoryStyles:
+    """Centralized management for category colors and ordering."""
+    
+    @staticmethod
+    def get_color(category: str, palette: ColorPalette) -> str:
+        from sortomatic.l8n import Strings
+        
+        mapping = {
+            Strings.CAT_IMAGE: palette.green,
+            Strings.CAT_VIDEO: palette.red,
+            Strings.CAT_DOCUMENT: palette.cyan,
+            Strings.CAT_MUSIC: palette.orange,
+            Strings.CAT_ARCHIVE: palette.yellow,
+            Strings.CAT_CODE: palette.blue,
+            Strings.CAT_3D: palette.magenta,
+            Strings.CAT_SOFTWARE: palette.purple,
+            Strings.CAT_OTHER: palette.grey,
+        }
+        return mapping.get(category, palette.grey)
+
+    @staticmethod
+    def get_icon(category: str) -> str:
+        from sortomatic.l8n import Strings
+        mapping = {
+            Strings.CAT_IMAGE: "image",
+            Strings.CAT_VIDEO: "videocam",
+            Strings.CAT_DOCUMENT: "description",
+            Strings.CAT_MUSIC: "audiotrack",
+            Strings.CAT_ARCHIVE: "inventory_2",
+            Strings.CAT_CODE: "terminal",
+            Strings.CAT_3D: "view_in_ar",
+            Strings.CAT_SOFTWARE: "apps",
+            Strings.CAT_OTHER: "insert_drive_file",
+        }
+        return mapping.get(category, "insert_drive_file")
+
+    @staticmethod
+    def get_order() -> list[str]:
+        from ..l8n import Strings
+        return [
+            Strings.CAT_OTHER,
+            Strings.CAT_DOCUMENT,
+            Strings.CAT_IMAGE,
+            Strings.CAT_ARCHIVE,
+            Strings.CAT_MUSIC,
+            Strings.CAT_VIDEO,
+            Strings.CAT_3D,
+            Strings.CAT_SOFTWARE,
+            Strings.CAT_CODE,
+        ]
+
+class StatusStyles:
+    """Centralized management for status colors and icons."""
+    
+    # Generic state constants
+    UNKNOWN = "unknown"
+    PENDING = "pending"
+    READY = "ready"
+    ERROR = "error"
+    
+    # Synonyms mapping
+    _SYNONYMS = {
+        "refreshing": PENDING,
+        "active": READY, # Defaulting active to READY (Green) unless it's "transiently active" (Yellow)
+        "busy": PENDING,
+        "available": READY,
+        "unavailable": ERROR,
+        "inactive": ERROR,
+        "running": PENDING,
+        "stopped": UNKNOWN,
+    }
+
+    @staticmethod
+    def resolve_state(state: str) -> str:
+        s = state.lower()
+        if s in [StatusStyles.UNKNOWN, StatusStyles.PENDING, StatusStyles.READY, StatusStyles.ERROR]:
+            return s
+        return StatusStyles._SYNONYMS.get(s, StatusStyles.UNKNOWN)
+
+    @staticmethod
+    def get_color(state: str, palette: ColorPalette) -> str:
+        resolved = StatusStyles.resolve_state(state)
+        mapping = {
+            StatusStyles.UNKNOWN: palette.grey,
+            StatusStyles.PENDING: palette.yellow,
+            StatusStyles.READY: palette.green,
+            StatusStyles.ERROR: palette.red,
+        }
+        return mapping.get(resolved, palette.grey)
+
+    @staticmethod
+    def get_icon(state: str) -> str:
+        resolved = StatusStyles.resolve_state(state)
+        mapping = {
+            StatusStyles.UNKNOWN: "help_outline",
+            StatusStyles.PENDING: "sync",
+            StatusStyles.READY: "check_circle",
+            StatusStyles.ERROR: "error_outline",
+        }
+        return mapping.get(resolved, "help_outline")

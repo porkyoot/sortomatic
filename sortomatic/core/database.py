@@ -1,8 +1,9 @@
 from peewee import *
+from peewee import fn
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
-from ..utils.logger import logger
+from sortomatic.utils.logger import logger
 
 # We use a Proxy to delay the actual DB connection until we run 'init_db'
 db = DatabaseProxy()
@@ -49,13 +50,54 @@ def init_db(db_path: str = "data/sortomatic.db"):
     
     # Bind the proxy to the real database
     db.initialize(database)
-    logger.debug(f"Database initialized at {db_path} (WAL mode)")
+    logger.info(f"Database initialized at {db_path} (WAL mode). Proxy ID: {id(db)}")
     
     # Create tables if they don't exist
     db.connect()
     db.create_tables([FileIndex])
     
     return database
+
+def get_children(parent_path: str, search: Optional[str] = None):
+    """
+    Returns (folders, files) for a given path.
+    Folders are strings (names).
+    Files are FileIndex instances.
+    """
+    if not parent_path.endswith('/'):
+        parent_path += '/'
+    
+    if not db.obj:
+        logger.error(f"DB ERROR: Proxy NOT initialized! ID: {id(db)}")
+        return [], []
+
+    logger.info(f"DB: Querying children for {parent_path} using Proxy ID: {id(db)}")
+    
+    # We fetch all matching files under this parent path and process them in Python 
+    # to extract immediate children folders and files. This avoids complex 
+    # SQL string manipulation that Varies across DB drivers in Peewee.
+    query = FileIndex.select().where(FileIndex.path.startswith(parent_path))
+    
+    if search:
+        query = query.where(FileIndex.filename.contains(search))
+        
+    folders = set()
+    files = []
+    
+    prefix_len = len(parent_path)
+    for index_entry in query:
+        # Get the path relative to the current folder we are viewing
+        rel_path = index_entry.path[prefix_len:]
+        
+        if '/' in rel_path:
+            # It's inside a subfolder, extract the immediate subfolder name
+            immediate_folder = rel_path.split('/')[0]
+            folders.add(immediate_folder)
+        else:
+            # It's a file in the current folder
+            files.append(index_entry)
+            
+    return sorted(list(folders)), sorted(files, key=lambda f: f.filename)
 
 def close_db():
     """

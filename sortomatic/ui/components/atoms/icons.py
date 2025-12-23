@@ -16,3 +16,27 @@ def AppIcon(
         icon.tooltip(tooltip)
         
     return icon
+
+def StatusIcon(
+    state: str,
+    palette: 'ColorPalette',
+    size: str = 'sm',
+    tooltip: Optional[str] = None,
+    animate: bool = False
+):
+    """
+    A specialized icon for displaying statuses with automatic coloring,
+    icon selection, and optional animations.
+    """
+    from ...theme import StatusStyles
+    
+    name = StatusStyles.get_icon(state)
+    color = StatusStyles.get_color(state, palette)
+    
+    icon = AppIcon(name, color=color, size=size, tooltip=tooltip)
+    
+    # Simple rotation for pending states if requested
+    if animate and state.lower() == StatusStyles.PENDING:
+        icon.classes('rotate-animation')
+        
+    return icon
