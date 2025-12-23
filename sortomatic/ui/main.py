@@ -42,63 +42,43 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
         bridge.on("theme_changed", handle_theme_change)
         
         # Import badge components
-        from .components.atoms.badges import StatusBadge
-        from .components.molecules.theme_selectors import ThemeSelector
+        # Import StatusBar
+        from .components.molecules.status_bars import StatusBar
         from sortomatic.core.database import db
         
-        # Simple status bar at the top with app name on the left, status badges in the middle
-        with ui.header().classes('bg-[var(--app-bg-secondary)] border-b border-white/10 px-4 py-2 items-center justify-between'):
-            # Left: App name and theme selector
-            with ui.row().classes('items-center gap-3'):
-                ui.label('Sortomatic').classes('text-lg font-bold text-[var(--app-text)]')
-                ThemeSelector(
-                    current_theme=theme,
-                    is_dark=dark,
-                    on_change=lambda t, d: bridge.emit("theme_changed", {'name': t, 'is_dark': d})
-                )
-            
-            # Middle: Status badges
-            with ui.row().classes('items-center gap-3'):
-                # Backend status
-                backend_badge_container = ui.row()
-                with backend_badge_container:
-                    StatusBadge("Backend", "ready", palette)
-                
-                # Database status
-                db_badge_container = ui.row()
-                with db_badge_container:
-                    db_state = "ready" if db.obj and not db.is_closed() else "error"
-                    StatusBadge("Database", db_state, palette)
-                
-                # Scan status
-                scan_badge_container = ui.row()
-                with scan_badge_container:
-                    StatusBadge("Scan", "idle", palette)
-            
-            # Right: Empty for now (could add controls later)
-            ui.element('div').classes('w-20')  # Spacer to keep badges centered
+        # Instantiate the new top status bar
+        status_bar = StatusBar(
+            palette, 
+            on_theme_change=lambda t, d: bridge.emit("theme_changed", {'name': t, 'is_dark': d})
+        )
         
         # Update status badges periodically
-        def update_status_badges():
+        async def update_status_badges():
             if not client.has_socket_connection:
                 return
             
             try:
-                # Update DB status
-                db_state = "ready" if db.obj and not db.is_closed() else "error"
-                db_badge_container.clear()
-                with db_badge_container:
-                    StatusBadge("Database", db_state, palette)
+                # 1. Update Metrics (Histograms)
+                import random
+                cpu_data = [random.random() for _ in range(20)]
+                gpu_data = [random.random() for _ in range(20)]
+                ram_data = [random.random() for _ in range(20)]
+                disk_data = [random.random() for _ in range(20)]
+                status_bar.update_metrics(cpu_data, gpu_data, ram_data, disk_data)
                 
-                # Update scan status (placeholder - will be connected to actual scan state later)
-                # scan_state = get_scan_state()  # TODO: implement actual scan state checking
-                scan_badge_container.clear()
-                with scan_badge_container:
-                    StatusBadge("Scan", "idle", palette)
+                # 2. Update System Status
+                status = await bridge.request("get_system_status")
+                if status:
+                    status_bar.refresh_status(
+                        backend_state=status.get("backend", "unknown"),
+                        db_state=status.get("database", "unknown"),
+                        scan_state=status.get("scan", "unknown")
+                    )
+
             except Exception:
                 pass
         
-        ui.timer(5.0, update_status_badges)  # Check every 5 seconds
+        ui.timer(1.0, update_status_badges)  # Check every 1 second for smooth histograms
         
         # Main content area (empty for now)
         with ui.column().classes('w-full h-full'):

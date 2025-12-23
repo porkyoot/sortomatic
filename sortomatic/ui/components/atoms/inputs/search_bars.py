@@ -23,10 +23,10 @@ def AppSearchBar(
     ).classes(f'w-full {classes}')
     
     with search.add_slot('prepend'):
-        ui.icon('search').classes('text-opacity-50')
+        ui.icon('mdi-magnify').classes('text-opacity-50')
         
     with search.add_slot('append'):
-        ui.icon('close').classes('cursor-pointer text-opacity-30 hover:text-opacity-100').on('click', lambda: search.set_value(''))
+        ui.icon('mdi-close').classes('cursor-pointer text-opacity-30 hover:text-opacity-100').on('click', lambda: search.set_value(''))
         
     return search
 

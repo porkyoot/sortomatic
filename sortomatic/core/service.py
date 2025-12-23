@@ -35,4 +35,27 @@ def init_bridge_handlers():
             ]
         }
 
+    # 2. System Status Request
+    @bridge.handle_request("get_system_status")
+    async def handle_get_system_status(payload):
+        """
+        Returns the current status of the system.
+        """
+        from sortomatic.core.database import db
+        
+        # Check DB status
+        db_state = "ready"
+        if not db.obj or db.is_closed():
+             db_state = "error"
+             
+        # TODO: Connect to ScanManager to get real scan state
+        # For now, we assume idle or check a global flag if available
+        scan_state = "idle" 
+        
+        return {
+            "backend": "ready",
+            "database": db_state,
+            "scan": scan_state
+        }
+
     logger.info("Bridge handlers initialized.")

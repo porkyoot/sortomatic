@@ -43,6 +43,8 @@ def apply_theme(palette: ColorPalette):
     ui.dark_mode(is_dark)
     
     import_html = f'<link href="{palette.font_import}" rel="stylesheet">' if palette.font_import else ""
+    # Inject MDI Fonts
+    import_html += '<link href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css" rel="stylesheet">'
     
     # Inject critical CSS FIRST to prevent FOUC
     ui.add_head_html(f'''
@@ -144,17 +146,17 @@ class CategoryStyles:
     def get_icon(category: str) -> str:
         from sortomatic.l8n import Strings
         mapping = {
-            Strings.CAT_IMAGE: "image",
-            Strings.CAT_VIDEO: "videocam",
-            Strings.CAT_DOCUMENT: "description",
-            Strings.CAT_MUSIC: "audiotrack",
-            Strings.CAT_ARCHIVE: "inventory_2",
-            Strings.CAT_CODE: "terminal",
-            Strings.CAT_3D: "view_in_ar",
-            Strings.CAT_SOFTWARE: "apps",
-            Strings.CAT_OTHER: "insert_drive_file",
+            Strings.CAT_IMAGE: "mdi-image",
+            Strings.CAT_VIDEO: "mdi-video",
+            Strings.CAT_DOCUMENT: "mdi-file-document",
+            Strings.CAT_MUSIC: "mdi-music",
+            Strings.CAT_ARCHIVE: "mdi-archive",
+            Strings.CAT_CODE: "mdi-console",
+            Strings.CAT_3D: "mdi-cube-outline",
+            Strings.CAT_SOFTWARE: "mdi-apps",
+            Strings.CAT_OTHER: "mdi-file",
         }
-        return mapping.get(category, "insert_drive_file")
+        return mapping.get(category, "mdi-file")
 
     @staticmethod
     def get_order() -> list[str]:
@@ -216,10 +218,10 @@ class StatusStyles:
     def get_icon(state: str) -> str:
         resolved = StatusStyles.resolve_state(state)
         mapping = {
-            StatusStyles.UNKNOWN: "help_outline",
-            StatusStyles.PENDING: "sync",
-            StatusStyles.READY: "check_circle",
-            StatusStyles.ERROR: "error_outline",
-            StatusStyles.IDLE: "pause_circle",
+            StatusStyles.UNKNOWN: "mdi-help-circle-outline",
+            StatusStyles.PENDING: "mdi-sync",
+            StatusStyles.READY: "mdi-check-circle",
+            StatusStyles.ERROR: "mdi-alert-circle-outline",
+            StatusStyles.IDLE: "mdi-pause-circle",
         }
-        return mapping.get(resolved, "help_outline")
+        return mapping.get(resolved, "mdi-help-circle-outline")

@@ -45,7 +45,7 @@ class ThemeSelector(ui.row):
             if self.is_dark:
                 # Orange Sun
                 btn = AppButton(
-                    icon="wb_sunny",
+                    icon="mdi-white-balance-sunny",
                     on_click=self._toggle_mode,
                     shape="circle",
                     size="sm",
@@ -55,7 +55,7 @@ class ThemeSelector(ui.row):
             else:
                 # Blue Moon with Stars (nights_stay)
                 btn = AppButton(
-                    icon="nights_stay",
+                    icon="mdi-weather-night",
                     on_click=self._toggle_mode,
                     shape="circle",
                     size="sm",

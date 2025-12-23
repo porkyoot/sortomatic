@@ -6,7 +6,7 @@ def AppDatePicker(
     value: Optional[Union[str, dict]] = None,
     mode: str = 'single', # 'single' or 'range'
     on_change: Optional[Callable] = None,
-    icon: str = 'event',
+    icon: str = 'mdi-calendar',
     classes: str = "",
     props: str = ""
 ):
