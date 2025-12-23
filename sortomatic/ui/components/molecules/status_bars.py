@@ -13,35 +13,29 @@ class StatusBar(ui.header):
     def __init__(self, palette: ColorPalette, on_theme_change: Optional[Callable] = None):
         super().__init__()
         # Glassmorphism header
-        self.classes('bg-white/5 backdrop-blur-md border-b border-white/10 px-6 py-2 items-center justify-between no-wrap gap-4')
+        self.classes('backdrop-blur-md border-b px-6 py-2 items-center justify-between no-wrap gap-4 bg-app-surface')
+        self.style('border-color: var(--app-text-sec);')
         self.palette = palette
         self.on_theme_change = on_theme_change
         
         with self:
             # 1. Left Section: Performance Metrics
             # 1. Left Section: Performance Metrics
-            # Group all metrics in a glass pill
-            with ui.row().classes('items-center gap-4 bg-black/20 px-4 py-1 rounded-full border border-white/5'):
+            with ui.row().classes('items-center gap-2'):
                 # CPU (Blue)
                 self.cpu_container = ui.row()
                 with self.cpu_container:
                     AppHistogram([0.1]*20, color=palette.blue, height="16px", bar_width="2px", max_bars=10, icon="mdi-cpu-64-bit", label="CPU")
                 
-                ui.element('div').classes('w-px h-3 bg-white/10')
-
                 # GPU (Green)
                 self.gpu_container = ui.row()
                 with self.gpu_container:
                     AppHistogram([0.1]*20, color=palette.green, height="16px", bar_width="2px", max_bars=10, icon="mdi-expansion-card-variant", label="GPU")
 
-                ui.element('div').classes('w-px h-3 bg-white/10')
-
                 # RAM (Yellow)
                 self.ram_container = ui.row()
                 with self.ram_container:
                     AppHistogram([0.2]*20, color=palette.yellow, height="16px", bar_width="2px", max_bars=10, icon="mdi-memory", label="RAM")
-
-                ui.element('div').classes('w-px h-3 bg-white/10')
 
                 # Disk IO (Red)
                 self.disk_container = ui.row()

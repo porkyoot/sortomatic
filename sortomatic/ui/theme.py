@@ -71,6 +71,18 @@ def apply_theme(palette: ColorPalette):
             --app-text-sec: {palette.fg_secondary};
             --app-rounded: {palette.rounded};
             --app-font: {palette.font_family};
+            /* Palette Colors */
+            --app-blue: {palette.blue};
+            --app-cyan: {palette.cyan};
+            --app-green: {palette.green};
+            --app-yellow: {palette.yellow};
+            --app-orange: {palette.orange};
+            --app-red: {palette.red};
+            --app-magenta: {palette.magenta};
+            --app-purple: {palette.purple};
+            --app-grey: {palette.grey};
+            --app-accent-1: {palette.accent_1};
+            --app-accent-2: {palette.accent_2};
         }}
         
         /* Body styles using CSS variables */
@@ -117,6 +129,20 @@ def apply_theme(palette: ColorPalette):
         }}
         .rotate-animation {{
             animation: rotate 2s linear infinite;
+        }}
+
+        /* Sortomatic Theme Utility Classes */
+        .bg-app-surface {{
+            background-color: var(--app-bg-secondary) !important;
+        }}
+        .bg-app-base {{
+            background-color: var(--app-bg) !important;
+        }}
+        .border-app-subtle {{
+            border: 1px solid color-mix(in srgb, var(--app-text) 10%, transparent) !important;
+        }}
+        .border-app {{
+            border: 1px solid var(--app-text-sec) !important;
         }}
     </style>
     ''')

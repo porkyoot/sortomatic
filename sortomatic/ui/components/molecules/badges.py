@@ -14,11 +14,11 @@ def StatusBadgeRow(items: List[Dict[str, str]], palette: ColorPalette):
         palette: ColorPalette for styling
     """
     # Container style
-    with ui.row().classes('items-center gap-4 bg-black/20 px-4 py-1 rounded-full border border-white/5'):
+    with ui.row().classes('items-center gap-4 px-4 py-1 rounded-full border').style('background-color: var(--app-bg); border-color: var(--app-text-sec);'):
         for i, item in enumerate(items):
             # Add separator
             if i > 0:
-                ui.element('div').classes('w-px h-3 bg-white/10')
+                ui.element('div').classes('w-px h-3').style('background-color: var(--app-text); opacity: 0.1;')
             
             label = item.get('label', '?')
             state = item.get('state', 'unknown')

@@ -23,8 +23,9 @@ def AppHistogram(
     # Tooltip text
     tooltip_text = f"{label}: {latest_val*100:.1f}%" if label else f"{latest_val*100:.1f}%"
     
-    # Outer container with transparent background
-    with ui.row().classes('items-center gap-2 px-1 py-0').style(f'height: auto;'):
+    # Outer container with solid background color
+    # We use var(--app-bg) for content to ensure contrast against the solid color
+    with ui.row().classes('items-center gap-1 px-2 py-0.5 rounded-full shadow-sm bg-app-base').style(f'height: auto; color: {color};'):
         ui.tooltip(tooltip_text).classes('text-[10px] font-bold')
         
         if icon:
@@ -40,6 +41,6 @@ def AppHistogram(
                 ui.element('div').classes('rounded-t-[1px] transition-all duration-300').style(
                     f'height: {clamped_val * 100}%; '
                     f'width: {bar_width}; '
-                    f'background-color: {color}; '
+                    f'background-color: currentColor; ' # Use parent text color (app-bg)
                     f'opacity: {0.4 + (clamped_val * 0.6)};' # Hotter values are more opaque
                 )

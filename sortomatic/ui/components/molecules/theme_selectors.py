@@ -14,8 +14,9 @@ class ThemeSelector(ui.row):
                  is_dark: bool = True, 
                  on_change: Optional[Callable] = None):
         super().__init__()
-        self.classes('flex flex-row items-center gap-2 px-2 py-0.5 rounded-app bg-white/5 border border-white/5 no-wrap')
-        
+        self.classes('flex flex-row items-center gap-2 px-4 py-1 rounded-full border bg-app-base no-wrap')
+        self.style('border-color: var(--app-text-sec);')
+
         self.current_theme = current_theme
         self.is_dark = is_dark
         self.on_change = on_change
@@ -25,19 +26,18 @@ class ThemeSelector(ui.row):
     def render(self):
         self.clear()
         with self:
-            # 1. Theme Dropdown
-            # Hardcoded options for now based on available theme files
-            AppSelect(
-                options=["Solarized"],  # Capitalize to match display
-                value=self.current_theme.capitalize(),
-                on_change=self._handle_theme_change,
-                clearable=False,
-                props='dense borderless flat',
-                classes='text-sm font-bold'
-            )
+            # 1. Theme Dropdown (Label + Menu)
+            # Replaced heavy AppSelect with lightweight Label+Menu to match Badge height
+            with ui.row().classes('items-center gap-1 cursor-pointer group'):
+                ui.label(self.current_theme.capitalize()).classes('text-[10px] font-bold uppercase tracking-widest')
+                ui.icon('mdi-chevron-down', size='12px').classes('opacity-50 group-hover:opacity-100 transition-opacity')
+                
+                with ui.menu().classes('bg-app-base border border-app shadow-lg rounded-app'):
+                    # Hardcoded options for now
+                    ui.menu_item('Solarized', on_click=lambda: self._handle_theme_change('solarized')).classes('text-[10px] uppercase font-bold tracking-widest')
 
-            # 2. Vertical Divider
-            ui.element('div').classes('w-px h-4 bg-white/10')
+            # 2. Vertical Divider (Height 3 to match BadgeRow)
+            ui.element('div').classes('h-3 w-0 border-app-subtle')
 
             # 3. Dynamic Toggle Button
             # Dark Mode Enabled -> Show Sun (to switch to light)
@@ -48,20 +48,20 @@ class ThemeSelector(ui.row):
                     icon="mdi-white-balance-sunny",
                     on_click=self._toggle_mode,
                     shape="circle",
-                    size="sm",
+                    size="xs",  # Reduced to XS to match dense badges
                     variant="simple",
                     tooltip="Switch to Light Mode"
-                ).style('--q-primary: #ff9800;') # Material Orange
+                ).style('--q-primary: var(--app-orange);') # Theme Orange
             else:
                 # Blue Moon with Stars (nights_stay)
                 btn = AppButton(
                     icon="mdi-weather-night",
                     on_click=self._toggle_mode,
                     shape="circle",
-                    size="sm",
+                    size="xs",  # Reduced to XS
                     variant="simple",
                     tooltip="Switch to Dark Mode"
-                ).style('--q-primary: #2196f3;') # Material Blue
+                ).style('--q-primary: var(--app-blue);') # Theme Blue
 
     def _toggle_mode(self):
         self.is_dark = not self.is_dark
@@ -70,8 +70,8 @@ class ThemeSelector(ui.row):
         if self.on_change:
             self.on_change(self.current_theme, self.is_dark)
 
-    def _handle_theme_change(self, e):
-        self.current_theme = e.value.lower()  # Store as lowercase internally
+    def _handle_theme_change(self, theme_name: str):
+        self.current_theme = theme_name.lower()
         self.render()
         if self.on_change:
             self.on_change(self.current_theme, self.is_dark)

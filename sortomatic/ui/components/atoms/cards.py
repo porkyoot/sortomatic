@@ -19,19 +19,24 @@ class AppCard(ui.card):
         super().__init__()
         
         # Base alignment and rounding
-        self.classes(f'rounded-app {padding} transition-all border border-white/10 w-full')
+        self.classes(f'rounded-app {padding} transition-all border w-full border-app')
+        # self.style('border-color: var(--app-text-sec); opacity: 0.5;') # Default border opacity handled by class or global
         
         if tight:
             self.classes('gap-0')
             
         if variant == 'glass':
-            self.classes('glass bg-white/5')
+            self.classes('glass bg-app-surface')
         elif variant == 'solid':
-            self.classes('bg-white/10 shadow-md')
+            self.classes('shadow-md bg-app-surface')
         elif variant == 'vibrant':
-            self.classes('bg-white/5 vibrant-shadow border-white/20')
+            self.classes('vibrant-shadow bg-app-surface')
+            self.style('border-color: var(--app-primary);')
         elif variant == 'subtle':
-            self.classes('bg-white/[0.03] border-white/5 shadow-none')
+            self.classes('shadow-none')
+            self.style('background-color: transparent;')
             
         # Subtle hover interaction
-        self.classes('hover:bg-white/[0.07]')
+        # We can't easily use hover with vars in classes without tailwind config, 
+        # so we'll skip the hover bg change or rely on global CSS if set.
+        # Removing manual white hover for strict adherence.
