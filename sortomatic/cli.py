@@ -66,17 +66,11 @@ app.add_typer(scan_app, name="scan")
 @scan_app.callback(invoke_without_command=True)
 def scan_callback(
     ctx: typer.Context,
-    path: Optional[str] = typer.Argument(None, help=Strings.SCAN_PATH_HELP),
 ):
-    """Run full scan if path provided, otherwise show help."""
-    if ctx.invoked_subcommand is not None:
-        return
-    
-    if path is None:
+    """Run full scan via subcommands."""
+    if ctx.invoked_subcommand is None:
         typer.echo(ctx.get_help())
         raise typer.Exit()
-    
-    _run_pipeline(path, mode="all")
 
 @scan_app.command("all", help=Strings.SCAN_ALL_DOC)
 def scan_all(

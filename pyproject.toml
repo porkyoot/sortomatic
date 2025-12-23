@@ -20,6 +20,12 @@ dependencies = [
 ]
 requires-python = ">=3.8"
 
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-mock"
+]
+
 [project.scripts]
 # This magic line creates the 'sortomatic' command in your shell
 sortomatic = "sortomatic.cli:app"

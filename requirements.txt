@@ -8,3 +8,6 @@ Pillow
 pyacoustid
 humanize
 xxhash
+
+pytest
+pytest-mock
