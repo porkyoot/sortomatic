@@ -80,7 +80,7 @@ def compute_hashes(ctx: dict):
     
     if t.is_alive():
         # Log timeout if it takes too long
-        from ...utils.logger import logger
+        from ....utils.logger import logger
         logger.warning(f"Hashing timed out for: {ctx['path']} (>{settings.hashing_timeout}s)")
             
     return ctx
