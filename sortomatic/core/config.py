@@ -11,6 +11,7 @@ class Settings:
         self.config_dir = Path.home() / ".config" / "sortomatic"
         self.settings_file = self.config_dir / "settings.yaml"
         self.filetypes_file = self.config_dir / "filetypes.yaml"
+        self.cache_dir = Path.home() / ".cache" / "sortomatic"
         
         # Internal defaults (used if files are missing or corrupted)
         self.categories: Dict[str, List[str]] = {
@@ -62,8 +63,14 @@ class Settings:
                 if src_path.exists():
                     shutil.copy(src_path, dest_path)
 
-    def load(self):
+    def load(self, config_dir: Path = None):
         """Loads configuration from the user's YAML files."""
+        if config_dir:
+            self.config_dir = Path(config_dir)
+            self.settings_file = self.config_dir / "settings.yaml"
+            self.filetypes_file = self.config_dir / "filetypes.yaml"
+            self._ensure_config_exists()
+
         # 1. Load Settings
         if self.settings_file.exists():
             with open(self.settings_file, "r") as f:
@@ -79,6 +86,8 @@ class Settings:
                 self.gui_port = data.get("gui_port", self.gui_port)
                 self.gui_theme = data.get("gui_theme", self.gui_theme)
                 self.gui_dark_mode = data.get("gui_dark_mode", self.gui_dark_mode)
+                if data.get("cache_dir"):
+                    self.cache_dir = Path(data["cache_dir"]).expanduser()
 
         # 2. Load Filetypes
         if self.filetypes_file.exists():

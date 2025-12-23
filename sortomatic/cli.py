@@ -41,11 +41,15 @@ def main(
     ctx: typer.Context,
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show DEBUG logs"),
     threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use"),
-    reset: bool = typer.Option(False, "--reset", help="Reset database before operation")
+    reset: bool = typer.Option(False, "--reset", help="Reset database before operation"),
+    config: Optional[Path] = typer.Option(None, "--config", "-c", help="Path to config directory containing settings.yaml and filetypes.yaml")
 ):
     """
     Global entry point callback.
     """
+    if config:
+        settings.load(config)
+        
     if threads:
         settings.max_workers = threads
     if reset:

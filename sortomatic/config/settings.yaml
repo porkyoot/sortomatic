@@ -13,3 +13,6 @@ hashing_timeout: 60.0             # Seconds - Max time to spend hashing a single
 gui_port: 8080
 gui_theme: "solarized"
 gui_dark_mode: true
+
+# Folders
+cache_dir: "~/.cache/sortomatic"
