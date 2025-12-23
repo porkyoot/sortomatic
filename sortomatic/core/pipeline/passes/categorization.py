@@ -3,6 +3,7 @@ try:
 except ImportError:
     filetype = None
 
+import threading
 from pathlib import Path
 from ...config import settings
 from ....l8n import Strings
@@ -18,11 +19,23 @@ def detect_type(ctx: dict):
     category = settings.get_category(ext)
     
     # 2. Magic Bytes Strategy (if unknown or suspicious)
-    mime = "application/octet-stream"
-    if (category == Strings.CAT_OTHERS or category == "Unsorted") and filetype:
-        try:
-            kind = filetype.guess(str(path))
-            if kind:
+    mime = Strings.DEFAULT_MIME
+    if (category == Strings.CAT_OTHERS or category == Strings.CAT_UNSORTED) and filetype:
+        # Use a thread to enforce a 1-second timeout on magic byte detection
+        result_container = {"kind": None}
+        def target():
+            try:
+                result_container["kind"] = filetype.guess(str(path))
+            except:
+                pass
+
+        detect_thread = threading.Thread(target=target, daemon=True)
+        detect_thread.start()
+        detect_thread.join(timeout=settings.categorization_timeout)
+        
+        kind = result_container["kind"]
+        if kind:
+            try:
                 mime = kind.mime
                 # Reverse lookup category from mime if possible
                 if kind.mime.startswith("image"): 
@@ -35,8 +48,8 @@ def detect_type(ctx: dict):
                     category = Strings.CAT_DOCUMENTS
                 elif kind.mime in ["application/zip", "application/x-tar", "application/x-rar-compressed", "application/x-7z-compressed"]:
                     category = Strings.CAT_ARCHIVES
-        except:
-            pass
+            except:
+                pass
             
     ctx['extension'] = ext
     ctx['category'] = category

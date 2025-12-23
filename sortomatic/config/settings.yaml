@@ -2,3 +2,9 @@
 max_workers: null  # null means half of CPU cores
 batch_size: 1000
 reset_db: false
+
+# Advanced Performance Tuning
+hashing_chunk_size: 1048576      # 1MB - Size of chunks for full file hashing
+fast_hash_size: 4096              # 4KB - Size of the prefix/suffix for fast hashing
+categorization_timeout: 1.0       # Seconds - Timeout for deep filetype analysis
+hashing_timeout: 60.0             # Seconds - Max time to spend hashing a single file

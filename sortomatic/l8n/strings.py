@@ -33,6 +33,9 @@ class Strings:
     CAT_ARCHIVES = "Archives"
     CAT_CODE = "Code"
     CAT_OTHERS = "Others"
+    CAT_UNSORTED = "Unsorted"
+    
+    DEFAULT_MIME = "application/octet-stream"
 
     @classmethod
     def get_category_name(cls, key: str) -> str:

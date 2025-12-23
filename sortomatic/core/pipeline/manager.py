@@ -184,7 +184,7 @@ class PipelineManager:
                         buffer = []
                 except Exception as e:
                     from ...utils.logger import logger
-                    logger.debug(f"FS Worker failed: {e}", exc_info=True)
+                    logger.error(f"FS Worker failed: {e}", exc_info=True)
             
             if has_more:
                 has_more = fill_pool()
@@ -235,7 +235,7 @@ class PipelineManager:
                         buffer = []
                 except Exception as e:
                     from ...utils.logger import logger
-                    logger.debug(f"DB Worker failed: {e}", exc_info=True)
+                    logger.error(f"DB Worker failed: {e}", exc_info=True)
             
             if has_more:
                 has_more = fill_pool()

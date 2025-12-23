@@ -1,5 +1,7 @@
 import logging
 import sys
+import threading
+import warnings
 from rich.logging import RichHandler
 from rich.console import Console
 from rich.theme import Theme
@@ -63,6 +65,15 @@ def setup_logger(level: str = "INFO"):
         handlers=[rich_handler],
         force=True # Ensures we overwrite any previous config
     )
+    
+    # Capture python warnings (like UserWarnings from PIL) into the logging system
+    logging.captureWarnings(True)
+
+    # Capture unhandled exceptions in threads
+    def thread_excepthook(args):
+        logger.fatal(f"Thread exception: {args.exc_value}", exc_info=(args.exc_type, args.exc_value, args.exc_traceback))
+    
+    threading.excepthook = thread_excepthook
 
     # Quiet down noisy 3rd party libraries
     logging.getLogger("PIL").setLevel(logging.INFO)

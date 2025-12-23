@@ -26,6 +26,12 @@ class Settings:
         self.batch_size: int = 1000
         self.reset_db: bool = False
         
+        # New: Externalized magic numbers
+        self.hashing_chunk_size: int = 1024 * 1024  # 1MB
+        self.fast_hash_size: int = 4 * 1024        # 4KB
+        self.categorization_timeout: float = 1.0    # 1 second
+        self.hashing_timeout: float = 60.0          # 60 seconds (generous for large files)
+        
         cpu_count = os.cpu_count() or 4
         self.max_workers = max(1, cpu_count // 2)
 
@@ -61,6 +67,10 @@ class Settings:
                     self.max_workers = data["max_workers"]
                 self.batch_size = data.get("batch_size", self.batch_size)
                 self.reset_db = data.get("reset_db", self.reset_db)
+                self.hashing_chunk_size = data.get("hashing_chunk_size", self.hashing_chunk_size)
+                self.fast_hash_size = data.get("fast_hash_size", self.fast_hash_size)
+                self.categorization_timeout = data.get("categorization_timeout", self.categorization_timeout)
+                self.hashing_timeout = data.get("hashing_timeout", self.hashing_timeout)
 
         # 2. Load Filetypes
         if self.filetypes_file.exists():
