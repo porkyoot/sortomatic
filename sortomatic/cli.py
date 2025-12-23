@@ -131,7 +131,7 @@ def _run_pipeline(path: Optional[str], mode: str):
             
             if uncategorized > 0 or unhashed > 0:
                 logger.info(f"Resuming scan ({existing_count} files already indexed)")
-
+    
     manager = PipelineManager()
     from .utils.progress import create_scan_progress
     
@@ -275,24 +275,30 @@ def reset(path: Optional[str] = typer.Argument(None)):
     database.db.create_tables([database.FileIndex])
     logger.warning(Strings.WIPE_SUCCESS)
 
-if __name__ == "__main__":
-    try:
-        app()
-    except KeyboardInterrupt:
-        logger.info(f"\n{Strings.USER_ABORT}")
-        sys.exit(0)
-
 @app.command()
 def gui(
+    path: Optional[str] = typer.Argument(None, help=Strings.SCAN_PATH_HELP),
     port: int = typer.Option(None, help=f"Port to run the GUI on (default: {settings.gui_port})"),
     theme: str = typer.Option(None, help=f"Theme name (default: {settings.gui_theme})"),
-    dark: bool = typer.Option(None, "--dark/--light", help=f"Enable/Disable dark mode (default: {settings.gui_dark_mode})")
+    dark: bool = typer.Option(None, "--dark/--light", help=f"Enable/Disable dark mode (default: {settings.gui_dark_mode})"),
+    cache: Optional[Path] = typer.Option(None, help="Override cache directory")
 ):
     """Launch the Web Interface."""
-    from .ui.web.main import start_app
+    from .ui.main import start_app
     
+    if cache:
+        settings.cache_dir = cache.expanduser()
+        
     final_port = port if port is not None else settings.gui_port
     final_theme = theme if theme is not None else settings.gui_theme
     final_dark = dark if dark is not None else settings.gui_dark_mode
     
-    start_app(final_port, final_theme, final_dark)
+    start_app(final_port, final_theme, final_dark, path)
+
+if __name__ in {"__main__", "__mp_main__"}:
+    try:
+        app()
+    except KeyboardInterrupt:
+        logger.info(f"\n{Strings.USER_ABORT}")
+        database.close_db()
+        sys.exit(0)
