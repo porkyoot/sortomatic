@@ -42,13 +42,17 @@ def main(
     verbose: bool = typer.Option(False, "--verbose", "-v", help="Show DEBUG logs"),
     threads: Optional[int] = typer.Option(None, "--threads", "-j", help="Max threads to use"),
     reset: bool = typer.Option(False, "--reset", help="Reset database before operation"),
-    config: Optional[Path] = typer.Option(None, "--config", "-c", help="Path to config directory containing settings.yaml and filetypes.yaml")
+    config: Optional[Path] = typer.Option(None, "--config", "-c", help="Path to config directory containing settings.yaml and filetypes.yaml"),
+    cache: Optional[Path] = typer.Option(None, "--cache", help=f"Path to cache directory (default: {settings.cache_dir})")
 ):
     """
     Global entry point callback.
     """
     if config:
         settings.load(config)
+    
+    if cache:
+        settings.cache_dir = cache.expanduser()
         
     if threads:
         settings.max_workers = threads

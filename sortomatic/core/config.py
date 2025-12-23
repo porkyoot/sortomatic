@@ -50,6 +50,9 @@ class Settings:
         if not self.config_dir.exists():
             self.config_dir.mkdir(parents=True, exist_ok=True)
 
+        if not self.cache_dir.exists():
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+
         package_config_dir = Path(__file__).parent.parent / "config"
         
         defaults = {
