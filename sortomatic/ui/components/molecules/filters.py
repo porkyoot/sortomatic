@@ -109,7 +109,7 @@ def FilterBar(theme: Theme, on_change: Optional[Callable] = None):
         
         # 2. Filter Trigger Button
         with AppButton(icon="filter_list", variant="secondary", shape="pill"):
-            with ui.menu().classes('s-select__popup min-w-[350px]') as menu:
+            with ui.menu().classes('s-select__popup min-w-[350px]').props('transition-show="jump-down" transition-hide="jump-up"') as menu:
                 _render_popup()
 
     row.reset = reset

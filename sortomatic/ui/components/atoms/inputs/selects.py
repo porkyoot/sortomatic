@@ -55,9 +55,11 @@ def AppSelect(
     if clearable:
         sel.props('clearable')
 
-    # Apply theme colors to the popup menu via class
     sel.props('popup-content-class="s-select__popup"')
-    # Removed popup-content-style, handled by CSS class
+    
+    # Apply custom open/close animation
+    # Force menu behavior to ensure transitions work consistently
+    sel.props('behavior="menu" transition-show="jump-down" transition-hide="jump-up"')
     
     return sel
 

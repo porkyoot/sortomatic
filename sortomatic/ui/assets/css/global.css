@@ -26,10 +26,7 @@ body .q-loading-bar,
     background-color: var(--c-primary) !important;
 }
 
-/* Common Transitions */
-* {
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
+/* Common Transitions replaced by specific class usage or component defaults */
 
 /* TYPOGRAPHY */
 .s-text-h1 {

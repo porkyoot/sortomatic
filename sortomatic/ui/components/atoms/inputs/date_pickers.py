@@ -28,7 +28,7 @@ def AppDatePicker(
         with date_input.add_slot('append'):
             ui.icon(icon).classes('cursor-pointer').on('click', lambda: menu.open())
         
-        with ui.menu() as menu:
+        with ui.menu().classes('s-select__popup').props('transition-show="jump-down" transition-hide="jump-up"') as menu:
             def handle_change(e):
                 val = e.value
                 if mode == 'range' and isinstance(val, dict):

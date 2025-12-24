@@ -362,6 +362,10 @@
     color: var(--c-text-main);
 }
 
+/* SELECT POPUP ANIMATIONS */
+/* We used to have custom transitions here, but they conflicted with Quasar's positioning.
+   Now we rely on standard Quasar 'scale' transition which is robust. */
+
 .s-select__popup {
     background-color: var(--c-surface-1);
     color: var(--c-text-main);
