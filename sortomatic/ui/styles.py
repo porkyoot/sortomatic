@@ -27,6 +27,7 @@ def generate_css_variables(theme: Theme) -> str:
         --c-surface-3: {theme.colors.surface_3};
         --c-text-main: {theme.colors.text_main};
         --c-text-subtle: {theme.colors.text_subtle};
+        --c-text-active: {theme.colors.text_active};
         --c-primary: {theme.colors.primary};
         --c-secondary: {theme.colors.secondary};
         --c-success: {theme.colors.success};
@@ -85,6 +86,13 @@ def generate_css_variables(theme: Theme) -> str:
         --shadow-subtle: 0 1px 2px 0 color-mix(in srgb, var(--c-text-main), transparent 95%);
         --shadow-card: 0 4px 6px -1px color-mix(in srgb, var(--c-text-main), transparent 90%), 0 2px 4px -2px color-mix(in srgb, var(--c-text-main), transparent 90%);
         --shadow-float: 0 10px 15px -3px color-mix(in srgb, var(--c-text-main), transparent 90%);
+
+        /* QUASAR OVERRIDES */
+        --q-primary: {theme.colors.primary} !important;
+        --q-secondary: {theme.colors.secondary} !important;
+        --q-positive: {theme.colors.success} !important;
+        --q-warning: {theme.colors.warning} !important;
+        --q-negative: {theme.colors.error} !important;
     }}
     """
 

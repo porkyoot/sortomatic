@@ -9,9 +9,10 @@
     gap: var(--s-4);
     padding: var(--s-2) var(--s-6);
     border-bottom: var(--b-thin) solid var(--c-surface-3);
-    background-color: color-mix(in srgb, var(--c-surface-1), transparent 20%);
+    background-color: color-mix(in srgb, var(--c-surface-2), transparent 20%);
     backdrop-filter: blur(12px);
     width: 100%;
+    color: var(--c-text-main) !important;
 }
 
 /* CONTROL GROUP */

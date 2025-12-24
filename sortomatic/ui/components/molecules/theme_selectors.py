@@ -69,7 +69,10 @@ class ThemeSelector(ui.row):
             self.on_change(self.current_theme, self.is_dark)
 
     def _handle_theme_change(self, theme_name: str):
-        self.current_theme = theme_name.lower()
+        new_theme = theme_name.lower()
+        if new_theme == self.current_theme:
+            return
+        self.current_theme = new_theme
         self.render()
         if self.on_change:
             self.on_change(self.current_theme, self.is_dark)

@@ -312,6 +312,27 @@
     color: var(--c-text-main);
     border-radius: var(--r-md);
     transition: all 0.2s ease;
+    --q-primary: var(--c-text-main) !important;
+}
+
+.s-select .q-field__control,
+.s-select .q-field__control-container,
+.s-select .q-field__native,
+.s-select .q-field__prefix,
+.s-select .q-field__suffix,
+.s-select .q-field__input,
+.s-select .q-field__marginal,
+.s-select .q-focus-helper,
+.s-select .q-field__control::before,
+.s-select .q-field__control::after {
+    color: var(--c-text-main) !important;
+    background-color: transparent !important;
+    border-color: var(--c-text-main) !important;
+}
+
+.s-select,
+.s-select * {
+    color: var(--c-text-main) !important;
 }
 
 .s-select--simple {
@@ -338,6 +359,7 @@
 .s-select--simple .q-select__dropdown-icon {
     font-size: 14px !important;
     opacity: 0.5;
+    color: var(--c-text-main);
 }
 
 .s-select__popup {
@@ -346,6 +368,31 @@
     border: var(--b-thin) solid var(--c-text-subtle);
     border-radius: var(--r-md);
     box-shadow: var(--shadow-float);
+    padding: var(--s-1) 0;
+}
+
+.s-select__popup .q-item {
+    color: var(--c-text-main);
+    transition: all 0.2s ease;
+}
+
+.s-select__popup .q-item:hover {
+    background-color: color-mix(in srgb, var(--c-primary), transparent 90%);
+    color: var(--c-primary);
+}
+
+.s-select__popup .q-item--active {
+    color: var(--c-text-active) !important;
+    background-color: transparent !important;
+    font-weight: 700;
+}
+
+.s-select__popup .q-item--active .q-focus-helper {
+    display: none !important;
+}
+
+.s-select__popup .q-item__section--main {
+    font-size: var(--text-base);
 }
 
 /* SLIDERS */

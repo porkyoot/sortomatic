@@ -28,28 +28,42 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
         client = ui.context.client
         
         # 1. Global Page State & Handlers
+        # Track current theme to avoid redundant injections
+        client.theme_name = theme  # Store initial
+
         def handle_theme_change(theme_info):
-            # Check if client is still connected
             if not client.has_socket_connection:
                 return
-            # theme_info: { 'name': str, 'is_dark': bool }
-            from .themes.solarized import SOLARIZED_DARK, SOLARIZED_LIGHT
             is_dark = theme_info.get('is_dark', True)
+            new_theme_name = "solarized_dark" if is_dark else "solarized_light"
+            
+            # Deduplicate: don't re-inject if already active
+            if getattr(client, 'theme_name', None) == new_theme_name:
+                return
+            client.theme_name = new_theme_name
+
+            from .themes.solarized import SOLARIZED_DARK, SOLARIZED_LIGHT
             new_theme = SOLARIZED_DARK if is_dark else SOLARIZED_LIGHT
             load_global_styles(new_theme)
-            ui.notify(f"Theme switched", color="var(--c-primary)")
 
         bridge.on("theme_changed", handle_theme_change)
+        
+        # Cleanup bridge listener on disconnect
+        client.on_disconnect(lambda: bridge.off("theme_changed", handle_theme_change))
         
         # Import badge components
         # Import StatusBar
         from .components.molecules.status_bars import StatusBar
         from sortomatic.core.database import db
         
+        def on_theme_toggle(t, d):
+            ui.notify(f"Theme switched", color="var(--c-primary)")
+            bridge.emit("theme_changed", {'name': t, 'is_dark': d})
+
         # Instantiate the new top status bar
         status_bar = StatusBar(
             app_theme, 
-            on_theme_change=lambda t, d: bridge.emit("theme_changed", {'name': t, 'is_dark': d})
+            on_theme_change=on_theme_toggle
         )
         
         # Metrics history buffers

@@ -50,7 +50,7 @@ class StatusBar(ui.header):
                 ui.label('Sortomatic').classes('s-text-h1 text-sm tracking-widest').tag = 'h1'
 
             # 2. Middle Section: Connectivity & Status (Unified with Metrics)
-            self.status_container = ui.row().classes('absolute-center')
+            self.status_container = ui.row().classes('absolute-center gap-4')
             self._init_pill()
 
             # 3. Right Section: Global Controls
@@ -64,17 +64,16 @@ class StatusBar(ui.header):
         from ..atoms.special.histograms import AppHistogram
         
         with self.status_container:
+            # -- Pill 1: Connectivity Status --
             with ui.row().classes('s-status-badge-row'):
-                # -- Status Badges --
                 self.web_badge_container = ui.row()
                 ui.element('div').classes('s-separator-vertical')
                 self.scan_badge_container = ui.row()
                 ui.element('div').classes('s-separator-vertical')
                 self.db_badge_container = ui.row()
-                
-                ui.element('div').classes('s-separator-vertical')
-                
-                # -- Histograms --
+            
+            # -- Pill 2: System Metrics --
+            with ui.row().classes('s-status-badge-row'):
                 self.cpu_hist = AppHistogram([0]*6, label='CPU', color='var(--c-primary)', icon='mdi-cpu-64-bit', transparent=True, height='16px', bar_width='2px', max_bars=6)
                 ui.element('div').classes('s-separator-vertical')
                 self.gpu_hist = AppHistogram([0]*6, label='GPU', color='var(--c-success)', icon='mdi-expansion-card-variant', transparent=True, height='16px', bar_width='2px', max_bars=6)

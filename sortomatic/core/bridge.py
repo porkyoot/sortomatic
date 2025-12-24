@@ -29,6 +29,15 @@ class Bridge:
         self._subscribers[event_name].append(handler)
         logger.debug(f"Bridge: Subscribed to {event_name}")
 
+    def off(self, event_name: str, handler: Callable):
+        """Unsubscribe from an event."""
+        if event_name in self._subscribers:
+            try:
+                self._subscribers[event_name].remove(handler)
+                logger.debug(f"Bridge: Unsubscribed from {event_name}")
+            except ValueError:
+                pass
+
     def handle_event(self, event_name: str, handler: Callable):
         """Alias for on()."""
         self.on(event_name, handler)

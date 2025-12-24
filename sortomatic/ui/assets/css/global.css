@@ -7,12 +7,47 @@ body {
     margin: 0;
 }
 
+/* QUASAR OVERRIDES */
+.text-primary {
+    color: var(--c-primary) !important;
+}
+
+.bg-primary {
+    background-color: var(--c-primary) !important;
+}
+
+.q-field__control::after {
+    border-color: var(--c-primary) !important;
+}
+
+.q-loading-bar,
+body .q-loading-bar,
+.q-loading-bar.bg-primary {
+    background-color: var(--c-primary) !important;
+}
+
+/* Common Transitions */
+* {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 /* TYPOGRAPHY */
-.s-text-h1 { font-size: var(--text-2xl); font-weight: 700; letter-spacing: -0.02em; }
-.s-text-body { font-size: var(--text-base); line-height: 1.5; color: var(--c-text-subtle); }
+.s-text-h1 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--c-text-main);
+}
+
+.s-text-body {
+    font-size: var(--text-base);
+    line-height: 1.5;
+    color: var(--c-text-subtle);
+}
 
 .s-label-uppercase-bold {
-    font-size: 0.65rem; /* ~10px */
+    font-size: 0.65rem;
+    /* ~10px */
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;

@@ -11,6 +11,7 @@ class ThemeColors:
     surface_3: str  # Tertiary (hovers, inputs)
     text_main: str
     text_subtle: str
+    text_active: str
     primary: str
     secondary: str
     
