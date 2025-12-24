@@ -65,6 +65,17 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
             app_theme, 
             on_theme_change=on_theme_toggle
         )
+
+        # Add the WorkflowMenu
+        from .components.molecules.menus import WorkflowMenu
+        with status_bar:
+            workflow_menu = WorkflowMenu(
+                app_theme,
+                on_step_click=lambda step: ui.notify(f"Switching to {step}", color="var(--c-primary)"),
+                on_nuke=lambda: ui.notify("Database Nuked!", type='negative')
+            )
+
+
         
         # Metrics history buffers
         history = {

@@ -83,7 +83,8 @@ def generate_css_variables(theme: Theme) -> str:
         --text-2xl: calc(var(--text-xl) * 1.5);   /* 36px */
         
         /* LAYOUT CONSTANTS */
-        --header-height: 60px;
+        --header-height: 96px;
+
         
         /* SHADOWS (Semantic) */
         --shadow-subtle: 0 1px 2px 0 color-mix(in srgb, var(--c-text-active), transparent 90%);

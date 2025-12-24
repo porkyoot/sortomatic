@@ -6,8 +6,9 @@ def AppButton(
     icon: Optional[str] = None,
     on_click: Optional[Callable] = None,
     variant: str = 'primary', # primary, secondary, ghost
-    shape: str = 'default',   # default, pill, square, circle
+    shape: str = 'default',   # default, pill, square, circle, chevron, chevron-first, chevron-last
     size: str = 'md',         # xs, sm, md, lg
+    state: str = 'enable',    # enable, disable, active
     tooltip: Optional[str] = None,
     color: Optional[str] = None,
 ):
@@ -21,6 +22,7 @@ def AppButton(
     
     # 2. Semantic Modifiers (BEM style naming convention)
     css_classes.append(f"s-btn--{variant}")
+    css_classes.append(f"s-btn--{state}")
     
     if shape != 'default':
         css_classes.append(f"s-shape--{shape}")
@@ -35,7 +37,9 @@ def AppButton(
         props += ' flat'
         btn_color = None
     else:
-        btn_color = 'primary'
+        # If a custom color is provided, we set color=None to prevent Quasar 
+        # from adding 'bg-primary' which is hard to override.
+        btn_color = None if color else 'primary'
         
     btn = ui.button(label, icon=icon, on_click=on_click, color=btn_color) \
              .props(props) \
@@ -43,6 +47,9 @@ def AppButton(
              
     if color:
         btn.style(f'--c-primary: {color}')
+
+    if state == 'disable':
+        btn.props('disabled')
 
     if tooltip:
         btn.tooltip(tooltip)

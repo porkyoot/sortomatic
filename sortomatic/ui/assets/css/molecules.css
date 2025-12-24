@@ -2,6 +2,7 @@
 
 /* STATUS BAR */
 .s-status-bar {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -9,8 +10,7 @@
     gap: var(--s-4);
     padding: var(--s-2) var(--s-6);
     border-bottom: var(--b-thin) solid var(--c-surface-3);
-    background-color: color-mix(in srgb, var(--c-surface-2), transparent 20%);
-    backdrop-filter: blur(12px);
+    background-color: var(--c-surface-2);
     width: 100%;
     color: var(--c-text-main) !important;
 }
@@ -201,4 +201,87 @@
         width: 32px;
         height: 4px;
     }
+}
+
+/* WORKFLOW MENU */
+.s-workflow-menu {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-2) var(--s-6);
+    background-color: var(--c-surface-2);
+    border-bottom: var(--b-thin) solid var(--c-surface-3);
+    width: 100%;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.s-workflow-menu::-webkit-scrollbar {
+    display: none;
+}
+
+.s-workflow-steps-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+}
+
+/* WORKFLOW STEP BASE */
+.s-workflow-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 16px 0 24px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: none;
+    margin-left: -11px;
+}
+
+
+.s-workflow-step--first {
+    margin-left: 0 !important;
+    padding-left: 16px !important;
+}
+
+.s-workflow-step--last {
+    padding-right: 16px !important;
+}
+
+/* Finished step (unlocked but not active) */
+
+
+.s-step-label {
+    margin: 0;
+    line-height: normal;
+    color: inherit;
+    display: block;
+}
+
+
+
+.s-nuke-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    min-height: 32px !important;
+    border-radius: var(--r-full);
+    color: var(--c-text-active) !important;
+    /* Force Solarized White */
+    padding: 0 !important;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.s-nuke-btn:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+    box-shadow: 0 0 12px var(--nuke-color);
 }
