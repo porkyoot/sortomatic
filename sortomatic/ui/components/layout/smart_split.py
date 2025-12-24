@@ -8,19 +8,13 @@ def SmartSplitter(
     separator: bool = True
 ):
     """
-    Responsive layout component that switches between column (mobile) and grid (desktop).
-    Uses CSS Grid for robust height matching.
+    Responsive layout component that switches between column (mobile) and splitter (desktop).
+    Restored ui.splitter for dragging functionality.
     """
-    with ui.element('div').classes('s-smart-splitter') as container:
-        # Left Pane
-        with ui.element('div').classes('s-smart-splitter__pane s-smart-splitter__pane-left'):
+    with ui.splitter(value=initial_split).classes('s-smart-splitter') as s:
+        with s.before:
             left_factory()
-            
-        # Separator (Visual only, handled by grid gap or specific element)
-        ui.element('div').classes('s-smart-splitter__separator')
-        
-        # Right Pane
-        with ui.element('div').classes('s-smart-splitter__pane s-smart-splitter__pane-right'):
+        with s.after:
             right_factory()
                 
-    return container
+    return s
