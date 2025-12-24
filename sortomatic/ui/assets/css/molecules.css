@@ -1,0 +1,122 @@
+/* MOLECULES */
+
+/* STATUS BAR */
+.s-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: var(--s-4);
+    padding: var(--s-2) var(--s-6);
+    border-bottom: var(--b-thin) solid var(--c-surface-3);
+    background-color: color-mix(in srgb, var(--c-surface-1), transparent 20%);
+    backdrop-filter: blur(12px);
+    width: 100%;
+}
+
+/* CONTROL GROUP */
+.s-control-group {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-2) var(--s-4);
+    border-radius: var(--r-md);
+    background-color: color-mix(in srgb, var(--c-surface-1), transparent 50%);
+    border: var(--b-thin) solid color-mix(in srgb, var(--c-text-main), transparent 90%);
+}
+
+/* THEME SELECTOR */
+.s-theme-selector {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--s-2);
+    padding: var(--s-1) var(--s-4);
+    border-radius: var(--r-full);
+    border: var(--b-thin) solid var(--c-text-subtle);
+    background-color: var(--c-surface-1);
+}
+
+/* PANEL HEADER */
+.s-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: var(--s-4);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: color-mix(in srgb, var(--header-accent), transparent 90%);
+    /* --header-accent set inline or via parent */
+}
+
+.s-panel-header__icon-bg {
+    padding: var(--s-3);
+    border-radius: var(--r-md);
+    background-color: color-mix(in srgb, var(--header-accent), transparent 90%);
+}
+
+/* MENUS / LIST ITEMS */
+.s-menu-step {
+    min-width: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1_5);
+    align-items: stretch;
+}
+
+.s-status-badge-row {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-1) var(--s-4);
+    border-radius: var(--r-full);
+    border: var(--b-thin) solid var(--c-text-subtle);
+    background-color: var(--c-surface-1);
+}
+
+/* FILE ROWS */
+.s-file-row__icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: color-mix(in srgb, var(--c-surface-1), white 5%);
+    border-radius: var(--r-md);
+    padding: var(--s-2);
+    width: var(--s-12);
+    height: var(--s-12);
+}
+
+.s-file-row__path {
+    display: flex;
+    align-items: center;
+    gap: var(--s-1);
+    opacity: 0.5;
+}
+
+.s-file-row__marker {
+    font-size: 0.5rem;
+    /* ~8px */
+}
+
+/* SKELETON (GENERIC LIST) */
+.s-skeleton {
+    width: 100%;
+    height: var(--s-32);
+    /* 32 * 0.25rem = 8rem = 128px */
+    background-color: color-mix(in srgb, var(--c-surface-2), transparent 50%);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    border-radius: var(--r-md);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .5;
+    }
+}

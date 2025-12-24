@@ -25,7 +25,7 @@ class ScanControls(ui.row):
                  on_restart: Optional[Callable] = None,
                  on_fast_mode: Optional[Callable] = None):
         super().__init__()
-        self.classes('items-center gap-4 py-2 px-4 rounded-app bg-white/5 border border-white/5')
+        self.classes('s-control-group')
         
         self.state = state
         self.theme = theme
@@ -86,7 +86,7 @@ class ScanControls(ui.row):
                     ).style(f'--c-primary: {self.theme.colors.error if self.theme else "var(--c-error)"}')
 
             # 2. Separator
-            ui.element('div').classes('w-px h-6 bg-white/10 mx-2')
+            ui.element('div').classes('s-separator-vertical')
 
             # 3. Fast Mode Toggle
             AppToggle(

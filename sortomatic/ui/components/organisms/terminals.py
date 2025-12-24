@@ -23,27 +23,30 @@ class AppTerminal(AppCard):
             max_history: Maximum number of log lines to keep in history
         """
         # Terminal uses a very subtle, dark variant
-        super().__init__(variant='subtle', padding='p-0', tight=True)
-        self.classes('overflow-hidden border border-black/40 bg-black/40 shadow-inner')
+        # Terminal uses a very subtle, dark variant
+        # We replace base classes with s-terminal
+        super().__init__(variant='', padding='', tight=True) 
+        self.classes(remove='s-card') # clear AppCard base
+        self.classes('s-terminal')
         
         with self:
             # Header
-            with ui.row().classes('w-full items-center justify-between px-4 py-1.5 bg-black/20 border-b border-white/5'):
+            with ui.row().classes('w-full s-terminal__header'):
                 with ui.row().classes('items-center gap-2'):
-                    ui.icon('terminal', size='14px').classes('opacity-50')
-                    ui.label(title).classes('text-[10px] font-bold uppercase tracking-widest opacity-50')
+                    ui.icon('terminal', size='14px').classes('s-terminal__icon')
+                    ui.label(title).classes('s-terminal__title')
                 
                 with ui.row().classes('gap-1'):
                     # Decorative dots
-                    ui.element('div').classes('w-2 h-2 rounded-full bg-red-500/30')
-                    ui.element('div').classes('w-2 h-2 rounded-full bg-yellow-500/30')
-                    ui.element('div').classes('w-2 h-2 rounded-full bg-green-500/30')
+                    ui.element('div').classes('s-terminal__dot s-terminal__dot--red')
+                    ui.element('div').classes('s-terminal__dot s-terminal__dot--yellow')
+                    ui.element('div').classes('s-terminal__dot s-terminal__dot--green')
 
             # Scroll Area
-            self.scroll = ui.scroll_area().classes(f'w-full h-[{height}] bg-transparent')
+            self.scroll = ui.scroll_area().classes('w-full bg-transparent').style(f'height: {height};')
             with self.scroll:
-                self.content = ui.html('', sanitize=False).classes('p-4 font-mono text-[12px] leading-relaxed whitespace-pre-wrap break-all')
-                self.content.style('color: #d1d1d1;') # Default light grey for logs
+                self.content = ui.html('', sanitize=False).classes('s-terminal__content')
+                # Color is handled by the class now (mix of text-subtle and white)
         
         # Internal state for stickiness
         self._is_sticky = True

@@ -1,0 +1,37 @@
+/* GLOBAL & UTILS */
+body {
+    background-color: var(--c-surface-1);
+    color: var(--c-text-main);
+    font-family: var(--font-main);
+    font-size: var(--text-base);
+    margin: 0;
+}
+
+/* TYPOGRAPHY */
+.s-text-h1 { font-size: var(--text-2xl); font-weight: 700; letter-spacing: -0.02em; }
+.s-text-body { font-size: var(--text-base); line-height: 1.5; color: var(--c-text-subtle); }
+
+.s-label-uppercase-bold {
+    font-size: 0.65rem; /* ~10px */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+    color: var(--c-text-main);
+}
+
+.s-section-header {
+    font-size: var(--text-lg);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.8;
+}
+
+/* MISC UTILS */
+.s-separator-vertical {
+    width: 1px;
+    height: var(--s-3);
+    background-color: var(--c-text-main);
+    opacity: 0.1;
+}

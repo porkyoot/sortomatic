@@ -4,7 +4,7 @@ import asyncio
 class LazyCardList(ui.column):
     def __init__(self, item_provider):
         super().__init__()
-        self.classes('w-full gap-4')
+        self.classes('w-full gap-4') # Consistent list gap
         self.provider = item_provider
         self.is_loaded = False
         
@@ -13,7 +13,7 @@ class LazyCardList(ui.column):
             self.skeletons = ui.column().classes('w-full gap-4')
             with self.skeletons:
                 for _ in range(5):
-                    with ui.card().classes('w-full h-32 animate-pulse bg-gray-700'):
+                    with ui.card().classes('s-skeleton'):
                         pass
                         
         # Trigger load

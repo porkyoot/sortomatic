@@ -25,8 +25,8 @@ class FileTreeRow(ui.row):
                  expanded: bool = False,
                  toggle_func: Optional[Callable] = None):
         super().__init__()
-        self.classes('w-full items-center py-1 px-4 hover:bg-white/5 transition-colors no-wrap shrink-0')
-        self.style('min-width: 800px;') # Ensure columns don't squash
+        self.classes('s-tree-row s-tree-min-width')
+        # self.style('min-width: 800px;') # Moved to CSS class
         
         with self:
             # 1. Name Column (Tree Column)
@@ -92,7 +92,7 @@ class FileTree(ui.column):
                  show_size: bool = True,
                  show_date: bool = True):
         super().__init__()
-        self.classes('w-full border border-white/10 rounded-app overflow-hidden bg-white/5')
+        self.classes('s-tree-container')
         self.root_path = root_path
         self.theme = theme
         self.show_category = show_category
@@ -183,25 +183,25 @@ class FileTree(ui.column):
         
         with self:
             # 1. Header
-            with ui.row().classes('w-full items-center bg-white/10 py-2 px-4 no-wrap shrink-0 border-b border-white/5'):
+            with ui.row().classes('s-tree-header w-full'):
                 self._header_cell("Name", "name", "40%")
                 self._header_cell("Category", "category", "15%")
                 self._header_cell("Size", "size", "20%")
                 self._header_cell("Modified", "date", "25%")
             
             # 2. Tree Container (Scroll Area)
-            with ui.scroll_area().classes('w-full h-[600px]'):
+            with ui.scroll_area().classes('s-tree-scroll-area'):
                 self.content_col = ui.column().classes('w-full gap-0')
                 # Kick off rendering asynchronously
                 ui.timer(0.01, lambda: self._render_tree(), once=True)
 
     def _header_cell(self, label: str, field: str, width: str):
-        with ui.element('div').style(f'width: {width};').classes('cursor-pointer hover:text-white transition-colors group'):
+        with ui.element('div').style(f'width: {width};').classes('s-tree-header__cell group'):
             with ui.row().classes('items-center gap-1'):
                 ui.label(label).classes('text-[10px] uppercase font-bold tracking-widest opacity-50')
                 if self.sort_by == field:
                     icon = "arrow_upward" if not self.sort_desc else "arrow_downward"
-                    ui.icon(icon, size='12px').classes('color-[var(--q-primary)]')
+                    ui.icon(icon, size='12px').classes('text-[var(--c-primary)]')
             ui.on('click', lambda: self.sort_tree(field))
 
     async def _render_tree(self):

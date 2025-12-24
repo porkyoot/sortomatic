@@ -18,10 +18,22 @@ def AppIcon(
         tooltip: Optional tooltip text
         classes: Additional CSS classes to apply
     """
-    icon = ui.icon(name).style(f'color: {color};').props(f'size={size}')
+    classes_list = []
     
+    # Handle Size: If it's a standard key (xs, sm, md, lg, xl), use semantic class.
+    # Otherwise, assume it's an explicit CSS value (e.g., '14px', '2em') and apply via style.
+    if size in ['xs', 'sm', 'md', 'lg', 'xl']:
+        classes_list.append(f's-icon--{size}')
+        icon = ui.icon(name).style(f'color: {color};') # No size prop
+    else:
+        # Explicit size
+        icon = ui.icon(name).style(f'color: {color}; font-size: {size} !important;')
+
     if classes:
-        icon.classes(classes)
+        classes_list.append(classes)
+        
+    if classes_list:
+        icon.classes(" ".join(classes_list))
     
     if tooltip:
         icon.tooltip(tooltip)

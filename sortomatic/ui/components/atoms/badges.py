@@ -19,48 +19,43 @@ def AppBadge(
     A styled badge for displaying statuses, categories, or counts.
     Supports solid, glass (translucent), and subtle (no background) variants.
     """
-    classes = 'items-center gap-1 px-2 py-0.5 rounded-app transition-all'
-    if (interactive or on_click) and not disabled:
-        classes += ' cursor-pointer hover:scale-105 active:scale-95'
+    css_classes = ['s-badge']
     
-    # Determine styles and colors based on variant
-    effective_text_color = text_color
-    
-    if variant != 'simple':
-        classes += ' shadow-sm vibrant-shadow'
-
-    if disabled:
-        classes += ' opacity-30 grayscale'
-        style = f'color: var(--c-text-subtle); width: fit-content;'
-    else:
-        style = f'width: fit-content;'
+    # Variants & State
+    if variant:
+        css_classes.append(f's-badge--{variant}')
         
-        if variant == 'solid':
-            style += f' background-color: {color};'
-        elif variant == 'glass':
-            classes += ' glass'
-            style += f' background-color: {color}22;' # 13% opacity
-            style += f' border: 1px solid {color}44;' # 26% opacity
-        elif variant == 'simple':
-            # Simple: No background, text/icon takes the main color
-            style += f' background-color: transparent;'
-            effective_text_color = color
-            # Force opacity 1.0 logic or similar if needed, but color usually handles it
+    if (interactive or on_click) and not disabled:
+        css_classes.append('s-badge--interactive')
+        
+    if disabled:
+        css_classes.append('s-badge--disabled')
     
-    with ui.row().classes(classes).style(style) as badge:
+    # Dynamic Colors
+    # We use CSS variables to pass the specific color to the semantic class logic
+    style_vars = f"--badge-color: {color}; --badge-text: {text_color};"
+    
+    # Icon handling
+    effective_icon_color = text_color
+    if variant == 'simple':
+        effective_icon_color = color
+    
+    with ui.row().classes(" ".join(css_classes)).style(style_vars) as badge:
         if on_click and not disabled:
             badge.on('click', on_click)
-        elif on_click: # Still allow clicking for toggles even if disabled
+        elif on_click: # Still allow clicking for toggles even if disabled (e.g. to enable)
             badge.on('click', on_click)
+            
         if icon:
-            AppIcon(icon, color=effective_text_color, size='1.2em', classes=icon_classes)
+            # We use the icon classes but let color be handled by parent or explicit
+            AppIcon(icon, color=effective_icon_color, size='1.2em', classes=icon_classes)
         
-        # Explicitly set color on labels
-        ui.label(label).classes('text-[10px] font-bold uppercase tracking-widest').style(f'color: {effective_text_color}')
+        # Labels
+        ui.label(label).classes('s-badge__label')
         
         if value:
-            ui.label('|').classes('opacity-30').style(f'color: {effective_text_color}')
-            ui.label(value).classes('text-xs font-black').style(f'color: {effective_text_color}')
+            ui.label('|').classes('opacity-30')
+            ui.label(value).classes('s-badge__value')
 
 def CategoryBadge(
     category: str,
@@ -149,7 +144,7 @@ def CopyBadge(
     """
     def handle_copy():
         ui.clipboard.write(text_to_copy)
-        ui.notify(success_message, type='positive', color='var(--q-success)')
+        ui.notify(success_message, type='positive', color='var(--c-success)')
 
     return AppBadge(
         label=label,

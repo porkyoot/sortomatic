@@ -47,7 +47,7 @@ def AppDatePicker(
             if mode == 'range':
                 date_picker.props('range')
                 # For range, we might want a manual "Apply" button inside the menu to close it
-                with ui.row().classes('justify-end p-2'):
+                with ui.row().classes('s-date-picker__actions'):
                     ui.button('Apply', on_click=menu.close).props('flat dense')
 
     # Apply global rounding and font if possible via classes

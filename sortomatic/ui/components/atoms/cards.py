@@ -8,35 +8,28 @@ class AppCard(ui.card):
     """
     def __init__(self, 
                  variant: str = 'glass', # 'solid', 'glass', 'subtle', 'vibrant'
-                 padding: str = 'p-6',
+                 padding: str = '',      # Optional override, s-card has default p-6 equivalent
                  tight: bool = False):
         """
         Args:
             variant: The visual style of the card.
-            padding: Quasar/Tailwind padding classes.
-            tight: If true, removes default card spacing between elements.
+            padding: Quasar/Tailwind padding classes to override default.
+            tight: If true, removes default card padding/gap.
         """
         super().__init__()
         
-        # Base alignment and rounding
-        self.classes(f'rounded-app {padding} transition-all border w-full border-app')
-        # self.style('border-color: var(--app-text-sec); opacity: 0.5;') # Default border opacity handled by class or global
+        # Base Class
+        css_classes = ["s-card"]
         
+        # Variants
+        if variant != 'solid': # solid is default s-card style basically
+             css_classes.append(f"s-card--{variant}")
+
+        # Padding/Tightness
         if tight:
-            self.classes('gap-0')
-            
-        if variant == 'glass':
-            self.classes('glass bg-app-surface')
-        elif variant == 'solid':
-            self.classes('shadow-md bg-app-surface')
-        elif variant == 'vibrant':
-            self.classes('vibrant-shadow bg-app-surface')
-            self.style('border-color: var(--app-primary);')
-        elif variant == 'subtle':
-            self.classes('shadow-none')
-            self.style('background-color: transparent;')
-            
-        # Subtle hover interaction
-        # We can't easily use hover with vars in classes without tailwind config, 
-        # so we'll skip the hover bg change or rely on global CSS if set.
-        # Removing manual white hover for strict adherence.
+            css_classes.append('p-0 gap-0')
+        elif padding:
+             css_classes.append(padding)
+
+        self.classes(" ".join(css_classes))
+

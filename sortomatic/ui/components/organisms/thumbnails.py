@@ -13,38 +13,41 @@ class AppThumbnail(AppCard):
                  size: str = '180px'):
         
         # Use subtle variant for thumbnails to let the content shine
-        super().__init__(variant='subtle', padding='p-0', tight=True)
+        # We replace the base card logic with our custom s-thumbnail class logic
+        super().__init__(variant='', padding='', tight=True) # Reset base options
         
-        # Enforce square aspect ratio and hide overflows to prevent scrollbars
-        self.style(f'width: {size}; height: {size}; aspect-ratio: 1/1; overflow: hidden;')
-        self.classes('relative group cursor-pointer border-white/5 bg-white/5 hover:border-white/20 transition-all')
+        # Override classes completely in favor of s-thumbnail
+        # Size and aspect ratio must be enforced via style still as they are instance specific
+        self.classes(remove='s-card rounded-app border w-full border-app glass shadow-md bg-app-surface shadow-none vibrant-shadow') # Clear potential AppCard defaults
+        self.classes('s-thumbnail group') 
+        self.style(f'width: {size}; height: {size}; aspect-ratio: 1/1;')
 
         with self:
             if type == 'image':
                 # content = image URL or base64
-                ui.image(content).classes('w-full h-full object-cover transition-transform group-hover:scale-110 duration-500')
+                ui.image(content).classes('s-thumbnail__image')
             
             elif type == 'text':
                 # content = string
-                with ui.column().classes('w-full h-full p-3 font-mono bg-black/10'):
-                    ui.label(content).classes('text-[8px] leading-[1.2] opacity-60 break-all whitespace-pre-wrap')
+                with ui.column().classes('s-thumbnail__content'):
+                    ui.label(content).classes('s-thumbnail__text')
                     # Bottom-to-top fade to imply truncation
-                    ui.element('div').classes('absolute bottom-0 left-0 w-full h-1/3').style('background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);')
+                    ui.element('div').classes('s-thumbnail__fade-overlay')
 
             elif type == 'html':
                 # content = html string
-                with ui.column().classes('w-full h-full p-4 bg-white/[0.03]'):
+                with ui.column().classes('s-thumbnail__content bg-[var(--c-surface-1)]'):
                     # We use a container that scales down the HTML to look like a document preview
-                    with ui.element('div').style('transform: scale(0.6); transform-origin: top left; width: 166%;'):
+                    with ui.element('div').classes('s-thumbnail__preview-scale'):
                         ui.html(content, sanitize=False).classes('text-[10px] prose prose-invert')
                     
             elif type == 'tree':
                 # content = list of items
                 items = content if isinstance(content, list) else ['src/', 'docs/', 'main.py', 'config.yaml']
-                with ui.column().classes('w-full h-full p-4 gap-1.5 bg-black/5'):
+                with ui.column().classes('s-thumbnail__content gap-1.5'):
                     # Root Folder (Static Open)
                     with ui.row().classes('items-center gap-2 mb-1'):
-                        ui.icon('folder_open', size='18px', color='var(--q-primary)')
+                        ui.icon('folder_open', size='18px', color='var(--c-primary)')
                         ui.label('Root').classes('text-[11px] font-bold tracking-tight')
                     
                     # Children
@@ -52,9 +55,9 @@ class AppThumbnail(AppCard):
                         with ui.row().classes('items-center gap-2 pl-4'):
                             is_dir = item.endswith('/')
                             icon = 'folder' if is_dir else 'insert_drive_file'
-                            ui.icon(icon, size='14px').classes('opacity-30')
+                            ui.icon(icon, size='14px').classes('s-thumbnail__tree-icon')
                             ui.label(item).classes('text-[10px] opacity-70')
 
             # Subtle Interactive Overlay
-            with ui.column().classes('absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity items-center justify-center'):
-                ui.icon('visibility', size='28px', color='white').classes('drop-shadow-lg')
+            with ui.column().classes('s-thumbnail__overlay'):
+                ui.icon('visibility', size='28px').classes('drop-shadow-lg text-[var(--c-text-main)]')

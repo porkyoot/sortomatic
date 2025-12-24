@@ -17,7 +17,7 @@ class MenuStep(ui.column):
                  on_click: Optional[Callable] = None,
                  progress_values: List[float] = []):
         super().__init__()
-        self.classes('items-stretch gap-1.5 min-w-[120px]')
+        self.classes('s-menu-step')
         
         self.state = state
         self.theme = theme

@@ -39,7 +39,7 @@ class ScanCard(AppCard):
         with self:
             # Row 1: Title and Controls
             with ui.row().classes('w-full items-center justify-between no-wrap'):
-                ui.label(name).classes('text-lg font-black truncate flex-grow')
+                ui.label(name).classes('s-scan-card__title')
                 
                 self.controls = ScanControls(
                     state=control_state,
@@ -64,8 +64,9 @@ class ScanCard(AppCard):
                 StatusBadge(label="Status", state=badge_state, theme=theme)
                 
                 # Colored state name
+                # Colored state name
                 state_color = StatusStyles.get_color(badge_state, theme)
-                ui.label(state.upper()).classes('text-[10px] font-black tracking-widest').style(f'color: {state_color};')
+                ui.label(state.upper()).classes('s-scan-card__state').style(f'color: {state_color};')
                 
                 ui.element('div').classes('flex-grow') # Spacer
                 
@@ -73,16 +74,16 @@ class ScanCard(AppCard):
                 with ui.row().classes('items-center gap-4'):
                     # Percent
                     with ui.row().classes('items-center gap-1'):
-                        ui.label(f'{progress:.1f}').classes('text-sm font-black')
-                        ui.label('%').classes('text-[10px] opacity-50 font-bold')
+                        ui.label(f'{progress:.1f}').classes('s-scan-card__percent')
+                        ui.label('%').classes('s-scan-card__percent-sub')
                     
                     # Vertical divider
-                    ui.element('div').classes('w-px h-4 bg-white/10')
+                    ui.element('div').classes('s-separator-vertical')
                     
                     # ETA
                     with ui.row().classes('items-center gap-2'):
                         ui.icon('schedule', size='16px').classes('opacity-40')
-                        ui.label(eta).classes('text-xs font-medium opacity-70')
+                        ui.label(eta).classes('s-scan-card__eta')
 
     def update_progress(self, progress: float, eta: str):
         self.progress = progress

@@ -19,12 +19,12 @@ def PanelHeader(
         color: Accent color for the icon and subtle borders.
         right_content: A callable that renders the right-side component.
     """
-    with ui.row().classes('w-full items-center justify-between pb-4 border-b border-opacity-10').style(f'border-color: {color};'):
+    with ui.row().classes('w-full s-panel-header').style(f'--header-accent: {color};'):
         # 1. Left Section: Icon + Title Group
         with ui.row().classes('items-center gap-4'):
             if icon:
                 # Decorative background for icon
-                with ui.element('div').classes('p-3 rounded-app bg-opacity-10').style(f'background-color: {color};'):
+                with ui.element('div').classes('s-panel-header__icon-bg'):
                     AppIcon(icon, color=color, size='md')
             
             with ui.column().classes('gap-0'):

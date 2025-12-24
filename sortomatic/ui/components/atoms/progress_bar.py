@@ -11,14 +11,17 @@ def AppProgressBar(
     """
     A styled linear progress bar.
     """
+    """
+    A styled linear progress bar.
+    """
     # Base class for the progress bar container
-    container_classes = "w-full overflow-hidden "
+    container_classes = ["s-progress"]
     if shape == 'pill':
-        container_classes += "rounded-full "
+        container_classes.append("s-progress--pill")
     else:
-        container_classes += "rounded-app "
+        container_classes.append("s-progress--rect")
         
-    bar = ui.linear_progress(value=value).classes(container_classes).style(
+    bar = ui.linear_progress(value=value).classes(" ".join(container_classes)).style(
         f'color: {color}; height: {size};'
     ).props('instant-feedback')
     
@@ -27,6 +30,7 @@ def AppProgressBar(
     
     if show_label and value is not None:
         with bar:
-            ui.label(f'{int(value * 100)}%').classes('absolute-center text-[10px] font-bold text-white')
+            # text-white is handled by the class now
+            ui.label(f'{int(value * 100)}%').classes('s-progress__label')
             
     return bar

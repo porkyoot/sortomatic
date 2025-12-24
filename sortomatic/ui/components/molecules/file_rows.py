@@ -30,14 +30,14 @@ def FileRow(file_data: ScanContext, theme: Theme):
     with AppCard(variant='subtle', padding='p-3'):
         with ui.row().classes('w-full items-center no-wrap gap-4'):
             # 1. Category Icon
-            with ui.column().classes('items-center justify-center bg-white/5 rounded-app p-2 w-12 h-12'):
+            with ui.column().classes('s-file-row__icon-container'):
                 AppIcon(icon_name, color=icon_color, size='1.8em')
             
             # 2. Main content: Path (top) and Filename (bottom)
             with ui.column().classes('flex-grow overflow-hidden'):
                 # Static tree path
-                with ui.row().classes('items-center gap-1 opacity-50'):
-                    ui.label('▼').classes('text-[8px]') # Static tree marker
+                with ui.row().classes('s-file-row__path'):
+                    ui.label('▼').classes('s-file-row__marker') # Static tree marker
                     ui.label(directory).classes('text-[10px] font-mono truncate tracking-tight')
                 
                 # File title

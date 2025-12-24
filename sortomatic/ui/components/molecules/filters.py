@@ -30,18 +30,18 @@ class FilterBar(ui.row):
             
             # 2. Filter Trigger Button
             with AppButton(icon="filter_list", variant="secondary", shape="pill") as self.btn:
-                with ui.menu().classes('p-4 min-w-[350px] rounded-app glass vibrant-shadow border border-white/10') as self.menu:
+                with ui.menu().classes('s-select__popup min-w-[350px]') as self.menu:
                     self._render_popup()
 
     def _render_popup(self):
         with ui.column().classes('w-full gap-6'):
             # Header
             with ui.row().classes('w-full items-center justify-between'):
-                ui.label("Filters").classes('text-lg font-black uppercase tracking-widest opacity-80')
+                ui.label("Filters").classes('s-section-header')
                 ui.button(icon="refresh", on_click=self.reset).props('flat dense size=sm').classes('color-[var(--q-primary)]')
 
             # Categories
-            ui.label("Categories").classes('text-[10px] font-bold uppercase tracking-widest opacity-40 -mb-4')
+            ui.label("Categories").classes('s-label-uppercase-bold -mb-4')
             with ui.row().classes('w-full gap-2'):
                 for cat in CategoryStyles.get_order():
                     is_disabled = cat in self.disabled_categories
@@ -65,7 +65,7 @@ class FilterBar(ui.row):
                     )
 
             # Size Range (Logarithmic)
-            ui.label("Size Range").classes('text-[10px] font-bold uppercase tracking-widest opacity-40 -mb-4')
+            ui.label("Size Range").classes('s-label-uppercase-bold -mb-4')
             AppRangeSlider(
                 min=0, 
                 max=1024**4, # 1TB
@@ -75,7 +75,7 @@ class FilterBar(ui.row):
             )
 
             # Date Range
-            ui.label("Date Range").classes('text-[10px] font-bold uppercase tracking-widest opacity-40 -mb-4')
+            ui.label("Date Range").classes('s-label-uppercase-bold -mb-4')
             AppDatePicker(
                 label="", 
                 mode="range",

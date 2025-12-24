@@ -13,8 +13,8 @@ class StatusBar(ui.header):
     def __init__(self, theme: Theme, on_theme_change: Optional[Callable] = None):
         super().__init__()
         # Glassmorphism header
-        self.classes('backdrop-blur-md border-b px-6 py-2 items-center justify-between no-wrap gap-4 bg-app-surface')
-        self.style('border-color: var(--app-text-sec);')
+        # Glassmorphism header
+        self.classes('s-status-bar')
         self.theme = theme
         self.on_theme_change = on_theme_change
         
@@ -25,22 +25,22 @@ class StatusBar(ui.header):
                 # CPU (Blue)
                 self.cpu_container = ui.row()
                 with self.cpu_container:
-                    AppHistogram([0.1]*20, color=theme.colors.blue, height="16px", bar_width="2px", max_bars=10, icon="mdi-cpu-64-bit", label="CPU")
+                    AppHistogram([0.1]*20, color='var(--c-primary)', height="16px", bar_width="2px", max_bars=10, icon="mdi-cpu-64-bit", label="CPU")
                 
                 # GPU (Green)
                 self.gpu_container = ui.row()
                 with self.gpu_container:
-                    AppHistogram([0.1]*20, color=theme.colors.green, height="16px", bar_width="2px", max_bars=10, icon="mdi-expansion-card-variant", label="GPU")
+                    AppHistogram([0.1]*20, color='var(--c-success)', height="16px", bar_width="2px", max_bars=10, icon="mdi-expansion-card-variant", label="GPU")
 
                 # RAM (Yellow)
                 self.ram_container = ui.row()
                 with self.ram_container:
-                    AppHistogram([0.2]*20, color=theme.colors.yellow, height="16px", bar_width="2px", max_bars=10, icon="mdi-memory", label="RAM")
+                    AppHistogram([0.2]*20, color='var(--c-warning)', height="16px", bar_width="2px", max_bars=10, icon="mdi-memory", label="RAM")
 
                 # Disk IO (Red)
                 self.disk_container = ui.row()
                 with self.disk_container:
-                    AppHistogram([0.1]*20, color=theme.colors.red, height="16px", bar_width="2px", max_bars=10, icon="mdi-harddisk", label="Disk IO")
+                    AppHistogram([0.1]*20, color='var(--c-error)', height="16px", bar_width="2px", max_bars=10, icon="mdi-harddisk", label="Disk IO")
 
             # 2. Middle Section: Connectivity & Status
             # 2. Middle Section: Connectivity & Status
@@ -112,19 +112,19 @@ class StatusBar(ui.header):
         try:
             self.cpu_container.clear()
             with self.cpu_container:
-                AppHistogram(cpu_history, color=self.theme.colors.blue, height="16px", bar_width="2px", max_bars=10, icon="mdi-cpu-64-bit", label="CPU")
+                AppHistogram(cpu_history, color='var(--c-primary)', height="16px", bar_width="2px", max_bars=10, icon="mdi-cpu-64-bit", label="CPU")
             
             self.gpu_container.clear()
             with self.gpu_container:
-                AppHistogram(gpu_history, color=self.theme.colors.green, height="16px", bar_width="2px", max_bars=10, icon="mdi-expansion-card-variant", label="GPU")
+                AppHistogram(gpu_history, color='var(--c-success)', height="16px", bar_width="2px", max_bars=10, icon="mdi-expansion-card-variant", label="GPU")
                 
             self.ram_container.clear()
             with self.ram_container:
-                AppHistogram(ram_history, color=self.theme.colors.yellow, height="16px", bar_width="2px", max_bars=10, icon="mdi-memory", label="RAM")
+                AppHistogram(ram_history, color='var(--c-warning)', height="16px", bar_width="2px", max_bars=10, icon="mdi-memory", label="RAM")
 
             self.disk_container.clear()
             with self.disk_container:
-                AppHistogram(disk_history, color=self.theme.colors.red, height="16px", bar_width="2px", max_bars=10, icon="mdi-harddisk", label="Disk IO")
+                AppHistogram(disk_history, color='var(--c-error)', height="16px", bar_width="2px", max_bars=10, icon="mdi-harddisk", label="Disk IO")
         except Exception:
             # Silently ignore updates if the client is no longer available
             pass

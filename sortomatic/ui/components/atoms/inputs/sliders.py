@@ -60,7 +60,7 @@ def AppSlider(
 
     with ui.column().classes(f'w-full gap-1 {classes}'):
         if label:
-            ui.label(label).classes('text-xs font-semibold opacity-70 uppercase tracking-tighter')
+            ui.label(label).classes('s-slider-label')
             
         with ui.row().classes('w-full items-center gap-4'):
             # Internal slider state
@@ -74,7 +74,7 @@ def AppSlider(
             ).classes('grow')
             
             # Value Label on the right
-            value_display = ui.label('').classes('text-sm font-bold min-w-[3em] text-right')
+            value_display = ui.label('').classes('s-slider-value')
             
             def update_ui(e):
                 raw = e.value
@@ -137,7 +137,7 @@ def AppRangeSlider(
 
     with ui.column().classes(f'w-full gap-1 {classes}'):
         if label:
-            ui.label(label).classes('text-xs font-semibold opacity-70 uppercase tracking-tighter')
+            ui.label(label).classes('s-slider-label')
             
         initial_min = value['min'] if value else min
         initial_max = value['max'] if value else max
@@ -152,7 +152,7 @@ def AppRangeSlider(
                 value={'min': linear_min, 'max': linear_max}
             ).classes('grow')
             
-            value_display = ui.label('').classes('text-[10px] font-bold opacity-80 min-w-[8em] text-right')
+            value_display = ui.label('').classes('s-slider-value')
             
             def update_ui(e):
                 raw_min, raw_max = e.value['min'], e.value['max']
