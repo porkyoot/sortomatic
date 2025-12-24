@@ -24,15 +24,15 @@ class ThemeSelector(ui.row):
     def render(self):
         self.clear()
         with self:
-            # 1. Theme Dropdown (Label + Menu)
-            # Replaced heavy AppSelect with lightweight Label+Menu to match Badge height
-            with ui.row().classes('items-center gap-1 cursor-pointer group'):
-                ui.label(self.current_theme.capitalize()).classes('s-label-uppercase-bold')
-                ui.icon('mdi-chevron-down', size='12px').classes('opacity-50 group-hover:opacity-100 transition-opacity text-[var(--c-text-main)]')
-                
-                with ui.menu().classes('s-select__popup'):
-                    # Hardcoded options for now
-                    ui.menu_item('Solarized', on_click=lambda: self._handle_theme_change('solarized')).classes('s-label-uppercase-bold')
+            # 1. Theme Dropdown (AppSelect)
+            AppSelect(
+                options={'solarized': 'Solarized'},
+                value=self.current_theme,
+                on_change=lambda e: self._handle_theme_change(e.value),
+                variant="simple",
+                clearable=False,
+                classes='s-label-uppercase-bold'
+            )
 
             # 2. Vertical Divider
             ui.element('div').classes('s-separator-vertical')
@@ -49,7 +49,7 @@ class ThemeSelector(ui.row):
                     size="xs",  # Reduced to XS to match dense badges
                     variant="simple",
                     tooltip="Switch to Light Mode"
-                ).style('--c-primary: var(--c-secondary);') # Theme Orange (Secondary)
+                ).classes('s-theme-toggle--light')
             else:
                 # Blue Moon with Stars (nights_stay)
                 btn = AppButton(
@@ -59,7 +59,7 @@ class ThemeSelector(ui.row):
                     size="xs",  # Reduced to XS
                     variant="simple",
                     tooltip="Switch to Dark Mode"
-                ).style('--c-primary: var(--c-primary);') # Theme Blue (Primary)
+                ).classes('s-theme-toggle--dark')
 
     def _toggle_mode(self):
         self.is_dark = not self.is_dark

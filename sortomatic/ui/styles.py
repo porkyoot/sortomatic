@@ -17,7 +17,7 @@ def generate_css_variables(theme: Theme) -> str:
         'violet': theme.colors.violet,
     }
     accents.update(theme.colors.accents)
-    accent_vars = "\\n".join([f"--c-accent-{k}: {v};" for k, v in accents.items()])
+    accent_vars = "\n".join([f"--c-accent-{k}: {v};" for k, v in accents.items()])
     
     return f"""
     :root {{
@@ -65,7 +65,6 @@ def generate_css_variables(theme: Theme) -> str:
         --s-64: calc(var(--unit) * 64);
         
         /* BORDERS */
-        /* BORDERS */
         --b-thin: 1px;
         --b-medium: calc(var(--b-thin) * 2);
         --b-thick: calc(var(--b-thin) * 4);
@@ -87,14 +86,6 @@ def generate_css_variables(theme: Theme) -> str:
         --shadow-card: 0 4px 6px -1px color-mix(in srgb, var(--c-text-main), transparent 90%), 0 2px 4px -2px color-mix(in srgb, var(--c-text-main), transparent 90%);
         --shadow-float: 0 10px 15px -3px color-mix(in srgb, var(--c-text-main), transparent 90%);
     }}
-    
-    body {{
-        background-color: var(--c-surface-1);
-        color: var(--c-text-main);
-        font-family: var(--font-main);
-        font-size: var(--text-base);
-        margin: 0;
-    }}
     """
 
 import re
@@ -106,6 +97,9 @@ def load_global_styles(theme: Theme):
     Loads separate CSS files from assets/css, minifies them, and injects them.
     """
     
+    # 0. Load Material Design Icons
+    ui.add_head_html('<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">')
+
     # 1. Inject Variables (Dynamic)
     ui.add_head_html(f"<style>{generate_css_variables(theme)}</style>")
     

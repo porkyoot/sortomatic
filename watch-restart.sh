@@ -34,7 +34,7 @@ echo "🔎 Watching $WATCH_DIR for changes… (Ctrl‑C to stop)"
 while true; do
   # Block until a change happens.
   # If this command fails (e.g. command not found, or user hits Ctrl-C), we don't proceed.
-  if inotifywait -r -e modify,create,delete,move --include '\.py$' "$WATCH_DIR" >/dev/null 2>&1; then
+  if inotifywait -r -e modify,create,delete,move --include '(\.py|\.css)$' "$WATCH_DIR" >/dev/null 2>&1; then
     echo "⚡ Change detected – restarting container"
     docker compose restart sortomatic
   else

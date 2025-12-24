@@ -52,6 +52,17 @@
     color: var(--c-text-main);
 }
 
+.s-btn--simple {
+    background-color: transparent;
+    color: var(--c-primary);
+    box-shadow: none;
+}
+
+.s-btn--simple:hover {
+    filter: brightness(1.2);
+    background-color: transparent;
+}
+
 /* Sizes */
 .s-btn--xs {
     padding: var(--s-1) var(--s-2);
@@ -307,6 +318,26 @@
     background-color: transparent;
     border: none;
     padding: 0;
+    width: auto !important;
+    min-width: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+.s-select--simple .q-field__control,
+.s-select--simple .q-field__marginal {
+    height: 32px !important;
+    min-height: 32px !important;
+}
+
+.s-select--simple .q-field__native {
+    padding: 0 var(--s-1) !important;
+    min-height: 0 !important;
+    line-height: 26px;
+}
+
+.s-select--simple .q-select__dropdown-icon {
+    font-size: 14px !important;
+    opacity: 0.5;
 }
 
 .s-select__popup {

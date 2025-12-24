@@ -29,8 +29,14 @@ def AppButton(
 
     # 3. Render
     # We use props('unelevated no-caps') to reset Quasar's defaults
-    btn = ui.button(label, icon=icon, on_click=on_click) \
-             .props('unelevated no-caps') \
+    props = 'unelevated no-caps'
+    color = 'primary'
+    if variant in ['simple', 'ghost']:
+        props += ' flat'
+        color = None
+        
+    btn = ui.button(label, icon=icon, on_click=on_click, color=color) \
+             .props(props) \
              .classes(" ".join(css_classes))
              
     if tooltip:

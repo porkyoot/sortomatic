@@ -14,7 +14,7 @@ class ThemeColors:
     primary: str
     secondary: str
     
-    # Accents (Solarized)
+    # Accents
     green: str
     red: str
     cyan: str

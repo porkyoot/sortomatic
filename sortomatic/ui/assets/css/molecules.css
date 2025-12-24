@@ -29,12 +29,23 @@
 .s-theme-selector {
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     align-items: center;
-    gap: var(--s-2);
-    padding: var(--s-1) var(--s-4);
+    gap: var(--s-1);
+    padding: 0 var(--s-4);
     border-radius: var(--r-full);
     border: var(--b-thin) solid var(--c-text-subtle);
     background-color: var(--c-surface-1);
+}
+
+.s-theme-toggle--light {
+    --c-primary: var(--c-accent-orange);
+    color: var(--c-primary) !important;
+}
+
+.s-theme-toggle--dark {
+    --c-primary: var(--c-accent-blue);
+    color: var(--c-primary) !important;
 }
 
 /* PANEL HEADER */
