@@ -1,6 +1,9 @@
 from nicegui import ui
 from typing import List, Dict, Optional, Callable
 from ...theme import Theme
+from ..atoms.badges import StatusBadge
+from ..atoms.special.histograms import AppHistogram
+from ..atoms.separators import AppSeparator
 
 
 def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
@@ -46,26 +49,23 @@ def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
         header.status_container = ui.row().classes('absolute-center gap-4')
         
         # Initialize Pill
-        from ..atoms.badges import StatusBadge
-        from ..atoms.special.histograms import AppHistogram
-        
         with header.status_container:
             # -- Pill 1: Connectivity Status --
             with ui.row().classes('s-status-badge-row'):
                 header.web_badge_container = ui.row()
-                ui.element('div').classes('s-separator-vertical')
+                AppSeparator()
                 header.scan_badge_container = ui.row()
-                ui.element('div').classes('s-separator-vertical')
+                AppSeparator()
                 header.db_badge_container = ui.row()
             
             # -- Pill 2: System Metrics --
             with ui.row().classes('s-status-badge-row'):
                 header.cpu_hist = AppHistogram([0]*6, label='CPU', color='var(--c-primary)', icon='mdi-cpu-64-bit', transparent=True, height='16px', bar_width='2px', max_bars=6)
-                ui.element('div').classes('s-separator-vertical')
+                AppSeparator()
                 header.gpu_hist = AppHistogram([0]*6, label='GPU', color='var(--c-success)', icon='mdi-expansion-card-variant', transparent=True, height='16px', bar_width='2px', max_bars=6)
-                ui.element('div').classes('s-separator-vertical')
+                AppSeparator()
                 header.ram_hist = AppHistogram([0]*6, label='RAM', color='var(--c-warning)', icon='mdi-memory', transparent=True, height='16px', bar_width='2px', max_bars=6)
-                ui.element('div').classes('s-separator-vertical')
+                AppSeparator()
                 header.disk_hist = AppHistogram([0]*6, label='Disk', color='var(--c-error)', icon='mdi-harddisk', transparent=True, height='16px', bar_width='2px', max_bars=6)
 
         # 3. Right Section: Global Controls
@@ -75,7 +75,6 @@ def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
 
     def _update_badges():
         """Update only the status badge contents with descriptive tooltips."""
-        from ..atoms.badges import StatusBadge
         
         # Web
         header.web_badge_container.clear()

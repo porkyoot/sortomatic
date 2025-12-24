@@ -9,6 +9,7 @@ def AppButton(
     shape: str = 'default',   # default, pill, square, circle
     size: str = 'md',         # xs, sm, md, lg
     tooltip: Optional[str] = None,
+    color: Optional[str] = None,
 ):
     """
     Semantic Wrapper.
@@ -30,15 +31,19 @@ def AppButton(
     # 3. Render
     # We use props('unelevated no-caps') to reset Quasar's defaults
     props = 'unelevated no-caps'
-    color = 'primary'
     if variant in ['simple', 'ghost']:
         props += ' flat'
-        color = None
+        btn_color = None
+    else:
+        btn_color = 'primary'
         
-    btn = ui.button(label, icon=icon, on_click=on_click, color=color) \
+    btn = ui.button(label, icon=icon, on_click=on_click, color=btn_color) \
              .props(props) \
              .classes(" ".join(css_classes))
              
+    if color:
+        btn.style(f'--c-primary: {color}')
+
     if tooltip:
         btn.tooltip(tooltip)
         

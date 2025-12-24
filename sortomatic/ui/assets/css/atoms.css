@@ -192,9 +192,9 @@
 .s-toggle {
     display: flex;
     align-items: center;
-    gap: var(--s-2);
+    gap: var(--s-1);
     cursor: pointer;
-    padding: var(--s-1) var(--s-2);
+    padding: var(--s-0_5) var(--s-1);
     border-radius: var(--r-md);
     transition: all 0.2s ease;
 }
@@ -209,7 +209,7 @@
     position: relative;
     width: var(--s-12);
     height: var(--s-6);
-    background-color: var(--c-surface-1);
+    background-color: var(--c-surface-2);
     transition: all 0.2s ease;
 }
 
@@ -222,17 +222,20 @@
 }
 
 .s-toggle__track {
-    font-size: var(--text-xs);
-    opacity: 0.3;
-    font-weight: 900;
+    height: 2px;
+    background-color: var(--c-text-subtle);
+    opacity: 0.2;
     position: absolute;
-    transition: all 0.2s ease;
+    border-radius: var(--r-full);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .s-toggle__thumb {
-    font-size: var(--text-md);
-    transition: all 0.2s ease;
+    font-size: var(--text-sm);
+    line-height: 1;
     position: absolute;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
 }
 
 /* HISTOGRAM */
@@ -284,6 +287,17 @@
 .s-progress {
     width: 100%;
     overflow: hidden;
+    height: var(--s-6) !important;
+}
+
+.s-progress .q-linear-progress__model {
+    background-color: var(--c-primary) !important;
+    transition: width 0.3s ease;
+}
+
+.s-progress .q-linear-progress__track {
+    background-color: var(--c-surface-3) !important;
+    opacity: 0.3;
 }
 
 .s-progress--pill {
@@ -294,15 +308,23 @@
     border-radius: var(--r-md);
 }
 
+.s-progress-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .s-progress__label {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
     font-size: 0.65rem;
-    font-weight: 700;
-    color: white;
-    /* Always white on colored bars */
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--c-text-active);
+    pointer-events: none;
+    z-index: 10;
 }
 
 /* SELECTS */
@@ -397,6 +419,13 @@
 
 .s-select__popup .q-item__section--main {
     font-size: var(--text-base);
+}
+
+.s-separator-vertical {
+    width: 1px;
+    height: var(--s-3);
+    background-color: var(--c-text-main);
+    opacity: 0.1;
 }
 
 /* SLIDERS */

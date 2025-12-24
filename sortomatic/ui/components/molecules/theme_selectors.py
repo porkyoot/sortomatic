@@ -2,6 +2,7 @@ from nicegui import ui
 from typing import Optional, Callable
 from ..atoms.buttons import AppButton
 from ..atoms.inputs.selects import AppSelect
+from ..atoms.separators import AppSeparator
 
 def ThemeSelector(
     current_theme: str = "solarized", 
@@ -48,7 +49,7 @@ def ThemeSelector(
             )
 
             # 2. Vertical Divider
-            ui.element('div').classes('s-separator-vertical')
+            AppSeparator()
 
             # 3. Dynamic Toggle Button
             if state['dark']:

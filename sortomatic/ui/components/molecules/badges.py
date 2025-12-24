@@ -3,6 +3,7 @@ from typing import List, Dict, Any
 from ...theme import Theme
 from ..atoms.badges import StatusBadge
 from ..atoms.special.histograms import AppHistogram
+from ..atoms.separators import AppSeparator
 
 def StatusBadgeRow(items: List[Dict[str, Any]], theme: Theme):
     """
@@ -20,7 +21,7 @@ def StatusBadgeRow(items: List[Dict[str, Any]], theme: Theme):
         for i, item in enumerate(items):
             # Add separator
             if i > 0:
-                ui.element('div').classes('s-separator-vertical')
+                AppSeparator()
             
             label = item.get('label', '?')
             history = item.get('history')

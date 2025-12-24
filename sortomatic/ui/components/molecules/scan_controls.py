@@ -3,6 +3,7 @@ from typing import Optional, Callable
 from ...theme import Theme
 from ..atoms.buttons import AppButton
 from ..atoms.inputs.toggles import AppToggle
+from ..atoms.separators import AppSeparator
 
 def ScanControls(
     state: str = "idle", 
@@ -34,55 +35,65 @@ def ScanControls(
         container.clear()
         with container:
             # 1. State-based Buttons
-            with ui.row().classes('items-center gap-2'):
+            with ui.row().classes('items-center'):
                 if container.current_state == IDLE:
                     AppButton(
-                        label="Start Scan",
                         icon="play_arrow",
-                        variant="primary",
-                        on_click=on_play
-                    ).style(f'--c-primary: {theme.colors.success if theme else "var(--c-success)"}')
+                        tooltip="Start Scan",
+                        variant="simple",
+                        size="sm",
+                        on_click=on_play,
+                        color=theme.colors.success if theme else "var(--c-success)"
+                    )
                 
                 elif container.current_state == RUNNING:
                     AppButton(
-                        label="Pause",
+                        tooltip="Pause Scan",
                         icon="pause",
-                        variant="primary",
-                        on_click=on_pause
-                    ).style(f'--c-primary: {theme.colors.warning if theme else "var(--c-warning)"}')
+                        variant="simple",
+                        size="sm",
+                        on_click=on_pause,
+                        color=theme.colors.warning if theme else "var(--c-warning)"
+                    )
                 
                 elif container.current_state == PAUSED:
                     AppButton(
-                        label="Resume",
+                        tooltip="Resume Scan",
                         icon="play_arrow",
-                        variant="primary",
-                        on_click=on_resume
-                    ).style(f'--c-primary: {theme.colors.blue if theme else "var(--c-primary)"}')
+                        variant="simple",
+                        size="sm",
+                        on_click=on_resume,
+                        color=theme.colors.info if theme else "var(--c-info)"
+                    )
                     
                     AppButton(
-                        label="Restart",
+                        tooltip="Restart Scan",
                         icon="refresh",
-                        variant="primary",
-                        on_click=on_restart
-                    ).style(f'--c-primary: {theme.colors.error if theme else "var(--c-error)"}')
+                        variant="simple",
+                        size="sm",
+                        on_click=on_restart,
+                        color=theme.colors.error if theme else "var(--c-error)"
+                    )
 
                 elif container.current_state == COMPLETED:
                     AppButton(
-                        label="Restart Scan",
+                        tooltip="Restart Scan",
                         icon="refresh",
-                        variant="primary",
-                        on_click=on_restart
-                    ).style(f'--c-primary: {theme.colors.error if theme else "var(--c-error)"}')
+                        variant="simple",
+                        size="sm",
+                        on_click=on_restart,
+                        color=theme.colors.error if theme else "var(--c-error)"
+                    )
 
             # 2. Separator
-            ui.element('div').classes('s-separator-vertical')
+            AppSeparator()
 
             # 3. Fast Mode Toggle
             AppToggle(
-                label="Fast Mode",
                 icon="bolt",
-                tooltip="Enable high-concurrency partial scanning",
-                on_change=on_fast_mode
+                tooltip="Fast Mode",
+                on_change=on_fast_mode,
+                color=theme.colors.yellow if theme else "var(--c-accent-yellow)"
             )
 
     container.set_state = set_state

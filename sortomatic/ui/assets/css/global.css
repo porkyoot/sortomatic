@@ -61,12 +61,6 @@ body .q-loading-bar,
 }
 
 /* MISC UTILS */
-.s-separator-vertical {
-    width: 1px;
-    height: var(--s-3);
-    background-color: var(--c-text-main);
-    opacity: 0.1;
-}
 
 .s-main-view {
     width: 100%;

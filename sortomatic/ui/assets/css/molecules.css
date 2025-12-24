@@ -19,11 +19,11 @@
 .s-control-group {
     display: flex;
     align-items: center;
-    gap: var(--s-4);
-    padding: var(--s-2) var(--s-4);
-    border-radius: var(--r-md);
-    background-color: color-mix(in srgb, var(--c-surface-1), transparent 50%);
-    border: var(--b-thin) solid color-mix(in srgb, var(--c-text-main), transparent 90%);
+    gap: var(--s-1);
+    padding: var(--s-0_5) var(--s-2);
+    border-radius: var(--r-full);
+    background-color: var(--c-surface-1);
+    border: var(--b-thin) solid var(--c-text-subtle);
 }
 
 /* THEME SELECTOR */

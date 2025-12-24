@@ -126,6 +126,7 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
                 state="idle",
                 progress=0.0,
                 eta="--:--",
+                unit="file/s",
                 theme=app_theme,
                 on_play=lambda: ui.notify("Starting scan...", type='info'),
                 on_restart=lambda: ui.notify("Restarting scan...", type='warning'),

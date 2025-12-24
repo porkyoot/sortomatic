@@ -7,6 +7,7 @@ def AppToggle(
     icon: Optional[str] = None,
     tooltip: Optional[str] = None,
     on_change: Optional[Callable] = None,
+    color: Optional[str] = None,
     classes: str = ""
 ):
     """
@@ -21,36 +22,43 @@ def AppToggle(
         classes: Additional CSS classes to apply to container
     """
     # Outer Container
-    with ui.row().classes(f's-toggle group {classes}') as container:
+    container = ui.row().classes(f's-toggle group {classes}')
+    if color:
+        container.style(f'--c-primary: {color}')
+
+    with container:
         if tooltip:
             ui.tooltip(tooltip).classes('text-[10px] font-bold')
             
         if icon:
-            ui.icon(icon, size='18px').classes('opacity-70 group-hover:opacity-100')
+            ui.icon(icon, size='18px') \
+                .classes('opacity-70 group-hover:opacity-100') \
+                .style('color: var(--c-primary)')
             
         if label:
-            ui.label(label).classes('text-[10px] font-bold uppercase tracking-widest opacity-70 group-hover:opacity-100')
+            ui.label(label) \
+                .classes('text-[10px] font-bold uppercase tracking-widest opacity-70 group-hover:opacity-100') \
+                .style('color: var(--c-primary)')
 
-        # Custom Toggle Visual (-*) or (*-)
-        with ui.row().classes('s-toggle__switch').style('border-color: var(--c-text-subtle);') as toggle_bg:
-            track = ui.label('-').classes('s-toggle__track')
+        # Custom Toggle Visual
+        with ui.row().classes('s-toggle__switch') as toggle_bg:
+            track = ui.element('div').classes('s-toggle__track')
             thumb = ui.label('●').classes('s-toggle__thumb')
             
             def update_ui(v: bool):
-                # Toggle logic for (-*) vs (*-)
                 if v:
-                    # (*-)
-                    track.style('right: 8px; left: auto;')
-                    thumb.style('right: auto; left: 6px;')
-                    thumb.style('color: var(--c-primary);')
+                    # Active State (-●)
+                    # Thumb on right, Track on left
+                    thumb.style('right: 6px; left: auto; color: var(--c-primary);')
+                    track.style('left: 8px; right: 14px; opacity: 0.4; background-color: var(--c-primary);')
                     
                     toggle_bg.classes('s-toggle__switch--active', remove='s-toggle__switch--inactive')
-                    toggle_bg.style('border-color: var(--c-primary);') # Keep manual override for safety if classes fail or lag
+                    toggle_bg.style('border-color: var(--c-primary);')
                 else:
-                    # (-*)
-                    track.style('left: 8px; right: auto;')
-                    thumb.style('left: auto; right: 6px;')
-                    thumb.style('color: var(--c-text-subtle);')
+                    # Inactive State (●-)
+                    # Thumb on left, Track on right
+                    thumb.style('left: 6px; right: auto; color: var(--c-text-subtle);')
+                    track.style('left: 14px; right: 8px; opacity: 0.2; background-color: var(--c-text-subtle);')
                     
                     toggle_bg.classes('s-toggle__switch--inactive', remove='s-toggle__switch--active')
                     toggle_bg.style('border-color: var(--c-text-subtle);')
