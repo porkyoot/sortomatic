@@ -78,8 +78,8 @@
 .s-status-badge-row {
     display: flex;
     align-items: center;
-    gap: var(--s-4);
-    padding: var(--s-1) var(--s-4);
+    gap: var(--s-2);
+    padding: var(--s-1) var(--s-3);
     border-radius: var(--r-full);
     border: var(--b-thin) solid var(--c-text-subtle);
     background-color: var(--c-surface-1);

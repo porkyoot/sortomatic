@@ -47,8 +47,9 @@ class ThemeLayout:
     radius_full: str = "9999px"
     
     # Typography
-    font_sans: str = "'Inter', system-ui, sans-serif"
-    font_mono: str = "'JetBrains Mono', monospace"
+    font_sans: str = "'Recursive', 'Inter', system-ui, sans-serif"
+    font_mono: str = "'Recursive', 'JetBrains Mono', monospace"
+
 
 @dataclass
 class Theme:

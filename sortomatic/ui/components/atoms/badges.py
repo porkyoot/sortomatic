@@ -13,7 +13,8 @@ def AppBadge(
     on_click: Optional[callable] = None,
     interactive: bool = False,
     disabled: bool = False,
-    icon_classes: str = ""
+    icon_classes: str = "",
+    tooltip: Optional[str] = None
 ):
     """
     A styled badge for displaying statuses, categories, or counts.
@@ -56,6 +57,9 @@ def AppBadge(
         if value:
             ui.label('|').classes('opacity-30')
             ui.label(value).classes('s-badge__value')
+        
+        if tooltip:
+            ui.tooltip(tooltip).classes('text-[10px] font-bold')
 
 def CategoryBadge(
     category: str,
@@ -90,6 +94,7 @@ def StatusBadge(
     variant: str = 'solid',
     icon: Optional[Union[str, Dict[str, str]]] = None,
     rotate: bool = False,
+    tooltip: Optional[str] = None,
     **kwargs
 ):
     """
@@ -127,6 +132,7 @@ def StatusBadge(
         text_color=theme.colors.text_main,  # Use the theme's foreground color
         variant=variant,
         icon_classes=icon_cls,
+        tooltip=tooltip,
         **kwargs
     )
 

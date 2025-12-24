@@ -97,8 +97,12 @@ def load_global_styles(theme: Theme):
     Loads separate CSS files from assets/css, minifies them, and injects them.
     """
     
-    # 0. Load Material Design Icons
+    # 0. Load Material Design Icons & Recursive Font
     ui.add_head_html('<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">')
+    ui.add_head_html('<link rel="preconnect" href="https://fonts.googleapis.com">')
+    ui.add_head_html('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
+    ui.add_head_html('<link href="https://fonts.googleapis.com/css2?family=Recursive:wght,MONO@300..1000,0;300..1000,1&display=swap" rel="stylesheet">')
+
 
     # 1. Inject Variables (Dynamic)
     ui.add_head_html(f"<style>{generate_css_variables(theme)}</style>")
