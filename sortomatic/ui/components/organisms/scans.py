@@ -67,18 +67,17 @@ def ScanCard(
             # Row 2: Status (Left) and Indicators (Right)
             with ui.row().classes('w-full items-center justify-between gap-3 no-wrap'):
                 # Status / Current Item
-                color = 'var(--c-error)' if card_state['is_error'] else 'var(--c-text-subtle)'
                 ui.label(card_state['current_item']) \
-                    .classes('text-[10px] font-mono truncate max-w-[50%]') \
-                    .style(f'color: {color};')
+                    .classes('s-scan-card__status truncate max-w-[50%]') \
+                    .style(f"color: {'var(--c-error)' if card_state['is_error'] else 'inherit'};")
 
                 # Indicators Row
                 with ui.row().classes('items-center gap-4 shrink-0'):
                     # Speed
                     with ui.row().classes('items-center gap-2'):
                         ui.icon('speed', size='16px').classes('opacity-40')
-                        ui.label(f"{card_state['speed']}").classes('s-scan-card__eta') # Style reuse
-                        ui.label(card_state['unit']).classes('text-[10px] opacity-30 uppercase font-bold tracking-tighter')
+                        ui.label(f"{card_state['speed']}").classes('s-scan-card__eta')
+                        ui.label(card_state['unit']).classes('s-scan-card__unit')
 
                     # Separator
                     AppSeparator()

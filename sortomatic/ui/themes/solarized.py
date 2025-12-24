@@ -41,6 +41,7 @@ SOLARIZED_DARK = Theme(
         blue=BLUE,
         magenta=MAGENTA,
         violet=VIOLET,
+        shadow=BASE3,
     
     ),
     layout=ThemeLayout(
@@ -72,6 +73,7 @@ SOLARIZED_LIGHT = Theme(
         blue=BLUE,
         magenta=MAGENTA,
         violet=VIOLET,
+        shadow=BASE03,
     
     ),
     layout=ThemeLayout(

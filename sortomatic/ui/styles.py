@@ -33,6 +33,7 @@ def generate_css_variables(theme: Theme) -> str:
         --c-success: {theme.colors.success};
         --c-warning: {theme.colors.warning};
         --c-error: {theme.colors.error};
+        --c-shadow: {theme.colors.shadow};
         {accent_vars}
 
         /* LAYOUT (Responsive) */
@@ -87,9 +88,9 @@ def generate_css_variables(theme: Theme) -> str:
 
         
         /* SHADOWS (Semantic) */
-        --shadow-subtle: 0 1px 2px 0 color-mix(in srgb, var(--c-text-active), transparent 90%);
-        --shadow-card: 0 4px 6px -1px color-mix(in srgb, var(--c-text-active), transparent 80%), 0 2px 4px -2px color-mix(in srgb, var(--c-text-active), transparent 80%);
-        --shadow-float: 0 10px 15px -3px color-mix(in srgb, var(--c-text-active), transparent 80%);
+        --shadow-subtle: 0 1px 2px 0 color-mix(in srgb, var(--c-shadow), transparent 90%);
+        --shadow-card: 0 4px 6px -1px color-mix(in srgb, var(--c-shadow), transparent 80%), 0 2px 4px -2px color-mix(in srgb, var(--c-shadow), transparent 80%);
+        --shadow-float: 0 10px 15px -3px color-mix(in srgb, var(--c-shadow), transparent 80%);
 
         /* QUASAR OVERRIDES */
         --q-primary: {theme.colors.primary} !important;

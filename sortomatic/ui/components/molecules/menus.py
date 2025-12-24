@@ -97,7 +97,7 @@ class WorkflowMenu(ui.row):
             for i, (label, color) in enumerate(steps_data):
                 is_first = (i == 0)
                 is_last = (i == len(steps_data) - 1)
-                is_locked = False #(i > self._unlocked_up_to)
+                is_locked = (i > self._unlocked_up_to)
                 is_active = (i == self._current_step_index)
                 
                 ChevronStep(

@@ -60,15 +60,15 @@
 }
 
 
-.s-btn--disable,
-.s-btn:disabled,
-.s-btn.q-btn--disabled {
-    background-color: var(--c-surface-2) !important;
-    color: var(--c-text-subtle) !important;
+.s-btn.s-btn--disable,
+.s-btn.q-btn--disabled,
+.s-btn[disabled] {
+    background-color: var(--c-surface-1) !important;
+    color: var(--c-primary) !important;
     cursor: not-allowed !important;
-    pointer-events: none;
-    opacity: 0.6;
-    filter: grayscale(0.8);
+    pointer-events: none !important;
+    opacity: 1 !important;
+    filter: none !important;
     transform: none !important;
     box-shadow: none !important;
 }
@@ -158,10 +158,11 @@
 .s-card {
     background-color: var(--c-surface-2);
     border-radius: var(--r-lg);
-    border: var(--b-thin) solid color-mix(in srgb, var(--c-text-main), transparent 90%);
+    border: var(--b-thin) solid color-mix(in srgb, var(--c-text-main));
     padding: var(--s-6);
     /* 1.5rem padding */
-    transition: box-shadow 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-card) !important;
 }
 
 .s-card--glass {
@@ -171,8 +172,9 @@
 }
 
 .s-card:hover {
-    box-shadow: var(--shadow-card);
-    border-color: color-mix(in srgb, var(--c-text-main), transparent 80%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-float) !important;
+    border-color: color-mix(in srgb, var(--c-text-main));
 }
 
 .s-card--subtle {
@@ -183,7 +185,7 @@
 
 .s-card--vibrant {
     border-color: var(--c-primary);
-    box-shadow: 0 0 15px color-mix(in srgb, var(--c-primary), transparent 80%);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--c-primary));
 }
 
 /* BADGES */

@@ -49,7 +49,9 @@ def AppButton(
         btn.style(f'--c-primary: {color}')
 
     if state == 'disable':
-        btn.props('disabled')
+        # Avoid Quasar's 'disabled' prop to prevent non-overridable dimming.
+        # .s-btn--disable in CSS handles the visual state and pointer-events.
+        pass
 
     if tooltip:
         btn.tooltip(tooltip)

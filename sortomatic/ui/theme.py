@@ -31,6 +31,8 @@ class ThemeColors:
     success: str
     warning: str
     error: str
+    
+    shadow: str
 
     # Accents for visualization
     accents: dict[str, str] = field(default_factory=dict)
