@@ -6,6 +6,4 @@ services:
         volumes:
             - ./data:/data
             - .:/app
-            - ../NiceTheme:/mnt/nicetheme
         working_dir: /app
-        command: sh /app/start_dev.sh
