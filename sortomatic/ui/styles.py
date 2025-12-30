@@ -91,7 +91,7 @@ def generate_css_variables(theme: Theme) -> str:
         --shadow-subtle: 0 1px 2px 0 color-mix(in srgb, var(--c-shadow), transparent 90%);
         --shadow-card: 0 4px 6px -1px color-mix(in srgb, var(--c-shadow), transparent 80%), 0 2px 4px -2px color-mix(in srgb, var(--c-shadow), transparent 80%);
         --shadow-float: 0 10px 15px -3px color-mix(in srgb, var(--c-shadow), transparent 80%);
-    }
+    }}
     """
 
 def apply_theme_natively(theme: Theme):

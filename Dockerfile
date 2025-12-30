@@ -11,15 +11,13 @@ RUN apk add --no-cache \
     jpeg-dev \
     git
 
-# Clone NiceTheme and install it
-RUN git clone https://github.com/porkyoot/nicetheme /deps/NiceTheme
-RUN pip install -e /deps/NiceTheme
-
-WORKDIR /app
-
+# Install NiceTheme directly from git
+RUN pip install --no-cache-dir git+https://github.com/porkyoot/nicetheme
 # Copy dependency files
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+WORKDIR /app
 
 # Copy the rest
 COPY . .
