@@ -35,16 +35,19 @@ def start_app(port: int, theme: str, dark: bool, path: str = None):
             if not client.has_socket_connection:
                 return
             is_dark = theme_info.get('is_dark', True)
-            new_theme_name = "solarized_dark" if is_dark else "solarized_light"
             
-            # Deduplicate: don't re-inject if already active
-            if getattr(client, 'theme_name', None) == new_theme_name:
-                return
-            client.theme_name = new_theme_name
-
             from .themes.solarized import SOLARIZED_DARK, SOLARIZED_LIGHT
             new_theme = SOLARIZED_DARK if is_dark else SOLARIZED_LIGHT
+            
+            # 1. Update native Quasar brand colors
+            from .styles import apply_theme_natively
+            apply_theme_natively(new_theme)
+
+            # 2. Inject custom CSS variables (Surfaces, specific text colors)
             load_global_styles(new_theme)
+            
+            # Notify theme selector or other components if needed
+            client.theme_name = "solarized_dark" if is_dark else "solarized_light"
 
         bridge.on("theme_changed", handle_theme_change)
         

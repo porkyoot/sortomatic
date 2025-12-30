@@ -40,49 +40,44 @@ def ScanControls(
                     AppButton(
                         icon="play_arrow",
                         tooltip="Start Scan",
-                        variant="simple",
+                        variant="success",
                         size="sm",
-                        on_click=on_play,
-                        color=theme.colors.success if theme else "var(--c-success)"
+                        on_click=on_play
                     )
                 
                 elif container.current_state == RUNNING:
                     AppButton(
                         tooltip="Pause Scan",
                         icon="pause",
-                        variant="simple",
+                        variant="warning",
                         size="sm",
-                        on_click=on_pause,
-                        color=theme.colors.warning if theme else "var(--c-warning)"
+                        on_click=on_pause
                     )
                 
                 elif container.current_state == PAUSED:
                     AppButton(
                         tooltip="Resume Scan",
                         icon="play_arrow",
-                        variant="simple",
+                        variant="info",
                         size="sm",
-                        on_click=on_resume,
-                        color=theme.colors.info if theme else "var(--c-info)"
+                        on_click=on_resume
                     )
                     
                     AppButton(
                         tooltip="Restart Scan",
                         icon="refresh",
-                        variant="simple",
+                        variant="error",
                         size="sm",
-                        on_click=on_restart,
-                        color=theme.colors.error if theme else "var(--c-error)"
+                        on_click=on_restart
                     )
 
                 elif container.current_state == COMPLETED:
                     AppButton(
                         tooltip="Restart Scan",
                         icon="refresh",
-                        variant="simple",
+                        variant="error",
                         size="sm",
-                        on_click=on_restart,
-                        color=theme.colors.error if theme else "var(--c-error)"
+                        on_click=on_restart
                     )
 
             # 2. Separator

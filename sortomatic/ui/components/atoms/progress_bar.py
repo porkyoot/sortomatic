@@ -3,14 +3,11 @@ from typing import Optional
 
 def AppProgressBar(
     value: Optional[float] = 0.0,
-    color: str = 'var(--q-primary)',
-    shape: str = 'pill',  # 'pill' or 'rectangle'
+    color: str = 'primary', # Native color name (primary, secondary, etc.)
+    shape: str = 'pill',
     size: str = '12px',
     show_label: bool = False
 ):
-    """
-    A styled linear progress bar.
-    """
     """
     A styled linear progress bar.
     """
@@ -21,8 +18,8 @@ def AppProgressBar(
     else:
         container_classes.append("s-progress--rect")
         
-    bar = ui.linear_progress(value=value).classes(" ".join(container_classes)).style(
-        f'color: {color}; height: {size};'
+    bar = ui.linear_progress(value=value, color=color).classes(" ".join(container_classes)).style(
+        f'height: {size};'
     ).props('instant-feedback')
     
     # Track (background) styling often needs to be more subtle

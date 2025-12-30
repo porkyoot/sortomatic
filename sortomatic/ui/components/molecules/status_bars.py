@@ -72,7 +72,7 @@ def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
             # 3. Right Section: Global Controls
             with ui.row().classes('items-center gap-4'):
                 from .theme_selectors import ThemeSelector
-                ThemeSelector(is_dark=True, on_change=header.on_theme_change)
+                ThemeSelector(is_dark=theme.is_dark, on_change=header.on_theme_change)
 
 
     def _update_badges():

@@ -30,10 +30,9 @@ class DangerousButton(ui.element):
             self.classes('p-2') # Add padding so the arc can grow outside the button
             self.btn = AppButton(
                 icon=icon,
-                variant='primary',
+                variant='error',
                 shape='circle',
                 size=size,
-                color=color,
             ).classes('s-nuke-btn w-full h-full')
             
             # SVG Progress Ring Overlay

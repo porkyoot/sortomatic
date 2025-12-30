@@ -48,11 +48,13 @@ def ScanCard(
             # Row 1: Progress Bar and Controls
             with ui.row().classes('w-full items-center gap-4 no-wrap'):
                 # Integrated Progress Bar
-                with ui.element('div').classes('flex-grow s-progress-container'):
-                    ui.linear_progress(value=card_state['progress']/100.0, show_value=False) \
-                        .classes('s-progress s-progress--rect')
-                    # We show the percentage here instead of the name
-                    ui.label(f"{card_state['progress']:.1f}%").classes('s-progress__label')
+                from ..atoms.progress_bar import AppProgressBar
+                with ui.element('div').classes('flex-grow'):
+                    AppProgressBar(
+                        value=card_state['progress']/100.0, 
+                        show_label=True,
+                        color='primary'
+                    )
                 
                 ScanControls(
                     state=control_state,

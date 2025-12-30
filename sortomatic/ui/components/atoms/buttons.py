@@ -33,20 +33,34 @@ def AppButton(
     # 3. Render
     # We use props('unelevated no-caps') to reset Quasar's defaults
     props = 'unelevated no-caps'
+    
+    # Map variants to native colors
+    color_map = {
+        'primary': 'primary',
+        'secondary': 'secondary',
+        'success': 'positive',
+        'error': 'negative',
+        'warning': 'warning',
+        'info': 'info'
+    }
+    
+    btn_color = color_map.get(variant)
+    
     if variant in ['simple', 'ghost']:
         props += ' flat'
         btn_color = None
-    else:
-        # If a custom color is provided, we set color=None to prevent Quasar 
-        # from adding 'bg-primary' which is hard to override.
-        btn_color = None if color else 'primary'
         
+    # If explicit color is passed, it overrides the variant's color
+    if color:
+        btn_color = None # We'll set it via style
+
     btn = ui.button(label, icon=icon, on_click=on_click, color=btn_color) \
              .props(props) \
              .classes(" ".join(css_classes))
              
     if color:
-        btn.style(f'--c-primary: {color}')
+        # For non-standard colors, we still use the CSS variable approach
+        btn.style(f'background-color: {color} !important; color: white !important;')
 
     if state == 'disable':
         # Avoid Quasar's 'disabled' prop to prevent non-overridable dimming.

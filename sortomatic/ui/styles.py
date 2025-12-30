@@ -91,15 +91,29 @@ def generate_css_variables(theme: Theme) -> str:
         --shadow-subtle: 0 1px 2px 0 color-mix(in srgb, var(--c-shadow), transparent 90%);
         --shadow-card: 0 4px 6px -1px color-mix(in srgb, var(--c-shadow), transparent 80%), 0 2px 4px -2px color-mix(in srgb, var(--c-shadow), transparent 80%);
         --shadow-float: 0 10px 15px -3px color-mix(in srgb, var(--c-shadow), transparent 80%);
-
-        /* QUASAR OVERRIDES */
-        --q-primary: {theme.colors.primary} !important;
-        --q-secondary: {theme.colors.secondary} !important;
-        --q-positive: {theme.colors.success} !important;
-        --q-warning: {theme.colors.warning} !important;
-        --q-negative: {theme.colors.error} !important;
-    }}
+    }
     """
+
+def apply_theme_natively(theme: Theme):
+    """
+    Apply theme colors and dark mode state using NiceGUI/Quasar built-ins.
+    This handles the brand colors and standard UI elements (buttons, toggles, etc.)
+    """
+    ui.colors(
+        primary=theme.colors.primary,
+        secondary=theme.colors.secondary,
+        accent=theme.colors.blue, # or another accent
+        positive=theme.colors.success,
+        negative=theme.colors.error,
+        info=theme.colors.info,
+        warning=theme.colors.warning
+    )
+    
+    # Set dark mode state. 
+    # Use explicit flag if it exists, otherwise fallback to check surface_1
+    is_dark = getattr(theme, 'is_dark', theme.colors.surface_1 == "#002b36")
+    ui.dark_mode(is_dark)
+
 
 import re
 from pathlib import Path
@@ -109,18 +123,20 @@ def load_global_styles(theme: Theme):
     Injects the CSS Design System. 
     Loads separate CSS files from assets/css, minifies them, and injects them.
     """
+    # 1. Apply native theme settings (colors, dark mode)
+    apply_theme_natively(theme)
     
-    # 0. Load Material Design Icons & Recursive Font
+    # 2. Load Material Design Icons & Recursive Font
     ui.add_head_html('<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">')
     ui.add_head_html('<link rel="preconnect" href="https://fonts.googleapis.com">')
     ui.add_head_html('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>')
     ui.add_head_html('<link href="https://fonts.googleapis.com/css2?family=Recursive:wght,MONO@300..1000,0;300..1000,1&display=swap" rel="stylesheet">')
 
 
-    # 1. Inject Variables (Dynamic)
+    # 3. Inject Variables (Dynamic)
     ui.add_head_html(f"<style>{generate_css_variables(theme)}</style>")
     
-    # 2. Load and Minify Static CSS
+    # 4. Load and Minify Static CSS
     # Order matters: Global -> Atoms -> Molecules -> Organisms
     base_dir = Path(__file__).parent / 'assets' / 'css'
     files = ['global.css', 'atoms.css', 'molecules.css', 'organisms.css']

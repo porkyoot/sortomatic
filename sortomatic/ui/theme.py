@@ -57,6 +57,7 @@ class ThemeLayout:
 @dataclass
 class Theme:
     colors: ThemeColors
+    is_dark: bool = True
     layout: ThemeLayout = field(default_factory=ThemeLayout)
 
 

@@ -19,6 +19,7 @@ CYAN   = "#2aa198"
 GREEN  = "#859900"
 
 SOLARIZED_DARK = Theme(
+    is_dark=True,
     colors=ThemeColors(
         surface_1=BASE03,     # Deep background
         surface_2=BASE02,     # Card background
@@ -51,6 +52,7 @@ SOLARIZED_DARK = Theme(
 )
 
 SOLARIZED_LIGHT = Theme(
+    is_dark=False,
     colors=ThemeColors(
         surface_1=BASE3,
         surface_2=BASE2,
