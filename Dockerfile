@@ -10,14 +10,18 @@ RUN apk add --no-cache \
     zlib-dev \
     jpeg-dev
 
+# Copy NiceTheme and install it
+COPY NiceTheme /deps/NiceTheme
+RUN pip install -e /deps/NiceTheme
+
 WORKDIR /app
 
 # Copy dependency files
-COPY requirements.txt .
+COPY Sortomatic/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest
-COPY . .
+COPY Sortomatic .
 
 # Install the project in editable mode
 RUN pip install -e .
