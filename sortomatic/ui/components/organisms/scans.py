@@ -1,6 +1,6 @@
 from nicegui import ui
 from typing import Optional, Callable
-from ...theme import Theme
+# from ...theme import Theme # REMOVED
 from ..atoms.cards import AppCard
 from ..atoms.separators import AppSeparator
 from ..molecules.scan_controls import ScanControls
@@ -14,7 +14,7 @@ def ScanCard(
     speed: str = "0",
     unit: str = "file/s",
     is_error: bool = False,
-    theme: Theme = None,
+    # theme: Theme = None, # REMOVED
     on_play: Optional[Callable] = None,
     on_pause: Optional[Callable] = None,
     on_resume: Optional[Callable] = None,
@@ -58,7 +58,7 @@ def ScanCard(
                 
                 ScanControls(
                     state=control_state,
-                    theme=theme,
+                    # theme=theme, # REMOVED
                     on_play=on_play,
                     on_pause=on_pause,
                     on_resume=on_resume,
@@ -71,7 +71,7 @@ def ScanCard(
                 # Status / Current Item
                 ui.label(card_state['current_item']) \
                     .classes('s-scan-card__status truncate max-w-[50%]') \
-                    .style(f"color: {'var(--c-error)' if card_state['is_error'] else 'inherit'};")
+                    .style(f"color: {'var(--nt-negative)' if card_state['is_error'] else 'inherit'};")
 
                 # Indicators Row
                 with ui.row().classes('items-center gap-4 shrink-0'):

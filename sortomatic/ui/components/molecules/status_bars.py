@@ -1,18 +1,19 @@
 from nicegui import ui
 from typing import List, Dict, Optional, Callable
-from ...theme import Theme
+# from ...theme import Theme # REMOVED
+from nicetheme import nt
 from ..atoms.badges import StatusBadge
 from ..atoms.special.histograms import AppHistogram
 from ..atoms.separators import AppSeparator
 
 
-def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
+def StatusBar(on_theme_change: Optional[Callable] = None):
     """
     A premium status bar for the top of the application.
     Provides system metrics, connectivity status, and global settings.
     """
     with ui.header().classes('p-0 gap-0 flex-col') as header:
-        header.theme = theme
+        # header.theme = theme # REMOVED
         header.on_theme_change = on_theme_change
         
         # Internal State
@@ -72,7 +73,10 @@ def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
             # 3. Right Section: Global Controls
             with ui.row().classes('items-center gap-4'):
                 from .theme_selectors import ThemeSelector
-                ThemeSelector(is_dark=theme.is_dark, on_change=header.on_theme_change)
+                # Pass current state via nt manager or detect? 
+                # For now assuming defaults or handled by component internal logic if we refactor it too.
+                # But ThemeSelector signature ...
+                ThemeSelector(on_change=header.on_theme_change)
 
 
     def _update_badges():
@@ -82,19 +86,19 @@ def StatusBar(theme: Theme, on_theme_change: Optional[Callable] = None):
         header.web_badge_container.clear()
         with header.web_badge_container:
             web_tooltip = f"Backend Connection: {header.backend_state.capitalize()}"
-            StatusBadge('Web', header.backend_state, header.theme, icon=WEB_ICONS, variant='simple', interactive=False, tooltip=web_tooltip)
+            StatusBadge('Web', header.backend_state, icon=WEB_ICONS, variant='simple', interactive=False, tooltip=web_tooltip)
             
         # Scan
         header.scan_badge_container.clear()
         with header.scan_badge_container:
             scan_tooltip = f"System Scan: {header.scan_state.capitalize()}"
-            StatusBadge('Scan', header.scan_state, header.theme, icon=SCAN_ICONS, rotate=header.scan_state == 'pending', variant='simple', interactive=False, tooltip=scan_tooltip)
+            StatusBadge('Scan', header.scan_state, icon=SCAN_ICONS, rotate=header.scan_state == 'pending', variant='simple', interactive=False, tooltip=scan_tooltip)
             
         # DB
         header.db_badge_container.clear()
         with header.db_badge_container:
             db_tooltip = f"Database Status: {header.db_state.capitalize()}"
-            StatusBadge('DB', header.db_state, header.theme, icon=DB_ICONS, variant='simple', interactive=False, tooltip=db_tooltip)
+            StatusBadge('DB', header.db_state, icon=DB_ICONS, variant='simple', interactive=False, tooltip=db_tooltip)
 
     def refresh_status(backend_state: str, db_state: str, scan_state: str):
         """Update system status badges."""

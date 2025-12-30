@@ -1,14 +1,15 @@
 from nicegui import ui
 from typing import Optional, Union, Dict
 from .icons import AppIcon
-from ...theme import CategoryStyles, Theme, StatusStyles
+from ...theme import CategoryStyles, StatusStyles
+# from ...theme import Theme # REMOVED
 
 def AppBadge(
     label: str,
     value: Optional[str] = None,
     icon: Optional[str] = None,
-    color: str = 'var(--c-primary)',
-    text_color: str = 'var(--c-text-main)',
+    color: str = 'var(--nt-primary)', # Updated to nicetheme var
+    text_color: str = 'var(--nt-color-white)', # Updated to nicetheme var (or --nt-content-accent)
     variant: str = 'solid', # solid, glass, subtle
     on_click: Optional[callable] = None,
     interactive: bool = False,
@@ -63,7 +64,7 @@ def AppBadge(
 
 def CategoryBadge(
     category: str,
-    theme: Theme,
+    # theme: Theme, # REMOVED
     value: Optional[str] = None,
     icon: Optional[str] = None,
     interactive: bool = False,
@@ -74,7 +75,7 @@ def CategoryBadge(
     """
     A specialized badge for categories with automatic coloring.
     """
-    color = CategoryStyles.get_color(category, theme)
+    color = CategoryStyles.get_color(category) # Removed theme arg
     return AppBadge(
         label=category,
         value=value,
@@ -89,7 +90,7 @@ def CategoryBadge(
 def StatusBadge(
     label: str,
     state: str,
-    theme: Theme,
+    # theme: Theme, # REMOVED
     value: Optional[str] = None,
     variant: str = 'solid',
     icon: Optional[Union[str, Dict[str, str]]] = None,
@@ -104,7 +105,7 @@ def StatusBadge(
               state names (ready, error, pending, idle, unknown) to icon names.
         rotate: If True, applies rotation animation to the icon.
     """
-    color = StatusStyles.get_color(state, theme)
+    color = StatusStyles.get_color(state) # Removed theme arg
     
     # Resolve Icon
     effective_icon = None
@@ -129,7 +130,7 @@ def StatusBadge(
         value=value,
         icon=effective_icon,
         color=color,
-        text_color=theme.colors.text_main,  # Use the theme's foreground color
+        text_color="var(--nt-color-white)",  # Use fixed light color or logic? For now white text is safe on colored badges
         variant=variant,
         icon_classes=icon_cls,
         tooltip=tooltip,
@@ -141,7 +142,7 @@ def CopyBadge(
     label: str = "Copy",
     value: Optional[str] = None,
     icon: str = "mdi-content-copy",
-    color: str = "var(--c-primary)",
+    color: str = "var(--nt-primary)",
     variant: str = "glass",
     success_message: str = "Copied to clipboard!"
 ):
@@ -150,7 +151,7 @@ def CopyBadge(
     """
     def handle_copy():
         ui.clipboard.write(text_to_copy)
-        ui.notify(success_message, type='positive', color='var(--c-success)')
+        ui.notify(success_message, type='positive', color='var(--nt-positive)')
 
     return AppBadge(
         label=label,

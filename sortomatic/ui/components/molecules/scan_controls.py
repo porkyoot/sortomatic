@@ -1,13 +1,13 @@
 from nicegui import ui
 from typing import Optional, Callable
-from ...theme import Theme
+# from ...theme import Theme # REMOVED
 from ..atoms.buttons import AppButton
 from ..atoms.inputs.toggles import AppToggle
 from ..atoms.separators import AppSeparator
 
 def ScanControls(
     state: str = "idle", 
-    theme: Theme = None,
+    # theme: Theme = None, # REMOVED
     on_play: Optional[Callable] = None,
     on_pause: Optional[Callable] = None,
     on_resume: Optional[Callable] = None,
@@ -88,7 +88,7 @@ def ScanControls(
                 icon="bolt",
                 tooltip="Fast Mode",
                 on_change=on_fast_mode,
-                color=theme.colors.yellow if theme else "var(--c-accent-yellow)"
+                color="var(--nt-color-yellow)"
             )
 
     container.set_state = set_state

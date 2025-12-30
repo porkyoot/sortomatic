@@ -1,92 +1,25 @@
-from dataclasses import dataclass, field
-from nicegui import ui
-
-# --- 1. DESIGN TOKENS (The "DNA") ---
-
-@dataclass
-class ThemeColors:
-    """Semantic color names, not just 'blue' or 'red'."""
-    surface_1: str  # Main background
-    surface_2: str  # Secondary background (cards)
-    surface_3: str  # Tertiary (hovers, inputs)
-    text_main: str
-    text_subtle: str
-    text_active: str
-    primary: str
-    secondary: str
-    
-    # Accents
-    green: str
-    red: str
-    cyan: str
-    orange: str
-    yellow: str
-    blue: str
-    magenta: str
-    violet: str
-
-    # Functional
-    debug: str
-    info: str
-    success: str
-    warning: str
-    error: str
-    
-    shadow: str
-
-    # Accents for visualization
-    accents: dict[str, str] = field(default_factory=dict)
-
-@dataclass
-class ThemeLayout:
-    """Responsive spacing and sizing tokens (using REM)."""
-    # Spacing scale: 0=0, 1=0.25rem, 2=0.5rem, 4=1rem, etc.
-    spacing_unit: str = "0.25rem" 
-    
-    # Radii
-    radius_sm: str = "0.25rem"  # 4px
-    radius_md: str = "0.5rem"   # 8px
-    radius_lg: str = "1rem"     # 16px
-    radius_full: str = "9999px"
-    
-    # Typography
-    font_sans: str = "'Recursive', 'Inter', system-ui, sans-serif"
-    font_mono: str = "'Recursive', 'JetBrains Mono', monospace"
-
-
-@dataclass
-class Theme:
-    colors: ThemeColors
-    is_dark: bool = True
-    layout: ThemeLayout = field(default_factory=ThemeLayout)
-
-
-# --- 2. CSS GENERATOR (The "Compiler") ---
-# Moved to styles.py to keep concerns separated (Theme=Data, Styles=Implementation)
-
-
-# --- 3. LOGIC ADAPTERS (For Backward Compatibility & Helper Logic) ---
+# --- 1. LOGIC ADAPTERS (Stateless) ---
 
 class CategoryStyles:
     """Centralized management for category colors and ordering."""
     
     @staticmethod
-    def get_color(category: str, theme: Theme) -> str:
+    def get_color(category: str) -> str:
         from sortomatic.l8n import Strings
         
-        # Map to accents or theme colors
+        # Map to CSS variables defined by nicetheme
         mapping = {
-            Strings.CAT_IMAGE: theme.colors.green,
-            Strings.CAT_VIDEO: theme.colors.red,
-            Strings.CAT_DOCUMENT: theme.colors.cyan,
-            Strings.CAT_MUSIC: theme.colors.orange,
-            Strings.CAT_ARCHIVE: theme.colors.yellow,
-            Strings.CAT_CODE: theme.colors.blue,
-            Strings.CAT_3D: theme.colors.magenta,
-            Strings.CAT_SOFTWARE: theme.colors.violet,
-            Strings.CAT_OTHER: theme.colors.debug,
+            Strings.CAT_IMAGE: "var(--nt-color-green)",
+            Strings.CAT_VIDEO: "var(--nt-color-red)",
+            Strings.CAT_DOCUMENT: "var(--nt-color-cyan)",
+            Strings.CAT_MUSIC: "var(--nt-color-orange)",
+            Strings.CAT_ARCHIVE: "var(--nt-color-yellow)",
+            Strings.CAT_CODE: "var(--nt-color-blue)",
+            Strings.CAT_3D: "var(--nt-color-magenta)",
+            Strings.CAT_SOFTWARE: "var(--nt-color-violet)",
+            Strings.CAT_OTHER: "var(--nt-color-base00)", # Fallback/Debug
         }
-        return mapping.get(category, theme.colors.debug)
+        return mapping.get(category, "var(--nt-color-base00)")
 
     @staticmethod
     def get_icon(category: str) -> str:
@@ -149,16 +82,16 @@ class StatusStyles:
         return StatusStyles._SYNONYMS.get(s, StatusStyles.UNKNOWN)
 
     @staticmethod
-    def get_color(state: str, theme: Theme) -> str:
+    def get_color(state: str) -> str:
         resolved = StatusStyles.resolve_state(state)
         mapping = {
-            StatusStyles.UNKNOWN: theme.colors.debug,
-            StatusStyles.PENDING: theme.colors.warning,
-            StatusStyles.READY: theme.colors.success,
-            StatusStyles.ERROR: theme.colors.error,
-            StatusStyles.IDLE: theme.colors.info,
+            StatusStyles.UNKNOWN: "var(--nt-color-base00)",
+            StatusStyles.PENDING: "var(--nt-warning)",
+            StatusStyles.READY: "var(--nt-positive)",
+            StatusStyles.ERROR: "var(--nt-negative)",
+            StatusStyles.IDLE: "var(--nt-info)",
         }
-        return mapping.get(resolved, theme.colors.debug)
+        return mapping.get(resolved, "var(--nt-color-base00)")
 
     @staticmethod
     def get_icon(state: str) -> str:

@@ -1,6 +1,7 @@
 from nicegui import ui
 from typing import List, Dict, Optional, Callable, Union
-from ...theme import Theme, StatusStyles
+from ...theme import StatusStyles
+# from ...theme import Theme
 from ..atoms.buttons import AppButton
 from ..atoms.dangerous_buttons import DangerousButton
 
@@ -43,9 +44,9 @@ class WorkflowMenu(ui.row):
     A menu with buttons that is fixed on scroll and is a row on top of the screen.
     Each step is a chevron that unlocks as the workflow progresses.
     """
-    def __init__(self, theme: Theme, on_step_click: Optional[Callable[[str], None]] = None, on_nuke: Optional[Callable] = None):
+    def __init__(self, on_step_click: Optional[Callable[[str], None]] = None, on_nuke: Optional[Callable] = None):
         super().__init__()
-        self.theme = theme
+        # self.theme = theme # REMOVED
         self.on_step_click = on_step_click
         self.on_nuke = on_nuke
         
@@ -61,13 +62,13 @@ class WorkflowMenu(ui.row):
             self.nuke_btn = DangerousButton(
                 icon='mdi-nuke',
                 on_click=self.on_nuke,
-                color=self.theme.colors.orange,
+                color="var(--nt-color-orange)",
                 tooltip='Hold to Nuke Database',
                 size='md'
             ).classes('mr-2')
             
             # Keep nuke shadow variable
-            self.nuke_btn.btn.style(f'--nuke-color: {self.theme.colors.orange};')
+            self.nuke_btn.btn.style(f'--nuke-color: var(--nt-color-orange);')
 
 
                 
@@ -78,13 +79,13 @@ class WorkflowMenu(ui.row):
     def _get_steps_data(self):
         # Explicitly use colors from our theme object
         return [
-            ("Indexing", self.theme.colors.blue),
-            ("Duplicates", self.theme.colors.cyan),
-            ("Category", self.theme.colors.green),
-            ("Context", self.theme.colors.yellow),
-            ("War Room", self.theme.colors.red),
-            ("Sorting", self.theme.colors.magenta),
-            ("Views", self.theme.colors.violet),
+            ("Indexing", "var(--nt-color-blue)"),
+            ("Duplicates", "var(--nt-color-cyan)"),
+            ("Category", "var(--nt-color-green)"),
+            ("Context", "var(--nt-color-yellow)"),
+            ("War Room", "var(--nt-color-red)"),
+            ("Sorting", "var(--nt-color-magenta)"),
+            ("Views", "var(--nt-color-violet)"),
         ]
 
 

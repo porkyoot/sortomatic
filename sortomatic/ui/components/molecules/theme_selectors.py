@@ -5,8 +5,7 @@ from ..atoms.inputs.selects import AppSelect
 from ..atoms.separators import AppSeparator
 
 def ThemeSelector(
-    current_theme: str = "solarized", 
-    is_dark: bool = True, 
+    current_theme: str = "sortomatic", 
     on_change: Optional[Callable] = None
 ):
     """
@@ -16,7 +15,7 @@ def ThemeSelector(
     # State managed by local variables (will be captured by closures)
     state = {
         'theme': current_theme,
-        'dark': is_dark
+        'dark': True # Default to True or fetch from NiceTheme if possible, but local state is fine for now
     }
 
     def _toggle_mode():
@@ -40,7 +39,7 @@ def ThemeSelector(
         with row:
             # 1. Theme Dropdown (AppSelect)
             AppSelect(
-                options={'solarized': 'Solarized'},
+                options={'sortomatic': 'Sortomatic', 'solarized': 'Solarized'},
                 value=state['theme'],
                 on_change=lambda e: _handle_theme_change(e.value),
                 variant="simple",

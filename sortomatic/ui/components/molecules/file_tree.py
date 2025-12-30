@@ -1,7 +1,8 @@
 from nicegui import ui
 from typing import List, Dict, Optional, Callable, Any
 import os
-from ...theme import Theme, CategoryStyles
+from ...theme import CategoryStyles
+# from ...theme import Theme # REMOVED
 from ..atoms.badges import CategoryBadge, AppBadge
 from ..atoms.icons import AppIcon
 from ....utils.formatters import format_size, format_date_human
@@ -13,7 +14,7 @@ def FileTreeRow(
     name: str, 
     level: int, 
     is_dir: bool, 
-    theme: Theme,
+    # theme: Theme, # REMOVED
     file_data: Optional[ScanContext] = None,
     show_category: bool = True,
     show_size: bool = True,
@@ -30,12 +31,12 @@ def FileTreeRow(
         with ui.row().classes('items-center no-wrap').style(f'width: 40%; padding-left: {indent}px;'):
             if is_dir:
                 icon = "expand_more" if expanded else "chevron_right"
-                ui.button(icon=icon, on_click=toggle_func).props('flat dense size=sm').classes('mr-1 color-[var(--app-text-sec)]')
-                ui.icon("folder", color="var(--q-primary)").classes('mr-2')
+                ui.button(icon=icon, on_click=toggle_func).props('flat dense size=sm').classes('mr-1 color-[var(--nt-text-subtle)]') # updated var
+                ui.icon("folder", color="var(--nt-primary)").classes('mr-2') # updated var
             else:
                 ui.element('div').classes('w-8') # Placeholder for chevron
                 category = file_data.category if file_data else "Other"
-                ui.icon(CategoryStyles.get_icon(category), color=CategoryStyles.get_color(category, theme)).classes('mr-2')
+                ui.icon(CategoryStyles.get_icon(category), color=CategoryStyles.get_color(category)).classes('mr-2')
             
             ui.label(name).classes('text-sm font-medium truncate')
 
@@ -43,7 +44,7 @@ def FileTreeRow(
         with ui.element('div').style('width: 15%;'):
             if show_category and not is_dir and file_data:
                 category = file_data.category or "Other"
-                CategoryBadge(category, theme, variant="glass")
+                CategoryBadge(category, variant="glass") # Removed theme arg
 
         # 3. Size Column
         with ui.element('div').style('width: 20%;'):
@@ -61,7 +62,7 @@ def FileTreeRow(
 
 def FileTree(
     root_path: str, 
-    theme: Theme,
+    # theme: Theme, # REMOVED
     data_source: Optional[FileTreeDataSource] = None,
     show_category: bool = True,
     show_size: bool = True,
@@ -74,7 +75,7 @@ def FileTree(
     
     # State managed as attributes on the container object (for easy access in methods)
     container.root_path = root_path
-    container.theme = theme
+    # container.theme = theme # REMOVED
     container.show_category = show_category
     container.show_size = show_size
     container.show_date = show_date
@@ -133,7 +134,7 @@ def FileTree(
                 ui.label(label).classes('text-[10px] uppercase font-bold tracking-widest opacity-50')
                 if container.sort_by == field:
                     icon = "arrow_upward" if not container.sort_desc else "arrow_downward"
-                    ui.icon(icon, size='12px').classes('text-[var(--c-primary)]')
+                    ui.icon(icon, size='12px').classes('text-[var(--nt-primary)]')
             ui.on('click', lambda field=field: sort_tree(field))
 
     async def _render_tree():
@@ -174,7 +175,7 @@ def FileTree(
             name=name, 
             level=level, 
             is_dir=True, 
-            theme=container.theme,
+            # theme=container.theme, # REMOVED
             expanded=expanded,
             toggle_func=lambda p=path: _toggle_expansion_incremental(p)
         )
@@ -190,7 +191,7 @@ def FileTree(
             name=fileinfo.filename,
             level=level,
             is_dir=False,
-            theme=container.theme,
+            # theme=container.theme, # REMOVED
             file_data=fileinfo,
             show_category=container.show_category,
             show_size=container.show_size,

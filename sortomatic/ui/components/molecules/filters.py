@@ -1,13 +1,14 @@
 from nicegui import ui
 from typing import List, Dict, Optional, Callable, Set
-from ...theme import Theme, CategoryStyles
+from ...theme import CategoryStyles
+# from ...theme import Theme # REMOVED
 from ..atoms.badges import CategoryBadge
 from ..atoms.buttons import AppButton
 from ..atoms.inputs.sliders import AppRangeSlider
 from ..atoms.inputs.date_pickers import AppDatePicker
 from ....l8n import Strings
 
-def FilterBar(theme: Theme, on_change: Optional[Callable] = None):
+def FilterBar(on_change: Optional[Callable] = None):
     """
     A premium filter component with search and a detailed filter popup.
     """
@@ -77,7 +78,7 @@ def FilterBar(theme: Theme, on_change: Optional[Callable] = None):
 
                     CategoryBadge(
                         cat, 
-                        theme, 
+                        # theme, 
                         interactive=True, 
                         disabled=is_disabled,
                         on_click=toggle

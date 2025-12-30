@@ -1,11 +1,11 @@
 from nicegui import ui
 from typing import List, Dict, Any
-from ...theme import Theme
+# from ...theme import Theme
 from ..atoms.badges import StatusBadge
 from ..atoms.special.histograms import AppHistogram
 from ..atoms.separators import AppSeparator
 
-def StatusBadgeRow(items: List[Dict[str, Any]], theme: Theme):
+def StatusBadgeRow(items: List[Dict[str, Any]], theme: Any = None): # Theme arg kept optional for compat if needed, but unused
     """
     A unified row of status indicators with a glassmorphic container.
     Renders a group of minimal status badges or histograms separated by dividers.
@@ -14,7 +14,6 @@ def StatusBadgeRow(items: List[Dict[str, Any]], theme: Theme):
         items: List of dicts valid for creating status items. 
                Expected keys for badge: 'label', 'state', 'icon', 'rotate'
                Expected keys for histogram: 'label', 'history', 'color', 'icon'
-        theme: Theme for styling
     """
     # Container style
     with ui.row().classes('s-status-badge-row'):
@@ -30,7 +29,7 @@ def StatusBadgeRow(items: List[Dict[str, Any]], theme: Theme):
                 # Render as histogram
                 AppHistogram(
                     values=history,
-                    color=item.get('color', 'var(--c-primary)'),
+                    color=item.get('color', 'var(--nt-primary)'),
                     height="16px",
                     bar_width="2px",
                     max_bars=10,
@@ -50,7 +49,7 @@ def StatusBadgeRow(items: List[Dict[str, Any]], theme: Theme):
                 StatusBadge(
                     label=label,
                     state=state,
-                    theme=theme,
+                    # theme=theme, # REMOVED
                     variant='simple',
                     icon=icon,
                     rotate=rotate,
