@@ -1,12 +1,9 @@
 services:
     sortomatic:
-        build:
-            context: ../
-            dockerfile: Sortomatic/Dockerfile
+        build: .
         ports:
             - "8080:8080"
         volumes:
             - ./data:/data
             - .:/app
-            - ../NiceTheme:/deps/NiceTheme
         working_dir: /app

@@ -8,20 +8,21 @@ RUN apk add --no-cache \
     musl-dev \
     libffi-dev \
     zlib-dev \
-    jpeg-dev
+    jpeg-dev \
+    git
 
-# Copy NiceTheme and install it
-COPY NiceTheme /deps/NiceTheme
+# Clone NiceTheme and install it
+RUN git clone https://github.com/porkyoot/nicetheme /deps/NiceTheme
 RUN pip install -e /deps/NiceTheme
 
 WORKDIR /app
 
 # Copy dependency files
-COPY Sortomatic/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest
-COPY Sortomatic .
+COPY . .
 
 # Install the project in editable mode
 RUN pip install -e .
