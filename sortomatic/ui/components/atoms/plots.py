@@ -23,13 +23,36 @@ def logarithmic_slider(min_val: float, max_val: float, value: float = 1.0, on_ch
         real_val = pos_to_val(e.value)
         if on_change:
             on_change(real_val)
+    
+    # Custom label formatter to show the logarithmic value
+    def label_formatter(pos):
+        real_val = pos_to_val(pos)
+        # Format based on the magnitude of the value
+        if real_val >= 100:
+            return f'{real_val:.0f}'
+        elif real_val >= 10:
+            return f'{real_val:.1f}'
+        else:
+            return f'{real_val:.2f}'
             
-    sl = ui.slider(min=0.0, max=1.0, step=0.01, value=start_pos, on_change=handle_change).props('label-always') 
+    sl = ui.slider(min=0.0, max=1.0, step=0.01, value=start_pos, on_change=handle_change)
+    sl.props('label-always :label-value="(val) => ' + 
+             f'val <= 0 ? \'{min_val:.2f}\' : ' +
+             f'(val >= 1 ? \'{max_val:.2f}\' : ' +
+             f'({min_val} * Math.pow({max_val}/{min_val}, val)).toFixed(' +
+             f'(({min_val} * Math.pow({max_val}/{min_val}, val)) >= 100 ? 0 : ' +
+             f'(({min_val} * Math.pow({max_val}/{min_val}, val)) >= 10 ? 1 : 2))' +
+             ')"')
     return sl
 
 def sparkline_histogram(data_source: Callable[[], List[float]], update_interval: float = 1.0) -> ui.echart:
     """
     An inline chart for performance monitoring. Bars move slowly from right to left.
+    
+    Note: ECharts configurations are serialized to JSON and sent to the browser.
+    CSS variable references like 'var(--color-primary)' won't be evaluated by ECharts.
+    Therefore, we use the actual Solarized blue color (#268bd2) directly.
+    If you change the theme primary color, update this value accordingly.
     """
     
     options = {
@@ -41,7 +64,7 @@ def sparkline_histogram(data_source: Callable[[], List[float]], update_interval:
             'data': [],
             'type': 'bar',
             'barWidth': '60%',
-            'itemStyle': {'color': theme.PRIMARY}
+            'itemStyle': {'color': '#268bd2'}  # Solarized blue (primary color)
         }]
     }
     

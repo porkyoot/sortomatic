@@ -16,13 +16,13 @@ def button(text: str = '',
     
     # Variants
     if variant == 'primary':
-        classes += f'bg-[{theme.PRIMARY}] text-white hover:bg-opacity-90 '
+        classes += 'bg-primary text-bg hover:bg-opacity-90 '
         props += 'unelevated '
     elif variant == 'secondary':
-        classes += f'bg-[{theme.SECONDARY}] text-white hover:bg-opacity-90 '
+        classes += 'bg-secondary text-bg hover:bg-opacity-90 '
         props += 'unelevated '
     elif variant == 'ghost':
-        classes += f'text-[{theme.TEXT_MAIN}] hover:bg-white/10 '
+        classes += 'text-main hover:bg-surface hover:bg-opacity-10 '
         props += 'flat '
     
     # Shapes
@@ -49,44 +49,40 @@ def button(text: str = '',
 def nuclear_button(on_explode: Callable) -> ui.element:
     """
     Nuclear Button: 'Dangerous Action' button with Click & Hold mechanism.
+    Shows a border that draws clockwise around the button when pressed.
     """
-    # Using a custom HTML structure for the SVG overlay
-    with ui.element('div').classes('relative inline-flex items-center justify-center p-4 group') as container:
+    with ui.element('div').classes('relative inline-flex items-center justify-center') as container:
         # Tooltip for danger
-        ui.tooltip('DANGER: Hold to execute!').classes('bg-opacity-80 font-bold').style(f'background-color: {theme.ERROR}; color: white')
+        ui.tooltip('DANGER: Hold to execute!').classes('bg-opacity-80 font-bold nuclear-tooltip')
         
-        # The button itself
-        btn_classes = f'nuclear-btn rounded-full w-16 h-16 z-10 border-2'
-        btn_style = f'background-color: {theme.BG_NUCLEAR}; color: {theme.ERROR}; border-color: {theme.ERROR}80'
-        with ui.button(icon='delete_forever').classes(btn_classes).style(btn_style).props('round flat type="button"') as btn:
-            # SVG Ring for animation
-            # We place it "behind" or "around" the icon but inside the button or container. 
-            pass
-        
-        # SVG Ring overlay
-        svg_html = '''
-        <svg class="absolute top-0 left-0 w-full h-full pointer-events-none transform -rotate-90" viewBox="0 0 64 64">
-             <circle class="nuclear-loader-circle" cx="32" cy="32" r="20" />
-        </svg>
-        '''
-        ui.html(svg_html, sanitize=False).classes('absolute top-0 left-0 w-full h-full pointer-events-none z-20')
+        # The button itself - CSS will handle the border animation
+        btn_classes = 'nuclear-btn bg-primary text-white hover:bg-opacity-90 rounded-lg transition-all'
+        btn = ui.button(icon='delete_forever').classes(btn_classes).props('unelevated type="button"')
 
+        # JavaScript to add/remove 'nuclear-active' class and handle timing
         container.on('mousedown', js_handler='''
-            () => {
+            (e) => {
+                const btn = e.currentTarget.querySelector('.nuclear-btn');
+                btn.classList.add('nuclear-active');
                 window.nuclearTimer = setTimeout(() => {
                     emitEvent('explode');
+                    btn.classList.remove('nuclear-active');
                 }, 2000); 
             }
         ''')
         
         container.on('mouseup', js_handler='''
-            () => {
+            (e) => {
+                const btn = e.currentTarget.querySelector('.nuclear-btn');
+                btn.classList.remove('nuclear-active');
                 if (window.nuclearTimer) clearTimeout(window.nuclearTimer);
             }
         ''')
         
         container.on('mouseleave', js_handler='''
-            () => {
+            (e) => {
+                const btn = e.currentTarget.querySelector('.nuclear-btn');
+                btn.classList.remove('nuclear-active');
                 if (window.nuclearTimer) clearTimeout(window.nuclearTimer);
             }
         ''')

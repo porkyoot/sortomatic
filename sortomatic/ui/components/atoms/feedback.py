@@ -11,23 +11,24 @@ def status_badge(active: bool = True, text: str = 'Active') -> ui.row:
     """
     StatusBadge: Simple visual indicator (colored dot + text) for activity/inactivity.
     """
-    color = theme.SUCCESS if active else theme.TEXT_MUTED
+    color_class = 'bg-success' if active else 'bg-muted'
     with ui.row().classes('items-center gap-2 text-xs') as badge:
-        ui.element('div').classes('w-2 h-2 rounded-full shadow-sm').style(f'background-color: {color}')
-        ui.label(text).classes(f'text-[{theme.TEXT_MUTED}]')
+        ui.element('div').classes(f'w-2 h-2 rounded-full shadow-sm {color_class}')
+        ui.label(text).classes(f'text-muted')
     return badge
 
 def category_badge(category: str) -> ui.element:
     """
     CategoryBadge: Specific to file types, with distinct colors.
     """
-    colors = {
-        'image': theme.CAT_IMAGE,
-        'video': theme.CAT_VIDEO,
-        'document': theme.CAT_DOC,
-        'audio': theme.CAT_AUDIO,
-        'other': theme.CAT_OTHER
+    cat_keys = {
+        'image': 'cat-image',
+        'video': 'cat-video',
+        'document': 'cat-doc',
+        'audio': 'cat-audio',
+        'other': 'cat-other'
     }
-    color = colors.get(category.lower(), theme.CAT_OTHER)
+    key = cat_keys.get(category.lower(), 'cat-other')
     
-    return ui.label(category.upper()).classes('text-[10px] font-bold px-2 py-0.5 rounded-md border').style(f'color: {color}; border-color: {color}; background-color: {color}15')
+    classes = f'text-[10px] font-bold px-2 py-0.5 rounded-md border category-badge-base text-{key} bg-{key}-light border-current'
+    return ui.label(category.upper()).classes(classes)

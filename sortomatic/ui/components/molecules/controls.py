@@ -7,7 +7,7 @@ def scan_controls(on_play: Callable, on_pause: Callable, on_restart: Callable, o
     """
     Scan Controls: Cassette Player style.
     """
-    with ui.row().classes(f'items-center p-2 rounded-full {theme.GLASS} border {theme.BORDER} gap-1') as controls:
+    with ui.row().classes('items-center p-2 rounded-full premium-glass border thin-border gap-1') as controls:
         
         # Restart (Skip Previous style)
         atoms.button(icon='skip_previous', on_click=on_restart, variant='ghost', shape='circle').props('dense size="sm"')
@@ -32,13 +32,14 @@ def scan_controls(on_play: Callable, on_pause: Callable, on_restart: Callable, o
         ff_state = {'active': False}
         
         # To make it "stay pressed", we toggle a semantic color class or style.
-        # We'll use style for direct color binding to theme tokens.
         def toggle_style():
             ff_state['active'] = not ff_state['active']
-            color = theme.WARNING if ff_state['active'] else theme.TEXT_MUTED
-            ff_btn.style(f'color: {color}')
+            if ff_state['active']:
+                ff_btn.classes(replace='text-warning').classes(remove='text-muted')
+            else:
+                ff_btn.classes(replace='text-muted').classes(remove='text-warning')
         
         ff_btn.on('click', toggle_style)
-        ff_btn.style(f'color: {theme.TEXT_MUTED}')
+        ff_btn.classes('text-muted')
         
     return controls

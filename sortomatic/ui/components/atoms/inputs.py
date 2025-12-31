@@ -9,7 +9,7 @@ def search_bar(placeholder: str = 'Search...', on_change: Optional[Callable] = N
     inp = ui.input(placeholder=placeholder, on_change=on_change).classes(f'rounded-full px-4 py-1 text-sm bg-opacity-20')
     inp.props('standout dense rounded item-aligned input-class="text-sm"')
     with inp.add_slot('prepend'):
-        ui.icon('search').classes(f'text-xs {theme.TEXT_MUTED}')
+        ui.icon('search').classes('text-xs text-muted')
     return inp
 
 def date_picker(on_change: Optional[Callable] = None) -> ui.input:

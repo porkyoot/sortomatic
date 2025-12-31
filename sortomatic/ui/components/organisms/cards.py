@@ -22,8 +22,8 @@ def scan_card(
         with ui.column().classes('w-full gap-2'):
             # Info Row
             with ui.row().classes('w-full justify-between items-end'):
-                ui.label('Processing...').classes(f'text-xs font-bold uppercase {theme.TEXT_MUTED}')
-                ui.label(speed).classes(f'text-xs font-mono text-[{theme.SECONDARY}]')
+                ui.label('Processing...').classes('text-xs font-bold uppercase text-muted')
+                ui.label(speed).classes('text-xs font-mono text-secondary')
             
             # Progress Bar
             # Atom progress bar is indeterminate, let's allow value override or just use atom
@@ -38,7 +38,7 @@ def scan_card(
                 with ui.column().classes('gap-0 flex-1'):
                     ui.label(current_path).classes('text-sm font-mono truncate w-full opacity-80').tooltip(current_path)
                     if error:
-                        ui.label(f'Error: {error}').classes('text-xs font-bold').style(f'color: {theme.ERROR}')
+                        ui.label(f'Error: {error}').classes('text-xs font-bold text-error')
                 
                 ui.label(eta).classes('text-2xl font-light')
 

@@ -8,7 +8,7 @@ app.add_static_files('/themes', 'sortomatic/themes')
 
 @ui.page('/')
 def main_page():
-    ui.add_head_html(f'<link href="/themes/app.css?v={random.randint(0,10000)}" rel="stylesheet">')
+    theme.load_theme()
     
     # Fake Data Sources
     def get_sparkline_data():
@@ -28,7 +28,7 @@ def main_page():
 
     # --- Layout ---
     
-    with ui.column().classes(f'w-full h-screen gap-0 {theme.BG} text-[#93a1a1]').style('overflow: hidden'):
+    with ui.column().classes('w-full h-screen gap-0 bg-bg text-main').style('overflow: hidden'):
         
         # 1. Status Bar
         organisms.status_bar(lambda: [float(x) for x in get_sparkline_data()])
@@ -96,7 +96,7 @@ def main_page():
                          atoms.search_bar()
                          atoms.date_picker()
 
-def start_app(port: int = 8080, theme_name: str = 'default', dark_mode: bool = True, base_path: str = None):
+def start_app(port: int = 8080, theme_name: str = 'default', dark_mode: bool = True, base_path: str | None = None):
     # Note: theme_name and dark_mode args can be used to tweak style.py or app.css injection ideally.
     # For now, we stick to the premium theme but we honor the port.
     ui.run(title='Sortomatic Premium', port=port, reload=False)

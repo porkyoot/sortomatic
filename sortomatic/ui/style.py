@@ -12,6 +12,7 @@ class Style:
     SECONDARY = 'var(--color-secondary)'
     TEXT_MAIN = 'var(--color-text-main)'
     TEXT_MUTED = 'var(--color-text-muted)'
+    TEXT_BG = 'var(--color-bg)'
     BORDER_COLOR = 'var(--color-border)'
     ERROR = 'var(--color-error)'
     WARNING = 'var(--color-warning)'
@@ -25,8 +26,26 @@ class Style:
     CAT_OTHER = 'var(--color-cat-other)'
     FOLDER = 'var(--color-folder)'
     FILE = 'var(--color-file)'
+    WHITE = 'var(--color-white)'
+    BLACK = 'var(--color-black)'
     
-    # Utility Classes
+    # RGB Components for opacity support
+    RGB_BG = 'var(--rgb-base03)'
+    RGB_SURFACE = 'var(--rgb-base02)'
+    RGB_TEXT_MAIN = 'var(--rgb-base1)'
+    
+    RGB_PRIMARY = 'var(--rgb-blue)'
+    RGB_SECONDARY = 'var(--rgb-magenta)'
+    RGB_ERROR = 'var(--rgb-red)'
+    RGB_WARNING = 'var(--rgb-orange)'
+    RGB_SUCCESS = 'var(--rgb-green)'
+    RGB_INFO = 'var(--rgb-cyan)'
+    
+    RGB_CAT_IMAGE = 'var(--rgb-violet)'
+    RGB_CAT_VIDEO = 'var(--rgb-magenta)'
+    RGB_CAT_DOC = 'var(--rgb-blue)'
+    RGB_CAT_AUDIO = 'var(--rgb-cyan)'
+    RGB_CAT_OTHER = 'var(--rgb-base01)'
     GLASS = 'premium-glass'
     SHADOW = 'soft-shadow'
     BORDER = 'thin-border'
@@ -36,12 +55,17 @@ class Style:
 
     @staticmethod
     def load_theme():
-        """Loads the app.css file."""
-        ui.add_head_html('<link href="themes/app.css" rel="stylesheet">')
-        # Alternatively, we can serve it or include it directly if specific path handling is needed.
-        # For now, we assume it's served or accessible.
-        # Since we are in a package, we might need to be careful with paths.
-        # However, for a simple start:
-        pass
+        """Loads the app.css file and sets up NiceGUI global colors."""
+        ui.add_head_html('<link href="/themes/app.css" rel="stylesheet">')
+        ui.colors(
+            primary='#268bd2',    # blue
+            secondary='#d33682',  # magenta
+            accent='#2aa198',     # cyan
+            dark='#002b36',       # base03
+            positive='#859900',   # green
+            negative='#dc322f',   # red
+            info='#2aa198',       # cyan
+            warning='#cb4b16',    # orange
+        )
 
 theme = Style()

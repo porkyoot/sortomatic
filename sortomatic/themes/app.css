@@ -1,23 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-    /* Solarized Dark Palette (Modified for Premium Feel) */
-    --base03: #002b36;
-    --base02: #073642;
-    --base01: #586e75;
-    --base00: #657b83;
-    --base0: #839496;
-    --base1: #93a1a1;
-    --base2: #eee8d5;
-    --base3: #fdf6e3;
-    --yellow: #b58900;
-    --orange: #cb4b16;
-    --red: #dc322f;
-    --magenta: #d33682;
-    --violet: #6c71c4;
-    --blue: #268bd2;
-    --cyan: #2aa198;
-    --green: #859900;
+    /* Solarized Dark Palette (RGB Components for Opacity Support) */
+    --rgb-base03: 0, 43, 54;
+    --rgb-base02: 7, 54, 66;
+    --rgb-base01: 88, 110, 117;
+    --rgb-base00: 101, 123, 131;
+    --rgb-base0: 131, 148, 150;
+    --rgb-base1: 147, 161, 161;
+    --rgb-base2: 238, 232, 213;
+    --rgb-base3: 253, 246, 227;
+
+    --base03: rgb(var(--rgb-base03));
+    --base02: rgb(var(--rgb-base02));
+    --base01: rgb(var(--rgb-base01));
+    --base00: rgb(var(--rgb-base00));
+    --base0: rgb(var(--rgb-base0));
+    --base1: rgb(var(--rgb-base1));
+    --base2: rgb(var(--rgb-base2));
+    --base3: rgb(var(--rgb-base3));
+
+    --rgb-yellow: 181, 137, 0;
+    --rgb-orange: 203, 75, 22;
+    --rgb-red: 220, 50, 47;
+    --rgb-magenta: 211, 54, 130;
+    --rgb-violet: 108, 113, 196;
+    --rgb-blue: 38, 139, 210;
+    --rgb-cyan: 42, 161, 152;
+    --rgb-green: 133, 153, 0;
+
+    --yellow: rgb(var(--rgb-yellow));
+    --orange: rgb(var(--rgb-orange));
+    --red: rgb(var(--rgb-red));
+    --magenta: rgb(var(--rgb-magenta));
+    --violet: rgb(var(--rgb-violet));
+    --blue: rgb(var(--rgb-blue));
+    --cyan: rgb(var(--rgb-cyan));
+    --green: rgb(var(--rgb-green));
 
     /* Semantics */
     --color-bg: var(--base03);
@@ -26,20 +45,22 @@
     --color-secondary: var(--magenta);
     --color-text-main: var(--base1);
     --color-text-muted: var(--base01);
-    --color-border: rgba(147, 161, 161, 0.2);
-    /* base1 with opacity */
+    --color-border: rgba(var(--rgb-base1), 0.2);
 
     /* Glassmorphism */
-    --glass-bg: rgba(7, 54, 66, 0.7);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    --glass-bg: rgba(var(--rgb-base02), 0.7);
+    --glass-border: 1px solid rgba(var(--rgb-base1), 0.1);
+    --glass-shadow: 0 4px 30px rgba(var(--rgb-base1), 0.15);
     --backdrop-blur: 10px;
 
     --color-error: var(--red);
     --color-warning: var(--orange);
     --color-success: var(--green);
     --color-info: var(--cyan);
-    --color-bg-nuclear: #000000;
+    --color-bg-nuclear: var(--base03);
+
+    --color-white: var(--base3);
+    --color-black: var(--base03);
 
     --color-cat-image: var(--violet);
     --color-cat-video: var(--magenta);
@@ -52,6 +73,16 @@
 
     /* Typography */
     --font-main: 'Inter', sans-serif;
+
+    /* Quasar Brand Overrides */
+    --q-primary: var(--blue);
+    --q-secondary: var(--magenta);
+    --q-accent: var(--violet);
+    --q-dark: var(--base03);
+    --q-positive: var(--green);
+    --q-negative: var(--red);
+    --q-info: var(--cyan);
+    --q-warning: var(--yellow);
 }
 
 body {
@@ -78,7 +109,7 @@ body {
 }
 
 .soft-shadow {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(var(--rgb-base1), 0.12), 0 4px 6px -2px rgba(var(--rgb-base1), 0.08);
 }
 
 .thin-border {
@@ -105,39 +136,360 @@ body {
     padding-left: 20px !important;
 }
 
-/* Nuclear Button Animation */
-@keyframes fill-circle {
-    to {
-        stroke-dashoffset: 0;
+/* Nuclear Button Border Animation with Conic Gradient */
+@keyframes nuclear-border-grow {
+    from {
+        --nuclear-angle: 0deg;
     }
-}
 
-.nuclear-loader-circle {
-    fill: none;
-    stroke: var(--color-error);
-    stroke-width: 4;
-    stroke-dasharray: 126;
-    /* 2 * pi * r (approx r=20) */
-    stroke-dashoffset: 126;
-    transform: rotate(-90deg);
-    transform-origin: center;
-}
-
-.nuclear-btn:active .nuclear-loader-circle {
-    transition: stroke-dashoffset 2s linear;
-    stroke-dashoffset: 0;
-}
-
-.nuclear-btn:not(:active) .nuclear-loader-circle {
-    transition: stroke-dashoffset 0.2s;
-    stroke-dashoffset: 126;
+    to {
+        --nuclear-angle: 360deg;
+    }
 }
 
 .nuclear-btn {
     position: relative;
-    overflow: visible;
+    --nuclear-angle: 0deg;
+}
+
+.nuclear-btn::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    padding: 4px;
+    background: conic-gradient(from -90deg,
+            var(--color-error) 0deg,
+            var(--color-error) var(--nuclear-angle),
+            transparent var(--nuclear-angle),
+            transparent 360deg);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.nuclear-btn.nuclear-active::before {
+    opacity: 1;
+    animation: nuclear-border-grow 2s linear forwards;
+}
+
+@property --nuclear-angle {
+    syntax: '<angle>';
+    inherits: false;
+    initial-value: 0deg;
 }
 
 .nuclear-btn:hover {
     box-shadow: 0 0 15px var(--color-error);
+}
+
+/* --- Semantic Utility Classes --- */
+/* Ensure Quasar Cards are transparent so our utility classes can control background */
+.q-card {
+    background-color: transparent !important;
+}
+
+/* Premium glass cards need their translucent background */
+.q-card.premium-glass {
+    background-color: var(--glass-bg) !important;
+}
+
+.bg-surface-half {
+    background-color: rgba(var(--rgb-base02), 0.5);
+}
+
+.bg-bg {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-base03), var(--tw-bg-opacity)) !important;
+}
+
+.bg-surface {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-base02), var(--tw-bg-opacity)) !important;
+}
+
+.bg-error {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-red), var(--tw-bg-opacity)) !important;
+}
+
+.bg-nuclear {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-base03), var(--tw-bg-opacity)) !important;
+}
+
+.text-bg {
+    color: var(--color-bg) !important;
+}
+
+.text-on-accent {
+    color: var(--color-bg) !important;
+}
+
+.text-error {
+    color: var(--color-error);
+}
+
+.text-success {
+    color: var(--color-success);
+}
+
+.text-main {
+    color: var(--color-text-main);
+}
+
+.text-muted {
+    color: var(--color-text-muted);
+}
+
+.border-error-half {
+    border-color: rgba(var(--rgb-red), 0.5);
+}
+
+.border-main {
+    border-color: var(--color-border);
+}
+
+.z-50 {
+    z-index: 50;
+}
+
+/* --- Specialized Component Styles --- */
+.nuclear-tooltip {
+    background-color: var(--color-error) !important;
+    color: var(--color-white) !important;
+}
+
+.category-badge-base {
+    border: 1px solid currentColor;
+}
+
+.file-row-hover:hover {
+    background-color: rgba(var(--rgb-base02), 0.5);
+}
+
+.file-tree-grid {
+    display: grid;
+    gap: 1rem;
+    align-items: center;
+}
+
+
+
+/* More Utilities */
+.bg-border {
+    background-color: var(--color-border);
+}
+
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary);
+}
+
+.text-accent {
+    color: var(--color-info);
+}
+
+.text-primary {
+    color: var(--color-primary);
+}
+
+.text-secondary {
+    color: var(--color-secondary);
+}
+
+.text-cat-image {
+    color: var(--color-cat-image);
+}
+
+.text-cat-video {
+    color: var(--color-cat-video);
+}
+
+.text-cat-doc {
+    color: var(--color-cat-document);
+}
+
+.text-cat-audio {
+    color: var(--color-cat-audio);
+}
+
+.text-cat-other {
+    color: var(--color-cat-other);
+}
+
+.bg-muted {
+    background-color: var(--color-text-muted);
+}
+
+.text-white {
+    color: var(--color-white) !important;
+}
+
+.border-current {
+    border-color: currentColor;
+}
+
+/* Category Backgrounds (15% Opacity) */
+.bg-cat-image-light {
+    background-color: rgba(var(--rgb-violet), 0.15);
+}
+
+.bg-cat-video-light {
+    background-color: rgba(var(--rgb-magenta), 0.15);
+}
+
+.bg-cat-doc-light {
+    background-color: rgba(var(--rgb-blue), 0.15);
+}
+
+.bg-cat-audio-light {
+    background-color: rgba(var(--rgb-cyan), 0.15);
+}
+
+.bg-cat-other-light {
+    background-color: rgba(var(--rgb-base01), 0.15);
+}
+
+/* --- Framework Component Overrides (100% Theme Coverage) --- */
+
+/* Quasar Component Basics */
+/* We use :where to keep specificity low on defaults, allowing our utilities to win easier */
+:where(.q-card, .nicegui-card, .nicegui-error-popup) {
+    background-color: var(--color-surface) !important;
+    background: var(--color-surface) !important;
+    color: var(--color-text-main) !important;
+}
+
+/* If a card has an explicit background utility, the utility must WIN. */
+/* We use a high specificity selector to ensure this. */
+body [class*="bg-"].q-card,
+body [class*="bg-"].nicegui-card {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+/* Global Text & Icon Standardizations */
+body,
+.q-app,
+.q-body,
+#q-app,
+.q-page-container,
+.q-page {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text-main) !important;
+}
+
+/* Force all text that might be Quasar-defaulted to black or white */
+.text-white,
+[class*="text-white"],
+.q-btn__content,
+.q-icon,
+.q-tree__node-header-content,
+.q-item__section,
+.text-black,
+[class*="text-black"] {
+    color: var(--color-text-main) !important;
+}
+
+/* Standardizing the "White" to Solarized Base2/Base3 for high-contrast labels */
+.text-white-bright {
+    color: var(--color-white) !important;
+}
+
+/* Contrast Text for Buttons */
+.text-bg,
+.text-on-accent {
+    color: var(--color-bg) !important;
+}
+
+/* Light Text for Contrast on Bright Accents (Buttons, Badges) */
+.bg-primary .q-btn__content,
+.bg-secondary .q-btn__content,
+.bg-nuclear .q-btn__content,
+.bg-error .q-btn__content,
+.bg-primary .q-icon,
+.bg-secondary .q-icon,
+.q-btn.bg-primary .q-icon,
+.q-btn.bg-secondary .q-icon {
+    color: var(--color-white) !important;
+}
+
+/* Input & Field Standardization */
+.q-field__native,
+.q-field__input,
+.q-field__prefix,
+.q-field__suffix,
+.q-placeholder,
+.q-field__marginal {
+    color: var(--color-text-main) !important;
+}
+
+.q-field__label {
+    color: var(--color-text-muted) !important;
+}
+
+.q-field--standout .q-field__control {
+    background: rgba(var(--rgb-base02), 0.3) !important;
+}
+
+/* Tree & List Standardization */
+.q-tree {
+    color: var(--color-text-main) !important;
+}
+
+/* Selection & Hover in Lists */
+.q-tree__node--selected,
+.q-manual-focusable--focused {
+    background-color: rgba(var(--rgb-base02), 0.5) !important;
+}
+
+/* UI Details (Scrollbars, Sliders, etc.) */
+.q-scrollarea__thumb {
+    background: var(--color-text-muted) !important;
+    opacity: 0.5;
+}
+
+.q-slider__text {
+    background: var(--color-surface) !important;
+    color: var(--color-text-main) !important;
+}
+
+.q-slider__track {
+    background: rgba(var(--rgb-base01), 0.3) !important;
+}
+
+.q-slider__selection {
+    background: var(--color-primary) !important;
+}
+
+.q-slider__thumb {
+    background: var(--color-primary) !important;
+}
+
+/* Border Enforcements */
+* {
+    border-color: var(--color-border) !important;
+}
+
+/* Ensure no pure white/black leaks through inline styles */
+[style*="background-color: rgb(255, 255, 255)"],
+[style*="background-color: #ffffff"],
+[style*="background-color: white"],
+[style*="background: rgb(255, 255, 255)"],
+[style*="background: #ffffff"] {
+    background-color: var(--color-surface) !important;
+}
+
+[style*="color: rgb(0, 0, 0)"],
+[style*="color: #000000"],
+[style*="color: black"] {
+    color: var(--color-text-main) !important;
 }

@@ -124,14 +124,14 @@ def file_tree(data: List[Dict]) -> ui.element:
 
     with container:
         # Header Row
-        with ui.element('div').style(f'display: grid; grid-template-columns: {grid_templ}; gap: 1rem; padding-left: 2.5rem; background-color: {theme.SURFACE}80').classes(f'w-full p-2 border-b {theme.BORDER} uppercase text-xs font-bold tracking-wider {theme.TEXT_MUTED} items-center'):
+        with ui.element('div').style(f'grid-template-columns: {grid_templ}').classes('w-full p-2 border-b thin-border uppercase text-xs font-bold tracking-wider text-muted items-center file-tree-grid bg-surface-half pl-10'):
             def header_cell(key, label):
                 with ui.column().classes('gap-1'):
                     with ui.row().classes('items-center cursor-pointer group').on('click', lambda: on_sort(key)):
                         ui.label(label)
                         ui.icon('arrow_upward').bind_visibility_from(state, 'sort_asc').classes('text-[10px]').props('size=xs')
                         ui.icon('arrow_downward').bind_visibility_from(state, 'sort_asc', backward=lambda x: not x).classes('text-[10px]').props('size=xs')
-                    ui.input(placeholder='Filter', on_change=lambda e: on_filter(key, e.value)).props('dense borderless input-class="text-xs py-0"').classes(f'rounded px-1 w-full h-6').style(f'background-color: {theme.SURFACE}80')
+                    ui.input(placeholder='Filter', on_change=lambda e: on_filter(key, e.value)).props('dense borderless input-class="text-xs py-0"').classes(f'rounded px-1 w-full h-6 bg-surface-half')
             
             header_cell('name', 'Name')
             header_cell('category', 'Category')
