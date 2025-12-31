@@ -440,6 +440,33 @@ body,
     background: rgba(var(--rgb-base02), 0.3) !important;
 }
 
+/* Search bar specific background (target inner control) */
+.q-field.bg-bg.bg-opacity-20 .q-field__control {
+    background: rgba(var(--rgb-base03), 0.2) !important;
+}
+
+/* Remove Quasar's default hover/focus shadows and backgrounds */
+.q-field--standout .q-field__control:hover,
+.q-field--standout .q-field__control:focus,
+.q-field--standout.q-field--focused .q-field__control,
+.q-field--standout.q-field--highlighted .q-field__control {
+    box-shadow: none !important;
+    background: rgba(var(--rgb-base02), 0.5) !important;
+}
+
+/* Focused state for themed fields */
+.q-field.bg-bg.bg-opacity-20.q-field--focused .q-field__control,
+.q-field.bg-bg.bg-opacity-20.q-field--highlighted .q-field__control {
+    background: rgba(var(--rgb-base03), 0.3) !important;
+    box-shadow: none !important;
+}
+
+/* Remove any outer field shadows */
+.q-field--standout:hover,
+.q-field--standout.q-field--focused {
+    box-shadow: none !important;
+}
+
 /* Tree & List Standardization */
 .q-tree {
     color: var(--color-text-main) !important;
@@ -458,7 +485,7 @@ body,
 }
 
 .q-slider__text {
-    background: var(--color-surface) !important;
+    background: transparent !important;
     color: var(--color-text-main) !important;
 }
 
@@ -472,6 +499,7 @@ body,
 
 .q-slider__thumb {
     background: var(--color-primary) !important;
+    border-radius: 50% !important;
 }
 
 /* Border Enforcements */
