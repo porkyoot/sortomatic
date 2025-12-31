@@ -284,7 +284,7 @@ def gui(
     cache: Optional[Path] = typer.Option(None, help="Override cache directory")
 ):
     """Launch the Web Interface."""
-    from .ui.main import start_app
+    from .web import start_app
     
     if cache:
         settings.cache_dir = cache.expanduser()

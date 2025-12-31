@@ -23,7 +23,7 @@ cleanup() {
 }
 trap cleanup INT
 
-docker compose start sortomatic
+docker compose up -d --remove-orphans sortomatic
 # 3. Start logs
 docker compose logs -f --since 30s sortomatic &
 LOG_PID=$!
