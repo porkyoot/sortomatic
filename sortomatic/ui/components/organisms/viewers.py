@@ -25,7 +25,7 @@ def thumbnail_viewer(file_type: str, file_path: str, extra_data: Dict = {}) -> u
             # Waveform visualization (fake for now)
             with ui.element('div').classes('absolute bottom-4 left-0 w-full flex items-end justify-center gap-1 h-8 opacity-50'):
                 for i in range(10):
-                    ui.element('div').classes('w-1 bg-white rounded-t animate-bounce').style(f'height: {20 + (i%3)*10}%; animation-delay: {i*0.1}s')
+                    ui.element('div').classes('w-1 rounded-t animate-bounce').style(f'height: {20 + (i%3)*10}%; animation-delay: {i*0.1}s; background-color: {theme.TEXT_MAIN}')
 
         # Video
         elif ft == 'video':
@@ -35,7 +35,7 @@ def thumbnail_viewer(file_type: str, file_path: str, extra_data: Dict = {}) -> u
 
         # Archive (Zip/Rar) -> Mini Tree
         elif ft in ['archive', 'zip', 'rar']:
-            with ui.column().classes('w-full h-full bg-black/20 p-4 gap-1 overflow-hidden'):
+            with ui.column().classes('w-full h-full p-4 gap-1 overflow-hidden').style(f'background-color: {theme.SURFACE}80'):
                 ui.label('Archive Contents').classes('text-xs font-bold uppercase opacity-50 mb-2')
                 # Fake items
                 for f in ['setup.exe', 'readme.txt', 'data.bin']:

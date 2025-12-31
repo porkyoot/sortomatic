@@ -35,6 +35,21 @@
     --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     --backdrop-blur: 10px;
 
+    --color-error: var(--red);
+    --color-warning: var(--orange);
+    --color-success: var(--green);
+    --color-info: var(--cyan);
+    --color-bg-nuclear: #000000;
+
+    --color-cat-image: var(--violet);
+    --color-cat-video: var(--magenta);
+    --color-cat-document: var(--blue);
+    --color-cat-audio: var(--cyan);
+    --color-cat-other: var(--base01);
+
+    --color-folder: var(--yellow);
+    --color-file: var(--base0);
+
     /* Typography */
     --font-main: 'Inter', sans-serif;
 }
@@ -99,7 +114,7 @@ body {
 
 .nuclear-loader-circle {
     fill: none;
-    stroke: var(--red);
+    stroke: var(--color-error);
     stroke-width: 4;
     stroke-dasharray: 126;
     /* 2 * pi * r (approx r=20) */
@@ -124,5 +139,5 @@ body {
 }
 
 .nuclear-btn:hover {
-    box-shadow: 0 0 15px var(--red);
+    box-shadow: 0 0 15px var(--color-error);
 }

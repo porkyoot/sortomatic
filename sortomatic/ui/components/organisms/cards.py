@@ -38,7 +38,7 @@ def scan_card(
                 with ui.column().classes('gap-0 flex-1'):
                     ui.label(current_path).classes('text-sm font-mono truncate w-full opacity-80').tooltip(current_path)
                     if error:
-                        ui.label(f'Error: {error}').classes('text-xs text-red-500 font-bold')
+                        ui.label(f'Error: {error}').classes('text-xs font-bold').style(f'color: {theme.ERROR}')
                 
                 ui.label(eta).classes('text-2xl font-light')
 

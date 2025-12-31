@@ -11,4 +11,4 @@ def separator() -> ui.element:
     """
     A discreet, thin vertical divider.
     """
-    return ui.element('div').classes(f'w-px h-full bg-slate-700 opacity-20 mx-2 {theme.BORDER}')
+    return ui.element('div').classes(f'w-px h-full opacity-20 mx-2 {theme.BORDER}').style(f'background-color: {theme.BORDER_COLOR}')

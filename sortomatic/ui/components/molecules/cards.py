@@ -11,7 +11,7 @@ def header_card(title: str) -> ui.row:
         with ui.row().classes('flex-1 items-center gap-4'):
             ui.label(title).classes('text-xl font-bold uppercase tracking-wider')
             # Horizontal separator usually
-            ui.element('div').classes(f'h-px flex-1 bg-slate-700 opacity-20 {theme.BORDER}')
+            ui.element('div').classes(f'h-px flex-1 opacity-20 {theme.BORDER}').style(f'background-color: {theme.BORDER_COLOR}')
         
         # The return value acts as the "right slot" container effectively if the user appends to it? 
         # Or we return a container for the right slot.

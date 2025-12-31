@@ -28,10 +28,17 @@ def scan_controls(on_play: Callable, on_pause: Callable, on_restart: Callable, o
             e.sender.props(add='flat' if 'unelevated' in e.sender._props.get('props', '') else 'unelevated') # Toggle visual roughly? 
             # Better: Toggle color or opacity.
             # Let's just create a toggle-able button.
-            on_fast_forward()
-            
         ff_btn = atoms.button(icon='fast_forward', on_click=toggle_ff, variant='ghost', shape='circle').props('dense size="sm"')
-        # To make it "stay pressed", usually we'd toggle a class like 'bg-white/20'.
-        ff_btn.on('click', lambda: ff_btn.classes(add='text-yellow-400', remove='text-gray-400') if 'text-yellow-400' not in ff_btn._classes else ff_btn.classes(remove='text-yellow-400', add='text-gray-400'))
+        ff_state = {'active': False}
+        
+        # To make it "stay pressed", we toggle a semantic color class or style.
+        # We'll use style for direct color binding to theme tokens.
+        def toggle_style():
+            ff_state['active'] = not ff_state['active']
+            color = theme.WARNING if ff_state['active'] else theme.TEXT_MUTED
+            ff_btn.style(f'color: {color}')
+        
+        ff_btn.on('click', toggle_style)
+        ff_btn.style(f'color: {theme.TEXT_MUTED}')
         
     return controls

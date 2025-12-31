@@ -124,14 +124,14 @@ def file_tree(data: List[Dict]) -> ui.element:
 
     with container:
         # Header Row
-        with ui.element('div').style(f'display: grid; grid-template-columns: {grid_templ}; gap: 1rem; padding-left: 2.5rem;').classes(f'w-full p-2 border-b {theme.BORDER} bg-white/5 uppercase text-xs font-bold tracking-wider {theme.TEXT_MUTED} items-center'):
+        with ui.element('div').style(f'display: grid; grid-template-columns: {grid_templ}; gap: 1rem; padding-left: 2.5rem; background-color: {theme.SURFACE}80').classes(f'w-full p-2 border-b {theme.BORDER} uppercase text-xs font-bold tracking-wider {theme.TEXT_MUTED} items-center'):
             def header_cell(key, label):
                 with ui.column().classes('gap-1'):
                     with ui.row().classes('items-center cursor-pointer group').on('click', lambda: on_sort(key)):
                         ui.label(label)
                         ui.icon('arrow_upward').bind_visibility_from(state, 'sort_asc').classes('text-[10px]').props('size=xs')
                         ui.icon('arrow_downward').bind_visibility_from(state, 'sort_asc', backward=lambda x: not x).classes('text-[10px]').props('size=xs')
-                    ui.input(placeholder='Filter', on_change=lambda e: on_filter(key, e.value)).props('dense borderless input-class="text-xs py-0"').classes(f'bg-black/20 rounded px-1 w-full h-6')
+                    ui.input(placeholder='Filter', on_change=lambda e: on_filter(key, e.value)).props('dense borderless input-class="text-xs py-0"').classes(f'rounded px-1 w-full h-6').style(f'background-color: {theme.SURFACE}80')
             
             header_cell('name', 'Name')
             header_cell('category', 'Category')
@@ -149,10 +149,10 @@ def file_tree(data: List[Dict]) -> ui.element:
                 t.add_slot('default-header', f'''
                     <div class="row items-center full-width q-gutter-x-md" style="display: grid; grid-template-columns: minmax(150px, 3fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(120px, 1fr); gap: 1rem; width: 100%;">
                         <div class="row items-center no-wrap overflow-hidden">
-                            <q-icon :name="props.node.icon" :color="props.node.icon === 'folder' ? 'yellow-8' : 'grey-5'" class="q-mr-sm" size="18px" />
+                            <q-icon :name="props.node.icon" :style="'color: ' + (props.node.icon === 'folder' ? 'var(--color-folder)' : 'var(--color-file)')" class="q-mr-sm" size="18px" />
                             <div class="ellipsis">{{{{ props.node.label }}}}</div>
                         </div>
-                        <div class="q-badge q-badge--outline" :style="'border-color: var(--primary); color: var(--primary); opacity: 0.8; font-size: 10px; padding: 2px 6px; text-transform: uppercase;'">
+                        <div class="q-badge q-badge--outline" :style="'border-color: var(--color-primary); color: var(--color-primary); opacity: 0.8; font-size: 10px; padding: 2px 6px; text-transform: uppercase;'">
                             {{{{ props.node.category }}}}
                         </div>
                         <div class="text-mono text-caption opacity-70">{{{{ props.node.size }}}}</div>

@@ -53,10 +53,12 @@ def nuclear_button(on_explode: Callable) -> ui.element:
     # Using a custom HTML structure for the SVG overlay
     with ui.element('div').classes('relative inline-flex items-center justify-center p-4 group') as container:
         # Tooltip for danger
-        ui.tooltip('DANGER: Hold to execute!').classes('bg-red-700 text-white font-bold')
+        ui.tooltip('DANGER: Hold to execute!').classes('bg-opacity-80 font-bold').style(f'background-color: {theme.ERROR}; color: white')
         
         # The button itself
-        with ui.button(icon='delete_forever').classes('nuclear-btn bg-black text-red-500 rounded-full w-16 h-16 z-10 border-2 border-red-500/50').props('round flat type="button"') as btn:
+        btn_classes = f'nuclear-btn rounded-full w-16 h-16 z-10 border-2'
+        btn_style = f'background-color: {theme.BG_NUCLEAR}; color: {theme.ERROR}; border-color: {theme.ERROR}80'
+        with ui.button(icon='delete_forever').classes(btn_classes).style(btn_style).props('round flat type="button"') as btn:
             # SVG Ring for animation
             # We place it "behind" or "around" the icon but inside the button or container. 
             pass

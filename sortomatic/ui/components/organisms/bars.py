@@ -7,7 +7,7 @@ def status_bar(sparkline_data: Callable[[], List[float]]) -> ui.row:
     """
     Status Bar: Global top bar with status, settings, and branding.
     """
-    with ui.row().classes(f'w-full h-12 items-center justify-between px-4 border-b {theme.BORDER} {theme.GLASS}').style(f'background-color: {theme.BG}; z-index: 50;'):
+    with ui.row().classes(f'w-full h-12 items-center justify-between px-4 border-b {theme.BORDER} {theme.GLASS}').style(f'background-color: {theme.BG}; z-index: 50;') as row:
         # Left: Branding
         with ui.row().classes('items-center gap-2'):
             ui.icon('sort').classes(f'text-2xl text-[{theme.PRIMARY}]')
@@ -19,6 +19,6 @@ def status_bar(sparkline_data: Callable[[], List[float]]) -> ui.row:
         # Right: Settings
         with ui.row().classes('items-center gap-2'):
             atoms.button(icon='settings', variant='ghost', shape='circle').props('dense')
-            ui.avatar('img:https://cdn.quasar.dev/img/boy-avatar.png').classes('w-8 h-8 opacity-80 border border-white/20')
+            ui.avatar('img:https://cdn.quasar.dev/img/boy-avatar.png').classes('w-8 h-8 opacity-80 border').style(f'border-color: {theme.BORDER_COLOR}')
             
-    return ui.row # Return type element strictly?
+    return row
