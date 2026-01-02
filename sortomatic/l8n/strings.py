@@ -25,7 +25,7 @@ class Strings:
     SCAN_INTERRUPTED = "⚠️  Scan interrupted! Progress saved. Run the same command again to resume."
     SCAN_ERROR = "❌ Scan failed with error. Check logs for details."
 
-    # Categories
+    # Categories (Source of Truth for Casing from config)
     CAT_IMAGE = "Image"
     CAT_VIDEO = "Video"
     CAT_DOCUMENT = "Document"
@@ -43,14 +43,15 @@ class Strings:
     def get_category_name(cls, key: str) -> str:
         mapping = {
             "Image": cls.CAT_IMAGE,
+            "Images": cls.CAT_IMAGE,
             "Video": cls.CAT_VIDEO,
             "Document": cls.CAT_DOCUMENT,
             "Music": cls.CAT_MUSIC,
             "Archive": cls.CAT_ARCHIVE,
+            "Archives": cls.CAT_ARCHIVE,
             "Code": cls.CAT_CODE,
             "3D": cls.CAT_3D,
             "Software": cls.CAT_SOFTWARE,
             "Other": cls.CAT_OTHER
         }
         return mapping.get(key, key)
-

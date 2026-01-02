@@ -16,3 +16,26 @@ gui_dark_mode: true
 
 # Folders
 cache_dir: "~/.cache/sortomatic"
+
+# Category UI Configuration
+category_order:
+  - Other
+  - Document
+  - Image
+  - Archive
+  - Music
+  - Video
+  - 3D
+  - Software
+  - Code
+
+category_colors:
+  Other: grey
+  Document: cyan
+  Image: green
+  Archive: yellow
+  Music: orange
+  Video: red
+  3D: magenta
+  Software: purple
+  Code: blue

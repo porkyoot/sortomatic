@@ -1,5 +1,6 @@
 from nicegui import ui
 from sortomatic.ui.style import theme
+from sortomatic.core.config import settings
 
 def progress_bar() -> ui.linear_progress:
     """
@@ -21,14 +22,8 @@ def category_badge(category: str) -> ui.element:
     """
     CategoryBadge: Specific to file types, with distinct colors.
     """
-    cat_keys = {
-        'image': 'cat-image',
-        'video': 'cat-video',
-        'document': 'cat-doc',
-        'audio': 'cat-audio',
-        'other': 'cat-other'
-    }
-    key = cat_keys.get(category.lower(), 'cat-other')
+    # Get color from config (Source of Truth)
+    color_name = settings.category_colors.get(category, "grey")
     
-    classes = f'text-[10px] font-bold px-2 py-0.5 rounded-md border category-badge-base text-{key} bg-{key}-light border-current'
+    classes = f'text-[10px] font-bold px-2 py-0.5 rounded-md border category-badge-base text-{color_name} bg-{color_name}-light border-current'
     return ui.label(category.upper()).classes(classes)

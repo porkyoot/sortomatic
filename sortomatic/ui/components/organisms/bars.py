@@ -18,7 +18,6 @@ def status_bar(sparkline_data: Callable[[], List[float]]) -> ui.row:
 
         # Right: Settings
         with ui.row().classes('items-center gap-2'):
-            atoms.button(icon='settings', variant='ghost', shape='circle').props('dense')
-            ui.avatar('img:https://cdn.quasar.dev/img/boy-avatar.png').classes('w-8 h-8 opacity-80 border border-main')
+            atoms.button(icon='wb_sunny', variant='ghost', shape='circle').props('dense')
             
     return row

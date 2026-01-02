@@ -1,7 +1,10 @@
 import threading
+import os
+import humanize
 from functools import partial
 from ....l8n import Strings
 from ...config import settings
+from ....utils.logger import logger
 
 try:
     import xxhash
@@ -16,25 +19,27 @@ except ImportError:
     Image = None
 
 try:
-    import pyacoustid
+    import acoustid as pyacoustid
 except ImportError:
     pyacoustid = None
 
-# These are now backed by settings, but localized here for brevity if needed
-# though we'll use settings directly in the functions.
-
 def compute_hashes(ctx: dict):
     """Computes standard and perceptual hashes with a safety timeout."""
-    import os
     if not os.path.isfile(ctx['path']):
         return ctx
     
+    # Capture local references for thread safety
+    _xxhash = xxhash
+    _imagehash = imagehash
+    _Image = Image
+    _pyacoustid = pyacoustid
+
     def _worker():
         fpath = ctx['path']
         file_size = ctx['size_bytes']
         
         # 1. Fast Hash (First 4KB + Last 4KB)
-        if file_size > 0 and xxhash:
+        if file_size > 0 and _xxhash:
             try:
                 with open(fpath, 'rb') as f:
                     first_chunk = f.read(settings.fast_hash_size)
@@ -43,35 +48,37 @@ def compute_hashes(ctx: dict):
                         f.seek(-min(settings.fast_hash_size, file_size - settings.fast_hash_size), 2)
                         last_chunk = f.read(settings.fast_hash_size)
                     
-                    hasher = xxhash.xxh64()
-                    hasher.update(first_chunk)
-                    hasher.update(last_chunk)
+                    hasher = _xxhash.xxh64()
+                    if first_chunk is not None:
+                        hasher.update(first_chunk)
+                    if last_chunk is not None:
+                        hasher.update(last_chunk)
                     ctx['fast_hash'] = hasher.hexdigest()
             except Exception:
                 ctx['fast_hash'] = None
         
         # 2. Perceptual Hash (Only for images)
-        if ctx.get('category') == Strings.CAT_IMAGES and imagehash:
+        if ctx.get('category') == Strings.CAT_IMAGE and _imagehash and _Image:
             try:
-                with Image.open(fpath) as img:
-                    ctx['perceptual_hash'] = str(imagehash.average_hash(img))
+                with _Image.open(fpath) as img:
+                    ctx['perceptual_hash'] = str(_imagehash.average_hash(img))
             except Exception:
                 pass
                 
-        # 3. Audio Fingerprint (Only for audio files)
-        if ctx.get('category') == Strings.CAT_AUDIO and pyacoustid:
+        # 3. Audio Fingerprint (Only for music files)
+        if ctx.get('category') == Strings.CAT_MUSIC and _pyacoustid:
             try:
-                _, fp = pyacoustid.fingerprint_file(fpath)
+                _, fp = _pyacoustid.fingerprint_file(fpath)
                 ctx['fast_hash'] = fp.decode('utf-8') if isinstance(fp, bytes) else fp
             except Exception:
                 pass
                 
         # 4. Full Hash (xxHash64)
-        if xxhash:
+        if _xxhash:
             try:
-                hasher = xxhash.xxh64()
+                hasher = _xxhash.xxh64()
                 with open(fpath, 'rb') as f:
-                    for chunk in iter(partial(f.read, settings.hashing_chunk_size), b""):
+                    while chunk := f.read(settings.hashing_chunk_size):
                         hasher.update(chunk)
                 ctx['full_hash'] = hasher.hexdigest()
             except Exception:
@@ -84,8 +91,6 @@ def compute_hashes(ctx: dict):
     
     if t.is_alive():
         # Reached 80% warning
-        import humanize
-        from ....utils.logger import logger
         size_str = humanize.naturalsize(ctx.get('size_bytes', 0), binary=True)
         logger.warning(f"⚠️ Hashing is slow for: {ctx['path']} ({size_str}). Reached 80% of timeout...")
         

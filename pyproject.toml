@@ -40,3 +40,11 @@ where = ["."]
 
 [tool.setuptools.package-data]
 sortomatic = ["config/*.yaml"]
+
+[tool.pyrefly]
+pythonPath = "/home/etoile/Projects/Server/Sortomatic/.venv/bin/python"
+venvPath = "/home/etoile/Projects/Server/Sortomatic"
+venv = ".venv"
+extraPaths = ["/home/etoile/Projects/Server/Sortomatic/.venv/lib/python3.14/site-packages"]
+pythonVersion = "3.14"
+typeCheckingMode = "basic"

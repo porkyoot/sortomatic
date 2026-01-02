@@ -337,25 +337,77 @@ body {
     border-color: currentColor;
 }
 
-/* Category Backgrounds (15% Opacity) */
-.bg-cat-image-light {
-    background-color: rgba(var(--rgb-violet), 0.15);
+/* Category Colors */
+.text-grey {
+    color: var(--base01);
 }
 
-.bg-cat-video-light {
-    background-color: rgba(var(--rgb-magenta), 0.15);
+.bg-grey-light {
+    background-color: rgba(var(--rgb-base01), 0.15);
 }
 
-.bg-cat-doc-light {
-    background-color: rgba(var(--rgb-blue), 0.15);
+.text-cyan {
+    color: var(--cyan);
 }
 
-.bg-cat-audio-light {
+.bg-cyan-light {
     background-color: rgba(var(--rgb-cyan), 0.15);
 }
 
-.bg-cat-other-light {
-    background-color: rgba(var(--rgb-base01), 0.15);
+.text-green {
+    color: var(--green);
+}
+
+.bg-green-light {
+    background-color: rgba(var(--rgb-green), 0.15);
+}
+
+.text-yellow {
+    color: var(--yellow);
+}
+
+.bg-yellow-light {
+    background-color: rgba(var(--rgb-yellow), 0.15);
+}
+
+.text-orange {
+    color: var(--orange);
+}
+
+.bg-orange-light {
+    background-color: rgba(var(--rgb-orange), 0.15);
+}
+
+.text-red {
+    color: var(--red);
+}
+
+.bg-red-light {
+    background-color: rgba(var(--rgb-red), 0.15);
+}
+
+.text-magenta {
+    color: var(--magenta);
+}
+
+.bg-magenta-light {
+    background-color: rgba(var(--rgb-magenta), 0.15);
+}
+
+.text-purple {
+    color: var(--violet);
+}
+
+.bg-purple-light {
+    background-color: rgba(var(--rgb-violet), 0.15);
+}
+
+.text-blue {
+    color: var(--blue);
+}
+
+.bg-blue-light {
+    background-color: rgba(var(--rgb-blue), 0.15);
 }
 
 /* --- Framework Component Overrides (100% Theme Coverage) --- */

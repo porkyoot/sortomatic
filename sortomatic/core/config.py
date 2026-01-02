@@ -42,6 +42,31 @@ class Settings:
         self.gui_port: int = 8080
         self.gui_theme: str = "solarized"
         self.gui_dark_mode: bool = True
+        
+        # UI Order and Colors (Source of Truth)
+        self.category_order: List[str] = [
+            Strings.CAT_OTHER,
+            Strings.CAT_DOCUMENT,
+            Strings.CAT_IMAGE,
+            Strings.CAT_ARCHIVE,
+            Strings.CAT_MUSIC,
+            Strings.CAT_VIDEO,
+            Strings.CAT_3D,
+            Strings.CAT_SOFTWARE,
+            Strings.CAT_CODE
+        ]
+        
+        self.category_colors: Dict[str, str] = {
+            Strings.CAT_OTHER: "grey",
+            Strings.CAT_DOCUMENT: "cyan",
+            Strings.CAT_IMAGE: "green",
+            Strings.CAT_ARCHIVE: "yellow",
+            Strings.CAT_MUSIC: "orange",
+            Strings.CAT_VIDEO: "red",
+            Strings.CAT_3D: "magenta",
+            Strings.CAT_SOFTWARE: "purple",
+            Strings.CAT_CODE: "blue"
+        }
 
         # Initialize and Load
         self._ensure_config_exists()
@@ -68,7 +93,7 @@ class Settings:
                 if src_path.exists():
                     shutil.copy(src_path, dest_path)
 
-    def load(self, config_dir: Path = None):
+    def load(self, config_dir: Path | None = None):
         """Loads configuration from the user's YAML files."""
         if config_dir:
             self.config_dir = Path(config_dir)
@@ -82,15 +107,28 @@ class Settings:
                 data = yaml.safe_load(f) or {}
                 if data.get("max_workers") is not None:
                     self.max_workers = data["max_workers"]
-                self.batch_size = data.get("batch_size", self.batch_size)
-                self.reset_db = data.get("reset_db", self.reset_db)
-                self.hashing_chunk_size = data.get("hashing_chunk_size", self.hashing_chunk_size)
-                self.fast_hash_size = data.get("fast_hash_size", self.fast_hash_size)
-                self.categorization_timeout = data.get("categorization_timeout", self.categorization_timeout)
-                self.hashing_timeout = data.get("hashing_timeout", self.hashing_timeout)
-                self.gui_port = data.get("gui_port", self.gui_port)
-                self.gui_theme = data.get("gui_theme", self.gui_theme)
-                self.gui_dark_mode = data.get("gui_dark_mode", self.gui_dark_mode)
+                if (val := data.get("batch_size")) is not None:
+                    self.batch_size = val
+                if (val := data.get("reset_db")) is not None:
+                    self.reset_db = val
+                if (val := data.get("hashing_chunk_size")) is not None:
+                    self.hashing_chunk_size = val
+                if (val := data.get("fast_hash_size")) is not None:
+                    self.fast_hash_size = val
+                if (val := data.get("categorization_timeout")) is not None:
+                    self.categorization_timeout = val
+                if (val := data.get("hashing_timeout")) is not None:
+                    self.hashing_timeout = val
+                if (val := data.get("gui_port")) is not None:
+                    self.gui_port = val
+                if (val := data.get("gui_theme")) is not None:
+                    self.gui_theme = val
+                if (val := data.get("gui_dark_mode")) is not None:
+                    self.gui_dark_mode = val
+                if (val := data.get("category_order")) is not None:
+                    self.category_order = val
+                if (val := data.get("category_colors")) is not None:
+                    self.category_colors = val
                 if data.get("cache_dir"):
                     self.cache_dir = Path(data["cache_dir"]).expanduser()
 
