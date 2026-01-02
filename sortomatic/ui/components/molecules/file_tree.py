@@ -12,6 +12,7 @@ class FileNode:
     size: str # formatted
     size_bytes: int
     date: str
+    thumbnail: Optional[str] = None
     children: Optional[List['FileNode']] = None
     expanded: bool = True
     
@@ -43,6 +44,7 @@ def file_tree(data: List[Dict]) -> ui.element:
                 size=d.get('size_str', ''),
                 size_bytes=d.get('size_bytes', 0),
                 date=d['date'],
+                thumbnail=d.get('thumbnail'),
                 children=parse_nodes(d['children']) if 'children' in d else None,
                 expanded=True # Default expanded for now
             )
@@ -96,6 +98,7 @@ def file_tree(data: List[Dict]) -> ui.element:
                         'category': node.category,
                         'size': node.size,
                         'date': node.date,
+                        'thumb': node.thumbnail,
                         'icon': 'folder' if node.is_folder else 'insert_drive_file',
                     }
                     if node.is_folder:
@@ -107,7 +110,7 @@ def file_tree(data: List[Dict]) -> ui.element:
 
     # --- UI Building ---
     
-    container = ui.column().classes('w-full h-full gap-0')
+    container = ui.column().classes('w-full flex-1 gap-0')
     grid_templ = 'minmax(200px, 3fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(120px, 1fr)'
     
     def on_sort(col):
@@ -147,9 +150,12 @@ def file_tree(data: List[Dict]) -> ui.element:
                 t.props('dense transition-show="fade" transition-hide="fade"')
                 
                 t.add_slot('default-header', f'''
-                    <div class="row items-center full-width q-gutter-x-md" style="display: grid; grid-template-columns: minmax(150px, 3fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(120px, 1fr); gap: 1rem; width: 100%;">
+                    <div class="row items-center full-width q-gutter-x-md" style="display: grid; grid-template-columns: {grid_templ}; gap: 1rem; width: 100%;">
                         <div class="row items-center no-wrap overflow-hidden">
-                            <q-icon :name="props.node.icon" :style="'color: ' + (props.node.icon === 'folder' ? 'var(--color-folder)' : 'var(--color-file)')" class="q-mr-sm" size="18px" />
+                            <div v-if="props.node.thumb" class="q-mr-sm" style="width: 24px; height: 24px;">
+                                <img :src="props.node.thumb" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" />
+                            </div>
+                            <q-icon v-else :name="props.node.icon" :style="'color: ' + (props.node.icon === 'folder' ? 'var(--color-folder)' : 'var(--color-file)')" class="q-mr-sm" size="24px" />
                             <div class="ellipsis">{{{{ props.node.label }}}}</div>
                         </div>
                         <div class="q-badge q-badge--outline" :style="'border-color: var(--color-primary); color: var(--color-primary); opacity: 0.8; font-size: 10px; padding: 2px 6px; text-transform: uppercase;'">

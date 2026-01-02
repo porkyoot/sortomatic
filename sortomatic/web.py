@@ -20,8 +20,8 @@ def main_page():
             {'id': '3', 'name': 'Budget.xlsx', 'category': 'document', 'size_str': '45 KB', 'size_bytes': 45000, 'date': '2023-10-25'},
         ]},
         {'id': '4', 'name': 'Images', 'category': 'other', 'size_str': '-', 'size_bytes': 0, 'date': '2023-10-27', 'children': [
-            {'id': '5', 'name': 'Vacation.jpg', 'category': 'image', 'size_str': '3.4 MB', 'size_bytes': 3400000, 'date': '2023-09-01'},
-            {'id': '6', 'name': 'Logo.png', 'category': 'image', 'size_str': '500 KB', 'size_bytes': 500000, 'date': '2023-01-15'},
+            {'id': '5', 'name': 'Vacation.jpg', 'category': 'image', 'size_str': '3.4 MB', 'size_bytes': 3400000, 'date': '2023-09-01', 'thumbnail': 'https://picsum.photos/id/15/48/48'},
+            {'id': '6', 'name': 'Logo.png', 'category': 'image', 'size_str': '500 KB', 'size_bytes': 500000, 'date': '2023-01-15', 'thumbnail': 'https://picsum.photos/id/20/48/48'},
         ]},
         {'id': '7', 'name': 'Music.mp3', 'category': 'audio', 'size_str': '5.6 MB', 'size_bytes': 5600000, 'date': '2023-10-20'},
     ]
@@ -63,11 +63,25 @@ def main_page():
                  # Thumbnail Showcase
                  with ui.column().classes('w-full gap-2'):
                      ui.label('Smart Previews').classes('text-xs uppercase font-bold opacity-50')
-                     with ui.row().classes('w-full'):
-                         with ui.column().classes('flex-1'):
-                             organisms.thumbnail_viewer('image', 'https://picsum.photos/400/300')
-                         with ui.column().classes('flex-1'):
-                             organisms.thumbnail_viewer('audio', '', {'album_art': 'https://picsum.photos/200'})
+                     with ui.element('div').classes('w-full grid gap-2').style('grid-template-columns: repeat(auto-fit, minmax(140px, 1fr))'):
+                         # 1. Image
+                         organisms.thumbnail_viewer('image', 'https://picsum.photos/400/300?random=1')
+                         
+                         # 2. Audio
+                         organisms.thumbnail_viewer('audio', '', {'album_art': 'https://picsum.photos/200?random=2'})
+                         
+                         # 3. Video (Mock)
+                         organisms.thumbnail_viewer('video', '') 
+                         
+                         # 4. Archive
+                         archive_files = [{'id': 'root', 'label': 'Project_Backup', 'children': [
+                             {'id': 'src', 'label': 'src', 'children': [{'id': 'main', 'label': 'main.py'}]},
+                             {'id': 'readme', 'label': 'README.md'}
+                         ]}]
+                         organisms.thumbnail_viewer('archive', 'backup.zip', {'files': archive_files})
+                         
+                         # 5. Unknown / Default
+                         organisms.thumbnail_viewer('unknown_type', 'unknown_file.xyz')
                  
                  # Atoms Showcase Card
                  with atoms.card().classes('w-full gap-4'):

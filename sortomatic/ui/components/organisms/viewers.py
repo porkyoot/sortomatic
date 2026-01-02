@@ -34,14 +34,21 @@ def thumbnail_viewer(file_type: str, file_path: str, extra_data: Dict = {}) -> u
             ui.icon('play_circle_outline').classes('absolute text-6xl opacity-50 group-hover:opacity-100 transition-opacity z-10')
 
         # Archive (Zip/Rar) -> Mini Tree
-        elif ft in ['archive', 'zip', 'rar']:
-            with ui.column().classes('w-full h-full p-4 gap-1 overflow-hidden bg-surface-half'):
-                ui.label('Archive Contents').classes('text-xs font-bold uppercase opacity-50 mb-2')
-                # Fake items
-                for f in ['setup.exe', 'readme.txt', 'data.bin']:
-                    with ui.row().classes('items-center gap-2 opacity-70'):
-                        ui.icon('insert_drive_file').classes('text-xs')
-                        ui.label(f).classes('text-xs font-mono')
+        elif ft in ['archive', 'zip', 'rar', '7z', 'tar']:
+            files = extra_data.get('files', [])
+            
+            # Helper to auto-expand single root folder
+            should_expand = []
+            if len(files) == 1 and files[0].get('children'):
+                should_expand.append(files[0]['id'])
+
+            with ui.column().classes('w-full h-full overflow-hidden bg-surface-half relative p-0 gap-0'):
+                
+                with ui.scroll_area().classes('w-full h-full p-0').props('content-style="padding: 0"'):
+                    t = ui.tree(files, label_key='label', node_key='id', on_select=None).props('dense no-connectors perf-mode')
+                    t.classes('w-full text-xs bg-transparent p-0')
+                    t.expand(should_expand)
+
 
         # Default
         else:
