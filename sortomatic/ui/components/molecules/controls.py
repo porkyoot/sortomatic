@@ -10,11 +10,11 @@ def scan_controls(on_play: Callable, on_pause: Callable, on_restart: Callable, o
     with ui.row().classes('items-center p-2 rounded-full premium-glass border thin-border gap-1') as controls:
         
         # Restart (Skip Previous style)
-        atoms.button(icon='skip_previous', on_click=on_restart, variant='ghost', shape='circle').props('dense size="sm"')
+        atoms.button(icon='skip_previous', on_click=on_restart, variant='ghost', color='primary', shape='circle').props('dense size="sm"')
         
         # Play/Pause
-        atoms.button(icon='play_arrow', on_click=on_play, variant='primary', shape='circle')
-        atoms.button(icon='pause', on_click=on_pause, variant='secondary', shape='circle')
+        atoms.button(icon='play_arrow', on_click=on_play, variant='full', color='primary', shape='circle')
+        atoms.button(icon='pause', on_click=on_pause, variant='full', color='secondary', shape='circle')
         
         # Fast Forward (Toggle)
         # We need state. Since this is a functional wrapper, we assume the caller handles logic or we use a toggle button.
@@ -28,7 +28,7 @@ def scan_controls(on_play: Callable, on_pause: Callable, on_restart: Callable, o
             e.sender.props(add='flat' if 'unelevated' in e.sender._props.get('props', '') else 'unelevated') # Toggle visual roughly? 
             # Better: Toggle color or opacity.
             # Let's just create a toggle-able button.
-        ff_btn = atoms.button(icon='fast_forward', on_click=toggle_ff, variant='ghost', shape='circle').props('dense size="sm"')
+        ff_btn = atoms.button(icon='fast_forward', on_click=toggle_ff, variant='ghost', color='primary', shape='circle').props('dense size="sm"')
         ff_state = {'active': False}
         
         # To make it "stay pressed", we toggle a semantic color class or style.

@@ -342,6 +342,11 @@ body {
     color: var(--base01);
 }
 
+.bg-grey {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-base01), var(--tw-bg-opacity)) !important;
+}
+
 .bg-grey-light {
     background-color: rgba(var(--rgb-base01), 0.15);
 }
@@ -408,6 +413,27 @@ body {
 
 .bg-blue-light {
     background-color: rgba(var(--rgb-blue), 0.15);
+}
+
+/* Additional background colors for buttons */
+.bg-orange {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-orange), var(--tw-bg-opacity)) !important;
+}
+
+.bg-cyan {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-cyan), var(--tw-bg-opacity)) !important;
+}
+
+.bg-green {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-green), var(--tw-bg-opacity)) !important;
+}
+
+.bg-red {
+    --tw-bg-opacity: 1;
+    background-color: rgba(var(--rgb-red), var(--tw-bg-opacity)) !important;
 }
 
 /* --- Framework Component Overrides (100% Theme Coverage) --- */

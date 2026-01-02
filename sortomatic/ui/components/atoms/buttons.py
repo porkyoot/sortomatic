@@ -5,24 +5,44 @@ from typing import Optional, Callable, Literal
 def button(text: str = '', 
            icon: Optional[str] = None, 
            on_click: Optional[Callable] = None, 
-           variant: Literal['primary', 'secondary', 'ghost'] = 'primary',
+           variant: Literal['full', 'ghost'] = 'full',
+           color: Literal['primary', 'secondary', 'warning', 'info', 'success', 'error', 'debug'] = 'primary',
            shape: Literal['default', 'pill', 'circle', 'chevron', 'chevron-first', 'chevron-last'] = 'default',
            disabled: bool = False) -> ui.button:
     """
-    Buttons: Override the NiceGUI button with Variants and Shapes.
+    Buttons: Override the NiceGUI button with Variants, Colors, and Shapes.
+    
+    Args:
+        text: Button text
+        icon: Optional icon name
+        on_click: Click handler callback
+        variant: 'full' (filled background) or 'ghost' (transparent with hover)
+        color: Semantic color - 'primary', 'secondary', 'warning', 'info', 'success', 'error', 'debug'
+        shape: Button shape style
+        disabled: Whether button is disabled
     """
     classes = 'transition-all duration-200 '
     props = ''
     
+    # Color mapping to CSS classes
+    color_map = {
+        'primary': ('bg-primary', 'text-primary'),
+        'secondary': ('bg-secondary', 'text-secondary'),
+        'warning': ('bg-orange', 'text-orange'),
+        'info': ('bg-cyan', 'text-cyan'),
+        'success': ('bg-green', 'text-green'),
+        'error': ('bg-red', 'text-red'),
+        'debug': ('bg-grey', 'text-grey'),
+    }
+    
+    bg_class, text_class = color_map[color]
+    
     # Variants
-    if variant == 'primary':
-        classes += 'bg-primary text-bg hover:bg-opacity-90 '
-        props += 'unelevated '
-    elif variant == 'secondary':
-        classes += 'bg-secondary text-bg hover:bg-opacity-90 '
+    if variant == 'full':
+        classes += f'{bg_class} text-bg hover:bg-opacity-90 '
         props += 'unelevated '
     elif variant == 'ghost':
-        classes += 'text-main hover:bg-surface hover:bg-opacity-10 '
+        classes += f'{text_class} hover:bg-surface hover:bg-opacity-10 '
         props += 'flat '
     
     # Shapes

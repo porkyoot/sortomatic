@@ -73,16 +73,16 @@ def main_page():
                      atoms.separator().classes('w-full h-px my-2')
                      
                      with ui.row().classes('items-center gap-2'):
-                         atoms.button('Primary', variant='primary')
-                         atoms.button('Secondary', variant='secondary')
-                         atoms.button('Ghost', variant='ghost')
+                         atoms.button('Primary', variant='full', color='primary')
+                         atoms.button('Secondary', variant='full', color='secondary')
+                         atoms.button('Ghost', variant='ghost', color='primary')
                     
                          with ui.row().classes('items-center gap-2'):
-                          atoms.button('Pill', shape='pill', variant='primary')
-                          atoms.button(icon='add', shape='circle', variant='secondary')
-                          atoms.button('First', shape='chevron-first', variant='ghost')
-                          atoms.button('Middle', shape='chevron', variant='ghost')
-                          atoms.button('Last', shape='chevron-last', variant='ghost')
+                          atoms.button('Pill', shape='pill', variant='full', color='primary')
+                          atoms.button(icon='add', shape='circle', variant='full', color='secondary')
+                          atoms.button('First', shape='chevron-first', variant='ghost', color='primary')
+                          atoms.button('Middle', shape='chevron', variant='ghost', color='primary')
+                          atoms.button('Last', shape='chevron-last', variant='ghost', color='primary')
                          
                      with ui.row().classes('w-full items-center gap-4'):
                          ui.label('Nuclear:').classes('text-xs font-bold')
