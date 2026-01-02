@@ -18,6 +18,6 @@ def status_bar(sparkline_data: Callable[[], List[float]]) -> ui.row:
 
         # Right: Settings
         with ui.row().classes('items-center gap-2'):
-            atoms.button(icon='wb_sunny', variant='ghost', color='primary', shape='circle').props('dense')
+            atoms.button(icon='wb_sunny', variant='ghost', color='warning', shape='circle')
             
     return row

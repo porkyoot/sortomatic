@@ -6,7 +6,7 @@ def button(text: str = '',
            icon: Optional[str] = None, 
            on_click: Optional[Callable] = None, 
            variant: Literal['full', 'ghost'] = 'full',
-           color: Literal['primary', 'secondary', 'warning', 'info', 'success', 'error', 'debug'] = 'primary',
+           color: Optional[Literal['primary', 'secondary', 'warning', 'info', 'success', 'error', 'debug']] = None,
            shape: Literal['default', 'pill', 'circle', 'chevron', 'chevron-first', 'chevron-last'] = 'default',
            disabled: bool = False) -> ui.button:
     """
@@ -21,28 +21,18 @@ def button(text: str = '',
         shape: Button shape style
         disabled: Whether button is disabled
     """
+    # Default color logic based on variant
+    if color is None:
+        color = 'debug' if variant == 'ghost' else 'primary'
     classes = 'transition-all duration-200 '
     props = ''
     
-    # Color mapping to CSS classes
-    color_map = {
-        'primary': ('bg-primary', 'text-primary'),
-        'secondary': ('bg-secondary', 'text-secondary'),
-        'warning': ('bg-orange', 'text-orange'),
-        'info': ('bg-cyan', 'text-cyan'),
-        'success': ('bg-green', 'text-green'),
-        'error': ('bg-red', 'text-red'),
-        'debug': ('bg-grey', 'text-grey'),
-    }
-    
-    bg_class, text_class = color_map[color]
-    
-    # Variants
+    # Variants - use semantic button classes from CSS (respects design token hierarchy)
     if variant == 'full':
-        classes += f'{bg_class} text-bg hover:bg-opacity-90 '
+        classes += f'btn-{color} text-bg hover:bg-opacity-90 '
         props += 'unelevated '
     elif variant == 'ghost':
-        classes += f'{text_class} hover:bg-surface hover:bg-opacity-10 '
+        classes += f'btn-{color}-text hover:bg-surface hover:bg-opacity-10 '
         props += 'flat '
     
     # Shapes
@@ -59,7 +49,7 @@ def button(text: str = '',
     else:
         classes += 'rounded-lg ' # Default
         
-    btn = ui.button(text, icon=icon, on_click=on_click).classes(classes).props(props)
+    btn = ui.button(text, icon=icon, on_click=on_click, color=None).classes(classes).props(props)
     
     if disabled:
         btn.disable()

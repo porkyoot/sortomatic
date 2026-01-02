@@ -56,7 +56,8 @@ class Style:
     @staticmethod
     def load_theme():
         """Loads the app.css file and sets up NiceGUI global colors."""
-        ui.add_head_html('<link href="/themes/app.css" rel="stylesheet">')
+        import time
+        ui.add_head_html(f'<link href="/themes/app.css?v={int(time.time())}" rel="stylesheet">')
         ui.colors(
             primary='#268bd2',    # blue
             secondary='#d33682',  # magenta

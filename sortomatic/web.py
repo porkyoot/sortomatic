@@ -47,7 +47,9 @@ def main_page():
                     progress=0.45,
                     eta="1h 20m",
                     current_path="/home/user/downloads/very_large_collection_of_iso_files/linux_distro.iso",
-                    speed="45 MB/s"
+                    speed="45 MB/s",
+                    error="Sample Error",
+                    scan_state='running'
                 )
                 
                 # File Tree
@@ -73,16 +75,16 @@ def main_page():
                      atoms.separator().classes('w-full h-px my-2')
                      
                      with ui.row().classes('items-center gap-2'):
-                         atoms.button('Primary', variant='full', color='primary')
-                         atoms.button('Secondary', variant='full', color='secondary')
-                         atoms.button('Ghost', variant='ghost', color='primary')
+                         atoms.button('Primary', color='primary')
+                         atoms.button('Secondary', color='secondary')
+                         atoms.button('Ghost', variant='ghost')
                     
                          with ui.row().classes('items-center gap-2'):
-                          atoms.button('Pill', shape='pill', variant='full', color='primary')
-                          atoms.button(icon='add', shape='circle', variant='full', color='secondary')
-                          atoms.button('First', shape='chevron-first', variant='ghost', color='primary')
-                          atoms.button('Middle', shape='chevron', variant='ghost', color='primary')
-                          atoms.button('Last', shape='chevron-last', variant='ghost', color='primary')
+                          atoms.button('Pill', shape='pill', color='primary')
+                          atoms.button(icon='add', shape='circle', color='secondary')
+                          atoms.button('First', shape='chevron-first')
+                          atoms.button('Middle', shape='chevron')
+                          atoms.button('Last', shape='chevron-last')
                          
                      with ui.row().classes('w-full items-center gap-4'):
                          ui.label('Nuclear:').classes('text-xs font-bold')

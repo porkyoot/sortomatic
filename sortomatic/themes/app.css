@@ -56,7 +56,8 @@
     --color-error: var(--red);
     --color-warning: var(--orange);
     --color-success: var(--green);
-    --color-info: var(--cyan);
+    --color-info: var(--blue);
+    --color-debug: var(--base01);
     --color-bg-nuclear: var(--base03);
 
     --color-white: var(--base3);
@@ -293,6 +294,99 @@ body {
     background-color: var(--color-secondary);
 }
 
+/* Semantic Button Colors (Design Token Hierarchy) */
+.btn-primary {
+    background-color: var(--color-primary) !important;
+}
+
+.btn-primary-text {
+    color: var(--color-primary) !important;
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary) !important;
+}
+
+.btn-secondary-text {
+    color: var(--color-secondary) !important;
+}
+
+.btn-warning {
+    background-color: var(--color-warning) !important;
+}
+
+.btn-warning-text {
+    color: var(--color-warning) !important;
+}
+
+.btn-info {
+    background-color: var(--color-info) !important;
+}
+
+.btn-info-text {
+    color: var(--color-info) !important;
+}
+
+.btn-success {
+    background-color: var(--color-success) !important;
+}
+
+.btn-success-text {
+    color: var(--color-success) !important;
+}
+
+.btn-error {
+    background-color: var(--color-error) !important;
+}
+
+.btn-error-text {
+    color: var(--color-error) !important;
+}
+
+.btn-debug {
+    background-color: var(--color-debug) !important;
+}
+
+.btn-debug-text {
+    color: var(--color-debug) !important;
+}
+
+/* Ensure Ghost Button Text Colors Apply to Content (Override Global Reset) */
+.btn-primary-text .q-btn__content,
+.btn-primary-text .q-icon {
+    color: var(--color-primary) !important;
+}
+
+.btn-secondary-text .q-btn__content,
+.btn-secondary-text .q-icon {
+    color: var(--color-secondary) !important;
+}
+
+.btn-warning-text .q-btn__content,
+.btn-warning-text .q-icon {
+    color: var(--color-warning) !important;
+}
+
+.btn-info-text .q-btn__content,
+.btn-info-text .q-icon {
+    color: var(--color-info) !important;
+}
+
+.btn-success-text .q-btn__content,
+.btn-success-text .q-icon {
+    color: var(--color-success) !important;
+}
+
+.btn-error-text .q-btn__content,
+.btn-error-text .q-icon {
+    color: var(--color-error) !important;
+}
+
+.btn-debug-text .q-btn__content,
+.btn-debug-text .q-icon {
+    color: var(--color-debug) !important;
+}
+
 .text-accent {
     color: var(--color-info);
 }
@@ -493,10 +587,24 @@ body,
 .bg-secondary .q-btn__content,
 .bg-nuclear .q-btn__content,
 .bg-error .q-btn__content,
+.btn-primary .q-btn__content,
+.btn-secondary .q-btn__content,
+.btn-info .q-btn__content,
+.btn-success .q-btn__content,
+.btn-error .q-btn__content,
+.btn-warning .q-btn__content,
+.btn-debug .q-btn__content,
 .bg-primary .q-icon,
 .bg-secondary .q-icon,
 .q-btn.bg-primary .q-icon,
-.q-btn.bg-secondary .q-icon {
+.q-btn.bg-secondary .q-icon,
+.btn-primary .q-icon,
+.btn-secondary .q-icon,
+.btn-info .q-icon,
+.btn-success .q-icon,
+.btn-error .q-icon,
+.btn-warning .q-icon,
+.btn-debug .q-icon {
     color: var(--color-white) !important;
 }
 

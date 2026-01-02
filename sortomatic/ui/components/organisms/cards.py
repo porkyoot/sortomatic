@@ -5,7 +5,8 @@ from typing import Callable, Optional
 
 def scan_card(
     on_play: Callable, on_pause: Callable, on_restart: Callable, on_ff: Callable,
-    progress: float, eta: str, current_path: str, speed: str, error: Optional[str] = None
+    progress: float, eta: str, current_path: str, speed: str, error: Optional[str] = None,
+    scan_state: str = 'idle'
 ) -> ui.card:
     """
     Scan Card: Monitor scanning progress.
@@ -16,7 +17,7 @@ def scan_card(
         # Header with controls
         header_slot = molecules.header_card("Active Scan")
         with header_slot:
-            molecules.scan_controls(on_play, on_pause, on_restart, on_ff)
+            molecules.scan_controls(on_play, on_pause, on_restart, on_ff, scan_state=scan_state)
         
         # Body
         with ui.column().classes('w-full gap-2'):
