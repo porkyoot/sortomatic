@@ -101,7 +101,7 @@ def main_page():
 def start_app(port: int = 8080, theme_name: str = 'default', dark_mode: bool = True, base_path: str | None = None):
     # Note: theme_name and dark_mode args can be used to tweak style.py or app.css injection ideally.
     # For now, we stick to the premium theme but we honor the port.
-    ui.run(title='Sortomatic Premium', port=port, reload=False)
+    ui.run(title='Sortomatic Premium', port=port, reload=False, dark=dark_mode)
 
 if __name__ in {"__main__", "__mp_main__"}:
     start_app()

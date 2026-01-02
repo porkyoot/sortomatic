@@ -38,52 +38,112 @@
     --cyan: rgb(var(--rgb-cyan));
     --green: rgb(var(--rgb-green));
 
-    /* Semantics */
-    --color-bg: var(--base03);
-    --color-surface: var(--base02);
-    --color-primary: var(--blue);
-    --color-secondary: var(--magenta);
-    --color-text-main: var(--base1);
-    --color-text-muted: var(--base01);
-    --color-border: rgba(var(--rgb-base1), 0.2);
-
-    /* Glassmorphism */
-    --glass-bg: rgba(var(--rgb-base02), 0.7);
-    --glass-border: 1px solid rgba(var(--rgb-base1), 0.1);
-    --glass-shadow: 0 4px 30px rgba(var(--rgb-base1), 0.15);
-    --backdrop-blur: 10px;
-
-    --color-error: var(--red);
-    --color-warning: var(--orange);
-    --color-success: var(--green);
-    --color-info: var(--blue);
-    --color-debug: var(--base01);
-    --color-bg-nuclear: var(--base03);
-
-    --color-white: var(--base3);
-    --color-black: var(--base03);
-
-    --color-cat-image: var(--violet);
-    --color-cat-video: var(--magenta);
-    --color-cat-document: var(--blue);
-    --color-cat-audio: var(--cyan);
-    --color-cat-other: var(--base01);
-
-    --color-folder: var(--yellow);
-    --color-file: var(--base0);
+    /* Semantics - Defined in body for dynamic theming */
 
     /* Typography */
     --font-main: 'Inter', sans-serif;
 
-    /* Quasar Brand Overrides */
+    /* Quasar Brand Overrides (Defaults) */
     --q-primary: var(--blue);
     --q-secondary: var(--magenta);
     --q-accent: var(--violet);
-    --q-dark: var(--base03);
     --q-positive: var(--green);
     --q-negative: var(--red);
     --q-info: var(--cyan);
     --q-warning: var(--yellow);
+}
+
+/* --- THEME DEFINITIONS --- */
+
+/* Light Mode (Default) */
+body {
+    /* Rebase: background=base3, text=base00 */
+    --rgb-bg: var(--rgb-base3);
+    --rgb-surface: var(--rgb-base2);
+
+    --color-bg: var(--base3);
+    --color-surface: var(--base2);
+
+    --color-primary: var(--blue);
+    --color-secondary: var(--magenta);
+
+    /* Content */
+    --color-text-main: var(--base00);
+    /* Primary Content */
+    --color-text-muted: var(--base1);
+    /* Comments/Secondary */
+    --color-text-header: var(--base01);
+    /* Headers */
+
+    --color-border: rgba(var(--rgb-base1), 0.2);
+
+    /* Glassmorphism (Light) */
+    --glass-bg: rgba(var(--rgb-base2), 0.6);
+    --glass-border: 1px solid rgba(var(--rgb-base1), 0.1);
+    --glass-shadow: 0 4px 30px rgba(var(--rgb-base1), 0.1);
+    --backdrop-blur: 10px;
+
+    /* Status Colors */
+    --color-error: var(--red);
+    --color-warning: var(--orange);
+    /* Orange is better visible on light than yellow */
+    --color-success: var(--green);
+    --color-info: var(--blue);
+    --color-debug: var(--base1);
+    --color-bg-nuclear: var(--base3);
+
+    --color-white: var(--base3);
+    /* Paper white */
+    --color-black: var(--base03);
+
+    /* Categories */
+    --color-cat-image: var(--violet);
+    --color-cat-video: var(--magenta);
+    --color-cat-document: var(--blue);
+    --color-cat-audio: var(--cyan);
+    --color-cat-other: var(--base1);
+
+    --color-folder: var(--yellow);
+    --color-file: var(--base00);
+
+    /* Quasar Overrides */
+    --q-dark: var(--base3);
+    /* In light mode, 'dark' brand color is actually light bg? No, q-dark is for dark mode bg usually. */
+}
+
+/* Dark Mode Override */
+body.body--dark {
+    /* Rebase: background=base03, text=base0 */
+    --rgb-bg: var(--rgb-base03);
+    --rgb-surface: var(--rgb-base02);
+
+    --color-bg: var(--base03);
+    --color-surface: var(--base02);
+
+    /* Content */
+    --color-text-main: var(--base0);
+    /* Primary Content */
+    --color-text-muted: var(--base01);
+    /* Comments/Secondary */
+    --color-text-header: var(--base1);
+    /* Headers */
+
+    --color-border: rgba(var(--rgb-base1), 0.2);
+
+    /* Glassmoprphism (Dark) */
+    --glass-bg: rgba(var(--rgb-base02), 0.7);
+    --glass-border: 1px solid rgba(var(--rgb-base1), 0.1);
+    --glass-shadow: 0 4px 30px rgba(var(--rgb-base1), 0.15);
+
+    /* Status Colors */
+    --color-warning: var(--yellow);
+    /* Yellow works well on dark */
+    --color-debug: var(--base01);
+    --color-bg-nuclear: var(--base03);
+
+    --color-file: var(--base0);
+
+    --q-dark: var(--base03);
 }
 
 body {
@@ -92,7 +152,7 @@ body {
     font-family: var(--font-main);
 }
 
-/* Utility Classes */
+/* Utility Classes - Dynamic */
 .premium-glass {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--backdrop-blur));
@@ -106,7 +166,6 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    /* standard property for compatibility */
 }
 
 .soft-shadow {
@@ -200,17 +259,17 @@ body {
 }
 
 .bg-surface-half {
-    background-color: rgba(var(--rgb-base02), 0.5);
+    background-color: rgba(var(--rgb-surface), 0.5);
 }
 
 .bg-bg {
     --tw-bg-opacity: 1;
-    background-color: rgba(var(--rgb-base03), var(--tw-bg-opacity)) !important;
+    background-color: rgba(var(--rgb-bg), var(--tw-bg-opacity)) !important;
 }
 
 .bg-surface {
     --tw-bg-opacity: 1;
-    background-color: rgba(var(--rgb-base02), var(--tw-bg-opacity)) !important;
+    background-color: rgba(var(--rgb-surface), var(--tw-bg-opacity)) !important;
 }
 
 .bg-error {
@@ -220,7 +279,7 @@ body {
 
 .bg-nuclear {
     --tw-bg-opacity: 1;
-    background-color: rgba(var(--rgb-base03), var(--tw-bg-opacity)) !important;
+    background-color: rgba(var(--rgb-bg), var(--tw-bg-opacity)) !important;
 }
 
 .text-bg {
@@ -270,7 +329,7 @@ body {
 }
 
 .file-row-hover:hover {
-    background-color: rgba(var(--rgb-base02), 0.5);
+    background-color: rgba(var(--rgb-surface), 0.5);
 }
 
 .file-tree-grid {
@@ -433,16 +492,16 @@ body {
 
 /* Category Colors */
 .text-grey {
-    color: var(--base01);
+    color: var(--color-text-muted);
 }
 
 .bg-grey {
     --tw-bg-opacity: 1;
-    background-color: rgba(var(--rgb-base01), var(--tw-bg-opacity)) !important;
+    background-color: rgba(var(--rgb-text-muted), var(--tw-bg-opacity)) !important;
 }
 
 .bg-grey-light {
-    background-color: rgba(var(--rgb-base01), 0.15);
+    background-color: rgba(var(--rgb-text-muted), 0.15);
 }
 
 .text-cyan {
@@ -623,12 +682,12 @@ body,
 }
 
 .q-field--standout .q-field__control {
-    background: rgba(var(--rgb-base02), 0.3) !important;
+    background: rgba(var(--rgb-surface), 0.3) !important;
 }
 
 /* Search bar specific background (target inner control) */
 .q-field.bg-bg.bg-opacity-20 .q-field__control {
-    background: rgba(var(--rgb-base03), 0.2) !important;
+    background: rgba(var(--rgb-bg), 0.2) !important;
 }
 
 /* Remove Quasar's default hover/focus shadows and backgrounds */
@@ -637,13 +696,13 @@ body,
 .q-field--standout.q-field--focused .q-field__control,
 .q-field--standout.q-field--highlighted .q-field__control {
     box-shadow: none !important;
-    background: rgba(var(--rgb-base02), 0.5) !important;
+    background: rgba(var(--rgb-surface), 0.5) !important;
 }
 
 /* Focused state for themed fields */
 .q-field.bg-bg.bg-opacity-20.q-field--focused .q-field__control,
 .q-field.bg-bg.bg-opacity-20.q-field--highlighted .q-field__control {
-    background: rgba(var(--rgb-base03), 0.3) !important;
+    background: rgba(var(--rgb-bg), 0.3) !important;
     box-shadow: none !important;
 }
 
@@ -661,7 +720,7 @@ body,
 /* Selection & Hover in Lists */
 .q-tree__node--selected,
 .q-manual-focusable--focused {
-    background-color: rgba(var(--rgb-base02), 0.5) !important;
+    background-color: rgba(var(--rgb-surface), 0.5) !important;
 }
 
 /* UI Details (Scrollbars, Sliders, etc.) */
@@ -676,7 +735,7 @@ body,
 }
 
 .q-slider__track {
-    background: rgba(var(--rgb-base01), 0.3) !important;
+    background: rgba(var(--rgb-text-muted), 0.3) !important;
 }
 
 .q-slider__selection {

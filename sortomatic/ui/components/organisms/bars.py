@@ -18,6 +18,25 @@ def status_bar(sparkline_data: Callable[[], List[float]]) -> ui.row:
 
         # Right: Settings
         with ui.row().classes('items-center gap-2'):
-            atoms.button(icon='wb_sunny', variant='ghost', color='warning', shape='circle')
+            # Default to Dark Mode
+            dark = ui.dark_mode(value=True)
+            
+            def update_dark_mode_icon(e):
+                if e.value: # Dark Mode Active -> Show Sun
+                    mode_btn.props('icon=wb_sunny')
+                    mode_btn.classes('btn-warning-text', remove='btn-info-text')
+                else: # Light Mode Active -> Show Moon
+                    mode_btn.props('icon=dark_mode')
+                    mode_btn.classes('btn-info-text', remove='btn-warning-text')
+
+            dark.on_value_change(update_dark_mode_icon)
+
+            mode_btn = atoms.button(
+                icon='wb_sunny', 
+                variant='ghost', 
+                color='warning', 
+                shape='circle',
+                on_click=dark.toggle
+            )
             
     return row
