@@ -9,7 +9,12 @@
     --rgb-base0: 131, 148, 150;
     --rgb-base1: 147, 161, 161;
     --rgb-base2: 238, 232, 213;
+    --rgb-base1: 147, 161, 161;
+    --rgb-base2: 238, 232, 213;
     --rgb-base3: 253, 246, 227;
+
+    --rgb-suggest: 181, 137, 0;
+    /* Solarized Yellow */
 
     --base03: rgb(var(--rgb-base03));
     --base02: rgb(var(--rgb-base02));
@@ -89,6 +94,7 @@ body {
     /* Orange is better visible on light than yellow */
     --color-success: var(--green);
     --color-info: var(--blue);
+    --color-suggest: var(--yellow);
     --color-debug: var(--base1);
     --color-bg-nuclear: var(--base3);
 
@@ -138,6 +144,7 @@ body.body--dark {
     /* Status Colors */
     --color-warning: var(--yellow);
     /* Yellow works well on dark */
+    --color-suggest: var(--yellow);
     --color-debug: var(--base01);
     --color-bg-nuclear: var(--base03);
 
@@ -298,6 +305,14 @@ body {
     color: var(--color-success);
 }
 
+.text-success {
+    color: var(--color-success);
+}
+
+.text-suggest {
+    color: var(--color-suggest);
+}
+
 .text-main {
     color: var(--color-text-main);
 }
@@ -410,6 +425,14 @@ body {
     color: var(--color-debug) !important;
 }
 
+.btn-suggest {
+    background-color: var(--color-suggest) !important;
+}
+
+.btn-suggest-text {
+    color: var(--color-suggest) !important;
+}
+
 /* Ensure Ghost Button Text Colors Apply to Content (Override Global Reset) */
 .btn-primary-text .q-btn__content,
 .btn-primary-text .q-icon {
@@ -444,6 +467,11 @@ body {
 .btn-debug-text .q-btn__content,
 .btn-debug-text .q-icon {
     color: var(--color-debug) !important;
+}
+
+.btn-suggest-text .q-btn__content,
+.btn-suggest-text .q-icon {
+    color: var(--color-suggest) !important;
 }
 
 .text-accent {
@@ -646,24 +674,49 @@ body,
 .bg-secondary .q-btn__content,
 .bg-nuclear .q-btn__content,
 .bg-error .q-btn__content,
+.bg-warning .q-btn__content,
+.bg-info .q-btn__content,
+.bg-success .q-btn__content,
+.bg-positive .q-btn__content,
+.bg-negative .q-btn__content,
+.bg-pink .q-btn__content,
+.bg-purple .q-btn__content,
+.bg-deep-purple .q-btn__content,
+.bg-indigo .q-btn__content,
 .btn-primary .q-btn__content,
 .btn-secondary .q-btn__content,
 .btn-info .q-btn__content,
 .btn-success .q-btn__content,
+.btn-positive .q-btn__content,
+.btn-negative .q-btn__content,
 .btn-error .q-btn__content,
 .btn-warning .q-btn__content,
 .btn-debug .q-btn__content,
 .bg-primary .q-icon,
 .bg-secondary .q-icon,
+.bg-pink .q-icon,
+.bg-purple .q-icon,
+.bg-deep-purple .q-icon,
+.bg-indigo .q-icon,
+.bg-positive .q-icon,
+.bg-negative .q-icon,
+.bg-warning .q-icon,
+.bg-info .q-icon,
+.bg-error .q-icon,
+.bg-success .q-icon,
 .q-btn.bg-primary .q-icon,
 .q-btn.bg-secondary .q-icon,
 .btn-primary .q-icon,
 .btn-secondary .q-icon,
 .btn-info .q-icon,
 .btn-success .q-icon,
+.btn-positive .q-icon,
+.btn-negative .q-icon,
 .btn-error .q-icon,
 .btn-warning .q-icon,
-.btn-debug .q-icon {
+.btn-debug .q-icon,
+.btn-suggest .q-btn__content,
+.btn-suggest .q-icon {
     color: var(--color-white) !important;
 }
 

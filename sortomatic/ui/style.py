@@ -18,6 +18,7 @@ class Style:
     WARNING = 'var(--color-warning)'
     SUCCESS = 'var(--color-success)'
     INFO = 'var(--color-info)'
+    SUGGEST = 'var(--color-suggest)'
     BG_NUCLEAR = 'var(--color-bg-nuclear)'
     CAT_IMAGE = 'var(--color-cat-image)'
     CAT_VIDEO = 'var(--color-cat-video)'
@@ -40,6 +41,7 @@ class Style:
     RGB_WARNING = 'var(--rgb-orange)'
     RGB_SUCCESS = 'var(--rgb-green)'
     RGB_INFO = 'var(--rgb-cyan)'
+    RGB_SUGGEST = 'var(--rgb-suggest)'
     
     RGB_CAT_IMAGE = 'var(--rgb-violet)'
     RGB_CAT_VIDEO = 'var(--rgb-magenta)'
@@ -58,6 +60,7 @@ class Style:
         """Loads the app.css file and sets up NiceGUI global colors."""
         import time
         ui.add_head_html(f'<link href="/themes/app.css?v={int(time.time())}" rel="stylesheet">')
+        ui.add_head_html('<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.x/css/materialdesignicons.min.css" rel="stylesheet">')
         ui.colors(
             primary='#268bd2',    # blue
             secondary='#d33682',  # magenta

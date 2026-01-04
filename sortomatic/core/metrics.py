@@ -30,10 +30,9 @@ class SystemMetrics:
         """Returns RAM usage as float 0.0-1.0"""
         return psutil.virtual_memory().percent / 100.0
 
-    def get_disk_io_activity(self) -> float:
+    def get_disk_speed_mbs(self) -> float:
         """
-        Returns a normalized 'activity' metric 0.0-1.0.
-        This is a heuristic based on MB/s throughput relative to a 'max' baseline.
+        Returns Disk IO speed in MB/s.
         """
         current_io = psutil.disk_io_counters()
         current_time = time.time()
@@ -53,15 +52,11 @@ class SystemMetrics:
         # Calculate speed in MB/s
         speed_mb_s = (total_bytes / dt) / (1024 * 1024)
         
-        # Normalize: Assume 100MB/s is "100% busy" for visualization purposes
-        # This is arbitrary but provides visual feedback.
-        activity = min(1.0, speed_mb_s / 100.0)
-        
         # Update state
         self.last_disk_io = current_io
         self.last_disk_time = current_time
         
-        return activity
+        return speed_mb_s
 
     def get_gpu_percent(self) -> float:
         """
@@ -89,7 +84,7 @@ class SystemMetrics:
         return {
             'cpu': self.get_cpu_percent(),
             'ram': self.get_ram_percent(),
-            'disk': self.get_disk_io_activity(),
+            'disk': self.get_disk_speed_mbs(),
             'gpu': self.get_gpu_percent()
         }
 

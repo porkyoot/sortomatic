@@ -8,15 +8,29 @@ def progress_bar() -> ui.linear_progress:
     """
     return ui.linear_progress().props('indeterminate size="2px" color="secondary" track-color="transparent"').classes('opacity-80')
 
-def status_badge(active: bool = True, text: str = 'Active') -> ui.row:
+def status_badge(text: str, state: str = 'unknown') -> ui.icon:
     """
-    StatusBadge: Simple visual indicator (colored dot + text) for activity/inactivity.
+    StatusBadge: Connectivity indicator icon with tooltip.
+    States: unknown, disconnected, connecting, connected.
     """
-    color_class = 'bg-success' if active else 'bg-muted'
-    with ui.row().classes('items-center gap-2 text-xs') as badge:
-        ui.element('div').classes(f'w-2 h-2 rounded-full shadow-sm {color_class}')
-        ui.label(text).classes(f'text-muted')
-    return badge
+    state_map = {
+        'unknown': {'icon': 'mdi-cloud-question', 'class': 'text-grey'},        # debug
+        'disconnected': {'icon': 'mdi-cloud-off-outline', 'class': 'text-negative'}, # error
+        'connecting': {'icon': 'mdi-cloud-sync', 'class': 'text-warning'},     # warning
+        'connected': {'icon': 'mdi-cloud-check', 'class': 'text-positive'},     # success
+    }
+    
+    config = state_map.get(state, state_map['unknown'])
+    
+    # Icon with state color and tooltip
+    # Using size='1.5rem' (24px) to match standard icon button size roughly
+    icon = ui.icon(config['icon'], size='1.5rem').classes(config['class'])
+    icon.tooltip(text)
+    
+    if state == 'connecting':
+        icon.classes('animate-pulse')
+        
+    return icon
 
 def category_badge(category: str) -> ui.element:
     """
