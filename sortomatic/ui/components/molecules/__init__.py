@@ -4,3 +4,4 @@ from .loaders import lazy_loader
 from .badges import status_badge_row
 from .rows import file_row
 from .controls import scan_controls
+from .charts import donut_chart

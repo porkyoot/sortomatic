@@ -83,6 +83,18 @@ def main_page():
                          # 5. Unknown / Default
                          organisms.thumbnail_viewer('unknown_type', 'unknown_file.xyz')
                  
+                 # Donut Chart Showcase
+                 with ui.column().classes('w-full h-80'):
+                     ui.label('Storage Breakdown').classes('text-xs uppercase font-bold opacity-50')
+                     chart = molecules.donut_chart('Files', legend_on_right=False)
+                     chart.update_data([
+                         {'value': 1048, 'name': 'Images'},
+                         {'value': 735, 'name': 'Videos'},
+                         {'value': 580, 'name': 'Docs'},
+                         {'value': 484, 'name': 'Music'},
+                         {'value': 300, 'name': 'Other'}
+                     ])
+                 
                  # Atoms Showcase Card
                  with atoms.card().classes('w-full gap-4'):
                      ui.label('Atoms Showcase').classes('text-xl font-bold')
@@ -105,12 +117,16 @@ def main_page():
                          atoms.nuclear_button(lambda: ui.notify('BOOM! Database Dropped!'))
                          
                      with ui.column().classes('w-full gap-2 mt-4'):
-                         ui.label('Logarithmic Slider').classes('text-xs font-bold')
-                         atoms.logarithmic_slider(1, 1000, 100, lambda x: ui.notify(f'Val: {x:.2f}'))
+                         ui.label('File Size Slider').classes('text-xs font-bold')
+                         atoms.file_size_slider(on_change=lambda x: ui.notify(f"Range: {x['min']} - {x['max']} B"))
                          
                      with ui.column().classes('w-full gap-2 mt-2'):
                          atoms.search_bar()
                          atoms.date_picker()
+
+                 # Log Terminal
+                 ui.label('System Logs').classes('text-xs uppercase font-bold opacity-50 mt-4')
+                 organisms.log_terminal(height='200px')
 
 def start_app(port: int = 8080, theme_name: str = 'default', dark_mode: bool = True, base_path: str | None = None):
     # Note: theme_name and dark_mode args can be used to tweak style.py or app.css injection ideally.
