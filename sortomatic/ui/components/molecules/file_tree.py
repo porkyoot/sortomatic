@@ -1,7 +1,7 @@
 from nicegui import ui
 from sortomatic.ui.style import theme
 from sortomatic.ui.components import atoms
-from typing import List, Dict, Callable, Optional, Any
+from typing import List, Dict, Callable, Optional, Any, Set
 from dataclasses import dataclass
 
 @dataclass
@@ -9,12 +9,11 @@ class FileNode:
     id: str
     name: str
     category: str
-    size: str # formatted
+    size: str 
     size_bytes: int
     date: str
     thumbnail: Optional[str] = None
     children: Optional[List['FileNode']] = None
-    expanded: bool = True
     
     @property
     def is_folder(self):
@@ -22,150 +21,179 @@ class FileNode:
 
 def file_tree(data: List[Dict]) -> ui.element:
     """
-    Complex Molecule: Tabular File Tree.
-    Hybrid between Tree and Table with aligned columns, sorting, and inline filtering.
-    
-    data: List of dictionaries representing the file structure.
-          Expected keys: id, name, category, size_str, size_bytes, date, children (list of dicts, optional)
+    Refactored File Tree Molecule.
+    Mirrors the logic of the old FileSystemExplorerPanel but uses new atoms.
     """
     
-    # --- State Management ---
-    
-    # We parse input dicts into generic objects for easier handling
-    root_nodes = []
-    
+    # --- Data Parsing ---
     def parse_nodes(nodes_data):
         res = []
         for d in nodes_data:
             node = FileNode(
-                id=d.get('id', d.get('name')), # Fallback
+                id=d.get('id', d.get('name')),
                 name=d['name'],
                 category=d.get('category', 'other'),
                 size=d.get('size_str', ''),
                 size_bytes=d.get('size_bytes', 0),
                 date=d['date'],
                 thumbnail=d.get('thumbnail'),
-                children=parse_nodes(d['children']) if 'children' in d else None,
-                expanded=True # Default expanded for now
+                children=parse_nodes(d['children']) if 'children' in d else None
             )
             res.append(node)
         return res
 
     all_nodes = parse_nodes(data)
     
+    # --- State ---
     state = {
-        'sort_col': 'name',
-        'sort_asc': True,
-        'filters': {
-            'name': '',
-            'category': '',
-            'size': '',
-            'date': ''
-        }
+        'search_query': '',
+        'selected_categories': set(),
+        'min_size': 0,
+        'max_size': 100 * 1024 * 1024 * 1024, # 100 GB
+        'date_range': None
     }
     
     # --- Logic ---
-
-    def get_tree_nodes():
-        """
-        Parses state and returns filtered/sorted nodes for ui.tree.
-        """
-        def matches(node):
-            f = state['filters']
-            if f['name'] and f['name'].lower() not in node.name.lower(): return False
-            if f['category'] and f['category'].lower() not in node.category.lower(): return False
-            if f['date'] and f['date'].lower() not in node.date.lower(): return False
-            return True
-
-        def transform_recursive(nodes):
-            res = []
+    def get_filtered_nodes(nodes):
+        res = []
+        for node in nodes:
+            # Recursively filter children first to include folders containing matching items
+            visible_children = []
+            if node.is_folder and node.children:
+                visible_children = get_filtered_nodes(node.children)
             
-            # 1. Sort neighbors
-            sort_key = state['sort_col']
-            try:
-                nodes_sorted = sorted(nodes, key=lambda n: str(getattr(n, sort_key)).lower(), reverse=not state['sort_asc'])
-            except AttributeError:
-                # Fallback for size_bytes or other non-string mapping if col is 'size'
-                nodes_sorted = sorted(nodes, key=lambda n: n.size_bytes if sort_key == 'size' else n.name.lower(), reverse=not state['sort_asc'])
+            # Match current node
+            match = True
             
-            for node in nodes_sorted:
-                visible_children = transform_recursive(node.children) if node.is_folder else []
+            # 1. Search
+            if state['search_query'] and state['search_query'].lower() not in node.name.lower():
+                match = False
                 
-                if matches(node) or visible_children:
-                    d = {
-                        'id': node.id,
-                        'label': node.name,
-                        'category': node.category,
-                        'size': node.size,
-                        'date': node.date,
-                        'thumb': node.thumbnail,
-                        'icon': 'folder' if node.is_folder else 'insert_drive_file',
-                    }
-                    if node.is_folder:
-                        d['children'] = visible_children
-                    res.append(d)
-            return res
-
-        return transform_recursive(all_nodes)
-
-    # --- UI Building ---
-    
-    container = ui.column().classes('w-full flex-1 gap-0')
-    grid_templ = 'minmax(200px, 3fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(120px, 1fr)'
-    
-    def on_sort(col):
-        if state['sort_col'] == col:
-            state['sort_asc'] = not state['sort_asc']
-        else:
-            state['sort_col'] = col
-            state['sort_asc'] = True
-        refresh_tree.refresh()
-
-    def on_filter(col, val):
-        state['filters'][col] = val
-        refresh_tree.refresh()
-
-    with container:
-        # Header Row
-        with ui.element('div').style(f'grid-template-columns: {grid_templ}').classes('w-full p-2 border-b thin-border uppercase text-xs font-bold tracking-wider text-muted items-center file-tree-grid bg-surface-half pl-10'):
-            def header_cell(key, label):
-                with ui.column().classes('gap-1'):
-                    with ui.row().classes('items-center cursor-pointer group').on('click', lambda: on_sort(key)):
-                        ui.label(label)
-                        ui.icon('arrow_upward').bind_visibility_from(state, 'sort_asc').classes('text-[10px]').props('size=xs')
-                        ui.icon('arrow_downward').bind_visibility_from(state, 'sort_asc', backward=lambda x: not x).classes('text-[10px]').props('size=xs')
-                    ui.input(placeholder='Filter', on_change=lambda e: on_filter(key, e.value)).props('dense borderless input-class="text-xs py-0"').classes(f'rounded px-1 w-full h-6 bg-surface-half')
+            # 2. Categories
+            if match and state['selected_categories']:
+                # Simple string matching since we don't have the Enum
+                # Logic: if ANY selected category matches the node's category
+                if node.category not in state['selected_categories']:
+                     match = False
             
-            header_cell('name', 'Name')
-            header_cell('category', 'Category')
-            header_cell('size', 'Size')
-            header_cell('date', 'Date')
+            # 3. Size (only for files)
+            if match and not node.is_folder:
+                if not (state['min_size'] <= node.size_bytes <= state['max_size']):
+                    match = False
+            
+            # 4. Date (TODO: Implement robust date parsing/comparison if needed, strict string check for now)
+            # if match and state['date_range']: ...
 
+            # Include if matches OR has matching children
+            if match or visible_children:
+                d = {
+                    'id': node.id,
+                    'label': node.name,
+                    'icon': 'folder' if node.is_folder else 'insert_drive_file',
+                }
+                if node.is_folder:
+                    d['children'] = visible_children
+                res.append(d)
+        return res
+
+    # --- UI ---
+    container = ui.column().classes('w-full flex-1 gap-0 border rounded-lg overflow-hidden bg-surface')
+    
+    with container:
+        # Header
+        with ui.row().classes('w-full items-center justify-between py-2 px-3 gap-2 border-b bg-surface-half'):
+             # Left: Icon + Title
+            with ui.row().classes('items-center gap-2 flex-shrink-0'):
+                ui.icon('folder_open', size='sm').classes('text-primary')
+                ui.label('File System').classes('text-sm font-bold')
+
+            # Right: Controls
+            with ui.row().classes('items-center gap-2 flex-shrink-0'):
+                # Search
+                atoms.search_bar(on_change=lambda e: update_search(e.value))
+                
+                # Filter Menu
+                with atoms.button(icon='filter_list', variant='ghost').props('size=sm') as btn:
+                    ui.tooltip('Filters')
+                    with ui.menu().props('anchor="bottom right" self="top right"').classes('bg-surface p-4 shadow-xl border w-72'):
+                        with ui.column().classes('gap-4'):
+                            with ui.row().classes('w-full justify-between items-center'):
+                                ui.label('Filters').classes('font-bold')
+                                atoms.button(icon='restart_alt', variant='ghost', on_click=lambda: clear_filters()).props('size=sm')
+                            
+                            # Categories
+                            ui.label('Categories').classes('text-xs opacity-70')
+                            categories = ['document', 'image', 'audio', 'video', 'archive', 'code', 'other']
+                            
+                            @ui.refreshable
+                            def refresh_filters():
+                                with ui.row().classes('gap-1 flex-wrap'):
+                                    for cat in categories:
+                                        is_sel = cat in state['selected_categories']
+                                        def toggle_cat(e, _cat=cat):
+                                            if _cat in state['selected_categories']:
+                                                state['selected_categories'].remove(_cat)
+                                            else:
+                                                state['selected_categories'].add(_cat)
+                                            refresh_tree.refresh()
+                                            refresh_filters.refresh()
+
+                                        ui.chip(cat, color='primary' if is_sel else 'grey-8', 
+                                                on_click=toggle_cat).props('clickable dense square size=sm')
+                            refresh_filters()
+
+                            # Size
+                            ui.label('Size Range').classes('text-xs opacity-70')
+                            atoms.file_size_slider(
+                                min_bytes=state['min_size'], 
+                                max_bytes=state['max_size'],
+                                on_change=lambda e: update_size(e)
+                            )
+
+                            # Date
+                            ui.label('Date Modified').classes('text-xs opacity-70')
+                            atoms.date_picker(on_change=lambda e: update_date(e))
+
+    
         # Tree Body
-        with ui.scroll_area().classes('h-full w-full'):
+        tree_container = ui.column().classes('w-full flex-1 relative')
+        with tree_container:
             @ui.refreshable
             def refresh_tree():
-                nodes = get_tree_nodes()
-                t = ui.tree(nodes=nodes, label_key='label').classes('w-full source-code-pro text-sm')
-                t.props('dense transition-show="fade" transition-hide="fade"')
-                
-                t.add_slot('default-header', f'''
-                    <div class="row items-center full-width q-gutter-x-md" style="display: grid; grid-template-columns: {grid_templ}; gap: 1rem; width: 100%;">
-                        <div class="row items-center no-wrap overflow-hidden">
-                            <div v-if="props.node.thumb" class="q-mr-sm" style="width: 24px; height: 24px;">
-                                <img :src="props.node.thumb" style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;" />
-                            </div>
-                            <q-icon v-else :name="props.node.icon" :style="'color: ' + (props.node.icon === 'folder' ? 'var(--color-folder)' : 'var(--color-file)')" class="q-mr-sm" size="24px" />
-                            <div class="ellipsis">{{{{ props.node.label }}}}</div>
-                        </div>
-                        <div class="q-badge q-badge--outline" :style="'border-color: var(--color-primary); color: var(--color-primary); opacity: 0.8; font-size: 10px; padding: 2px 6px; text-transform: uppercase;'">
-                            {{{{ props.node.category }}}}
-                        </div>
-                        <div class="text-mono text-caption opacity-70">{{{{ props.node.size }}}}</div>
-                        <div class="text-mono text-caption opacity-50">{{{{ props.node.date }}}}</div>
-                    </div>
-                ''')
+                filtered_data = get_filtered_nodes(all_nodes)
+                if not filtered_data:
+                    with ui.column().classes('w-full h-full items-center justify-center opacity-50'):
+                        ui.icon('search_off', size='xl')
+                        ui.label('No files match current filters')
+                else:
+                    atoms.simple_file_tree(filtered_data, on_select=lambda e: ui.notify(f"Selected: {e.value}"))
             
             refresh_tree()
+            
+        # --- Logic Helpers ---
+        def update_search(val):
+            state['search_query'] = val
+            refresh_tree.refresh()
 
+        def update_size(val):
+            state['min_size'] = val['min']
+            state['max_size'] = val['max']
+            refresh_tree.refresh()
+            
+        def update_date(val):
+            state['date_range'] = val
+            # Date logic implementation pending
+            refresh_tree.refresh()
+
+        def clear_filters():
+            state['search_query'] = ''
+            state['selected_categories'] = set()
+            state['min_size'] = 0
+            state['max_size'] = 100 * 1024 * 1024 * 1024
+            state['date_range'] = None
+            refresh_tree.refresh()
+            # Note: We can't easily reset the internal state of atoms components (slider, search bar) 
+            # without binding which complicates this specific "simple" refactor.
+            # Ideally atoms should expose bindable props.
+            
     return container
